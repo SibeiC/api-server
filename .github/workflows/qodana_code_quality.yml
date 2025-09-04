@@ -26,5 +26,5 @@ jobs:
           args: --baseline,qodana.sarif.json,--fail-threshold,0,--apply-fixes
           push-fixes: pull-request
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_1207988628 }}
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2097965348 }}
           QODANA_ENDPOINT: 'https://qodana.cloud'
