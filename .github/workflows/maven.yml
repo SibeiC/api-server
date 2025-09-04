@@ -52,9 +52,10 @@ jobs:
           name: api-server-jar
           path: target/api-server.jar
 
-      - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v5
-        if: ${{ github.event_name != 'pull_request' }}
+# TODO: Fix this
+#      - name: Update dependency graph
+#        uses: advanced-security/maven-dependency-submission-action@v5
+#        if: ${{ github.event_name != 'pull_request' }}
 
   docker:
     runs-on: ubuntu-latest
