@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ -f .env ]; then
+    echo "Checking if .env has changed since last encryption..."
+
+    tmp_decrypted=$(mktemp)
+    if [ -f .env.enc ]; then
+        # Decrypt the existing .env.enc for comparison
+        if ! sops --decrypt --input-type dotenv --output-type dotenv .env.enc > "$tmp_decrypted"; then
+            echo "Warning: Failed to decrypt existing .env.enc, re-encrypting..."
+            tmp_decrypted="/dev/null"
+        fi
+    else
+        # No .env.enc exists yet
+        tmp_decrypted="/dev/null"
+    fi
+
+    # Compare decrypted content with current .env
+    if ! cmp -s "$tmp_decrypted" .env; then
+        echo "Encrypting updated .env before commit..."
+        sops --encrypt --input-type dotenv --output-type dotenv .env > .env.enc
+        git add .env.enc
+    else
+        echo ".env unchanged, skipping encryption."
+    fi
+
+    # Clean up temp file if not /dev/null
+    [ "$tmp_decrypted" != "/dev/null" ] && rm -f "$tmp_decrypted"
+fi

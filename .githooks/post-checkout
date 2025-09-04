@@ -1,0 +1,78 @@
+#!/bin/bash
+set -euo pipefail
+
+# Install sops if not exists
+# Detect platform
+OS="$(uname -s)"
+ARCH="$(uname -m)"
+
+# Only run if sops not installed
+if ! command -v sops >/dev/null 2>&1; then
+  echo "[INFO] sops not found, installing..."
+
+  case "$OS" in
+    Linux)
+      if [ "$ARCH" = "x86_64" ]; then
+        curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
+        sudo mv sops-v3.10.2.linux.amd64 /usr/local/bin/sops
+        sudo chmod +x /usr/local/bin/sops
+        echo "[INFO] sops installed at /usr/local/bin/sops"
+      else
+        echo "[ERROR] Unsupported Linux architecture: $ARCH"
+        exit 1
+      fi
+      ;;
+    Darwin) # macOS
+      echo "[INFO] Detected macOS"
+      if command -v brew >/dev/null 2>&1; then
+        brew install sops
+      else
+        echo "[ERROR] Homebrew not installed. Please install sops manually:"
+        echo "  https://github.com/getsops/sops#installation"
+        exit 1
+      fi
+      ;;
+    MINGW*|MSYS*|CYGWIN*) # Git Bash on Windows
+      echo "[ERROR] Windows detected. Please install sops manually:"
+      echo "  choco install sops   # (if using Chocolatey)"
+      echo "  scoop install sops   # (if using Scoop)"
+      exit 1
+      ;;
+    *)
+      echo "[ERROR] Unsupported OS: $OS"
+      exit 1
+      ;;
+  esac
+fi
+
+# Only run if age not installed
+if ! command -v age >/dev/null 2>&1; then
+  echo "[INFO] age not found, installing..."
+
+  case "$OS" in
+    Linux)
+      sudo apt install age -y
+      ;;
+    Darwin) # macOS
+      echo "[INFO] Detected macOS"
+      if command -v brew >/dev/null 2>&1; then
+        brew install age
+      else
+        echo "[ERROR] Homebrew not installed. Please install age manually:"
+        exit 1
+      fi
+      ;;
+    *)
+      echo "[ERROR] Unsupported OS: $OS"
+      exit 1
+      ;;
+  esac
+fi
+
+
+# Auto-decrypt after checkout
+if [ -f .env.enc ]; then
+    echo "Decrypting secrets after checkout..."
+    sops -d --input-type dotenv --output-type dotenv .env.enc > .env
+fi
+

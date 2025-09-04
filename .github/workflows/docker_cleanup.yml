@@ -1,0 +1,43 @@
+name: Clean up old docker image
+on:
+  schedule:
+    - cron: '0 0 */14 * *'
+  workflow_dispatch:
+    inputs:
+      retain_count:
+        description: "Number of docker images to retain"
+        required: false
+        default: "3"
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Normalize repo name to lowercase
+        run: echo "PACKAGE_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+      - name: Set retain_count
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            retain="${{ github.event.inputs.retain_count }}"
+          else
+            retain="3"
+          fi
+
+          # enforce minimum of 1
+          if [ "$retain" -lt 1 ]; then
+            retain=1
+          fi
+
+          echo "retain_count=$retain" >> $GITHUB_OUTPUT
+
+      - name: Delete old container images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ env.PACKAGE_NAME }}
+          package-type: container
+          min-versions-to-keep: ${{ steps.vars.outputs.retain_count }}

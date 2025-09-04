@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -uo pipefail
+
+echo "🔍 Running tests before push..."
+
+# Run Maven tests with the CI profile
+mvn test -Pci
+
+# If tests fail, block the push
+if [ $? -ne 0 ]; then
+    echo "❌ Tests failed — push aborted."
+    exit 1
+fi
+
+echo "✅ All tests passed — proceeding with push."
+exit 0
+

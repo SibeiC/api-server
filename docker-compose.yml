@@ -1,0 +1,10 @@
+services:
+  api-server:
+    image: ghcr.io/sibeic/api-server:latest
+    container_name: api-server
+    ports:
+      - "8080:8080"
+      - "8957:8957"
+    volumes:
+      - /opt/api-server:/opt/api-server
+    restart: unless-stopped
