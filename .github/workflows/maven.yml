@@ -8,12 +8,17 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: write # For dependency manager
+  packages: write
+
 jobs:
   ci-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
       app-version: ${{ steps.extract-version.outputs.app-version }}
+
     steps:
       - name: Checkout src code
         uses: actions/checkout@v5
@@ -52,10 +57,9 @@ jobs:
           name: api-server-jar
           path: target/api-server.jar
 
-# TODO: Fix this
-#      - name: Update dependency graph
-#        uses: advanced-security/maven-dependency-submission-action@v5
-#        if: ${{ github.event_name != 'pull_request' }}
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@v5
+        if: ${{ github.event_name != 'pull_request' }}
 
   docker:
     runs-on: ubuntu-latest
