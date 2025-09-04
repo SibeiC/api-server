@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write # For dependency manager
   packages: write
+  id-token: write
 
 jobs:
   ci-test:
