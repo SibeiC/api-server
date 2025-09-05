@@ -7,6 +7,11 @@ on:
       - master
       - 'releases/*' # The release branches
 
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
 jobs:
   qodana:
     runs-on: ubuntu-latest
@@ -23,7 +28,7 @@ jobs:
         uses: JetBrains/qodana-action@v2025.2
         with:
           pr-mode: false
-          args: --baseline,qodana.sarif.json,--fail-threshold,0,--apply-fixes
+          args: --fail-threshold,0,--apply-fixes
           push-fixes: pull-request
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2097965348 }}
