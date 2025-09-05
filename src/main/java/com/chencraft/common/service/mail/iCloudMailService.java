@@ -16,7 +16,7 @@ public class iCloudMailService implements MailService {
     private String sender;
 
     @Autowired
-    public iCloudMailService(JavaMailSender mailSender) {
+    public iCloudMailService(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
