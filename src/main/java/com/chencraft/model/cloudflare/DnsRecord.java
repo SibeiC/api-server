@@ -3,22 +3,24 @@ package com.chencraft.model.cloudflare;
 
 import com.chencraft.model.DDNSRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
+@Getter
 public class DnsRecord {
     @JsonProperty
-    private String name;
+    private final String name;
     
     @JsonProperty
-    private int ttl = 1;
+    private final int ttl = 1;
 
     @JsonProperty
-    private String type;
+    private final String type;
 
     @JsonProperty
-    private boolean proxied;
+    private final Boolean proxied;
 
     @JsonProperty
-    private String content;
+    private final String content;
 
     public DnsRecord(DDNSRequest request) {
         this.name = request.getHostname();
