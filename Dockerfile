@@ -1,10 +1,6 @@
 # ---- Stage 1: Download sops ----
 FROM alpine:3.20 AS sops-downloader
 
-LABEL org.opencontainers.image.source=https://github.com/SibeiC/api-server/
-LABEL org.opencontainers.image.description="Sibei's API Server image"
-LABEL org.opencontainers.image.licenses=GPL-3.0-only
-
 ARG SOPS_VERSION=v3.10.2
 WORKDIR /tmp
 
@@ -14,6 +10,10 @@ RUN apk add --no-cache curl \
 
 # ---- Stage 2: Runtime ----
 FROM eclipse-temurin:21-jre-alpine
+
+LABEL org.opencontainers.image.source=https://github.com/SibeiC/api-server/
+LABEL org.opencontainers.image.description="Sibei's API Server image"
+LABEL org.opencontainers.image.licenses=GPL-3.0-only
 
 # Set working directory
 WORKDIR /app
