@@ -16,6 +16,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+/**
+ * Service integrating with GitHub API for validating webhooks and downloading release assets.
+ * External IO: performs HTTPS calls to api.github.com via WebClient and writes to storage via FileService.
+ * Thread-safety: stateless aside from configuration properties; WebClient is thread-safe.
+ */
 @Slf4j
 @Service
 public class GitHubApiService {
@@ -31,6 +36,13 @@ public class GitHubApiService {
     @Value("${github.webhook.secret}")
     private String gitHubWebhookSecret;
 
+    /**
+     * Constructs GitHubApiService.
+     *
+     * @param webClient reactive HTTP client configured with GitHub base URL/headers
+     * @param fileService storage service to persist downloaded assets
+     * @param hashService hashing utility to validate webhook signatures
+     */
     @Autowired
     public GitHubApiService(WebClient webClient,
                             FileService fileService,
@@ -40,14 +52,28 @@ public class GitHubApiService {
         this.hashService = hashService;
     }
 
-    public void validateHeaderSignature(String signature, String rawBody) {
+    /**
+         * Validates GitHub webhook signature against configured secret.
+         *
+         * @param signature X-Hub-Signature-256 header value
+         * @param rawBody raw request payload used for HMAC computation
+         * @throws com.chencraft.common.exception.InvalidSignatureException when signature mismatch
+         */
+        public void validateHeaderSignature(String signature, String rawBody) {
         // Verify request is genuinely sent by GitHub
         if (!hashService.validGitHubSignature(signature, rawBody, gitHubWebhookSecret)) {
             throw new InvalidSignatureException("GitHub header signature verification failed");
         }
     }
 
-    public void fetchFileFromGitHub(String url, String filename) {
+    /**
+         * Downloads a file from GitHub asset API and stores it via FileService under PUBLIC bucket.
+         *
+         * @param url GitHub asset API URL
+         * @param filename file name to use when storing
+         * @throws com.chencraft.common.exception.GitHubUnauthorizedException if token unauthorized
+         */
+        public void fetchFileFromGitHub(String url, String filename) {
         int timeout = 60;
         log.info("Fetching {} from GitHub: {}", filename, url);
         webClient.get()

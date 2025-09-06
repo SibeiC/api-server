@@ -30,7 +30,9 @@ import java.net.URI;
 import java.util.Optional;
 
 /**
- * Client for interacting with Cloudflare R2 Storage using AWS SDK S3 compatibility
+ * FileService implementation backed by Cloudflare R2 (S3-compatible) using AWS SDK v2.
+ * External IO: performs object storage operations; requires cloudflare.r2.bucket and S3Config.
+ * Thread-safety: S3Client is thread-safe; this component is a Spring singleton.
  */
 @Lazy
 @Slf4j
@@ -43,7 +45,10 @@ public class CloudflareR2FileService implements FileService {
     private String bucketName;
 
     /**
-     * Creates a new CloudflareR2Client with the provided configuration
+     * Constructs CloudflareR2FileService using provided S3Config and application configuration.
+     *
+     * @param config S3 endpoint and credentials for R2
+     * @param appConfig app configuration for environment-specific behavior
      */
     @Autowired
     public CloudflareR2FileService(S3Config config, AppConfig appConfig) {
@@ -51,6 +56,9 @@ public class CloudflareR2FileService implements FileService {
         this.appConfig = appConfig;
     }
 
+    /**
+     * Verifies connectivity to the configured bucket on startup; fails fast on misconfiguration.
+     */
     @PostConstruct
     public void init() {
         try {
@@ -68,6 +76,15 @@ public class CloudflareR2FileService implements FileService {
         }
     }
 
+    /**
+     * Stores a file into Cloudflare R2 under the given destination prefix.
+     *
+     * @param destination enum indicating PUBLIC or PRIVATE location
+     * @param filename object key name; must be non-empty
+     * @param contentType MIME type, required
+     * @param content file bytes
+     * @throws org.springframework.web.reactive.function.UnsupportedMediaTypeException when contentType/filename missing
+     */
     @Override
     public void uploadFile(FileUpload.Type destination, String filename, String contentType, byte[] content) {
         contentType = Optional.ofNullable(contentType)

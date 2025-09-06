@@ -12,6 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+/**
+ * Secure certificate endpoints protected by mTLS. Issues onboarding tokens and processes renewals.
+ * Delegates to CertificateService for PKI operations.
+ */
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2025-08-22T12:16:37.352130473Z[Etc/UTC]")
 @RestController
 @SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "mTLS")
@@ -20,6 +24,12 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     private final AuthorizationTokenStorage tokenStorage;
     private final CertificateService certificateService;
 
+    /**
+     * Constructs SecureCertificateApiController.
+     *
+     * @param tokenStorage storage for onboarding tokens
+     * @param certificateService certificate issuance/renewal service
+     */
     @Autowired
     public SecureCertificateApiController(AuthorizationTokenStorage tokenStorage,
                                           CertificateService certificateService) {
@@ -27,11 +37,22 @@ public class SecureCertificateApiController implements SecureCertificateApi {
         this.certificateService = certificateService;
     }
 
+    /**
+     * Issues a one-time onboarding token used by devices to authorize certificate issuance.
+     *
+     * @return HTTP 200 with generated token
+     */
     @Override
     public ResponseEntity<OnboardingToken> authorize() {
         return new ResponseEntity<>(tokenStorage.createToken(), HttpStatus.OK);
     }
 
+    /**
+     * Renews a device certificate using provided device ID. Returns PEM bundle when requested.
+     *
+     * @param renewal payload containing deviceId and pemFormat flag
+     * @return reactive ResponseEntity from CertificateService
+     */
     @Override
     public Mono<ResponseEntity<?>> renew(CertificateRenewal renewal) {
         // TODO: Think I can get the device ID from the mTLS certificate directly, deviceId in request should be an override instead

@@ -16,8 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+/**
+ * Controller handling GitHub webhook callbacks. Validates HMAC signature and dispatches
+ * background tasks to fetch release assets. Errors are mapped to appropriate HTTP responses.
+ */
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2025-08-09T11:04:45.539601364Z[Etc/UTC]")
+
 @RestController
 @Slf4j
 public class GithubWebhookApiController implements GithubWebhookApi {
@@ -27,6 +31,14 @@ public class GithubWebhookApiController implements GithubWebhookApi {
     private final TaskExecutor taskExecutor;
     private final AlertMessenger messenger;
 
+    /**
+     * Constructs GithubWebhookApiController.
+     *
+     * @param objectMapper Jackson ObjectMapper for parsing webhook bodies
+     * @param gitHubApiService service for signature validation and asset fetching
+     * @param taskExecutor async executor to fetch assets without blocking the request thread
+     * @param messenger alerting component for token issues
+     */
     @Autowired
     public GithubWebhookApiController(ObjectMapper objectMapper,
                                       GitHubApiService gitHubApiService,
@@ -38,6 +50,13 @@ public class GithubWebhookApiController implements GithubWebhookApi {
         this.messenger = messenger;
     }
 
+    /**
+     * Webhook endpoint handling GitHub release events.
+     *
+     * @param signature X-Hub-Signature-256 header from GitHub (sha256=<hex>)
+     * @param rawBody raw request body for signature validation and JSON parsing
+     * @return 200 OK when accepted, 403 if signature invalid, or error if body invalid
+     */
     @Override
     public ResponseEntity<Void> githubWebhookUpdate(String signature, String rawBody) {
         try {
