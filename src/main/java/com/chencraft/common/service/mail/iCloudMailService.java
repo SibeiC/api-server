@@ -7,6 +7,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+/**
+ * MailService implementation backed by Spring's JavaMailSender configured for iCloud SMTP.
+ * External IO: sends email via SMTP using credentials provided in configuration (app.mail.*).
+ */
 @Lazy
 @Service
 public class iCloudMailService implements MailService {
@@ -15,6 +19,11 @@ public class iCloudMailService implements MailService {
     @Value("${app.mail.sender}")
     private String sender;
 
+    /**
+     * Creates the iCloudMailService.
+     *
+     * @param mailSender JavaMailSender configured for iCloud SMTP
+     */
     @Autowired
     public iCloudMailService(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") JavaMailSender mailSender) {
         this.mailSender = mailSender;
