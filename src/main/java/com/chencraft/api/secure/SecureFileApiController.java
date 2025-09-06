@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@Slf4j
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2025-08-09T12:22:59.887751009Z[Etc/UTC]")
-@RestController
-@SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "mTLS")
 /**
  * Secure file API controller implementing SecureFileApi. Requires mTLS as configured.
  * Handles uploads and private file downloads via FileService.
  */
+@Slf4j
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2025-08-09T12:22:59.887751009Z[Etc/UTC]")
+@RestController
+@SecurityScheme(type = SecuritySchemeType.MUTUALTLS, name = "mTLS")
 public class SecureFileApiController implements SecureFileApi {
 
     private final FileService fileService;
