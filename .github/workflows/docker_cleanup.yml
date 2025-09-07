@@ -8,16 +8,24 @@ on:
         description: "Number of docker images to retain"
         required: false
         default: "3"
+      dry_run:
+        description: "Show what would be deleted without deleting"
+        required: false
+        default: "false"
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    concurrency:
+      group: docker-cleanup-${{ github.ref }}
+      cancel-in-progress: true
     permissions:
       packages: write
 
     steps:
       - name: Normalize repo name to lowercase
-        run: echo "PACKAGE_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+        run: |
+          echo "PACKAGE_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
 
       - name: Set retain_count
         id: vars
@@ -41,3 +49,6 @@ jobs:
           package-name: ${{ env.PACKAGE_NAME }}
           package-type: container
           min-versions-to-keep: ${{ steps.vars.outputs.retain_count }}
+          delete-only-pre-release-versions: false
+          ignore-versions: 'latest'
+          token: ${{ secrets.GITHUB_TOKEN }}

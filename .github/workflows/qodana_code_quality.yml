@@ -15,6 +15,9 @@ permissions:
 jobs:
   qodana:
     runs-on: ubuntu-latest
+    concurrency:
+      group: qodana-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     permissions:
       contents: write
       pull-requests: write
@@ -27,8 +30,9 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2025.2
         with:
-          pr-mode: false
-          args: --fail-threshold,0,--apply-fixes
+          pr-mode: true
+          cache-default-branch-only: true
+          args: --fail-threshold,0
           push-fixes: pull-request
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2097965348 }}

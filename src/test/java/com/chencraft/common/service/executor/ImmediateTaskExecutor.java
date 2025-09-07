@@ -26,7 +26,11 @@ public class ImmediateTaskExecutor implements TaskExecutor {
     @Override
     public void scheduleAtFixedRate(Runnable task, long initialDelay, long period, TimeUnit unit) {
         log.info("Task should be delayed for {} {}, and repeated every {} {}", initialDelay, unit, period, unit);
-        task.run();
+        if (initialDelay == 0) {
+            task.run();
+        } else {
+            log.warn("Skipping task for unit test since initial delay is not 0");
+        }
     }
 
     @Override

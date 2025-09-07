@@ -9,9 +9,10 @@ on:
     branches: [ "master" ]
 
 permissions:
-  contents: write # For dependency manager
+  contents: read
   packages: write
   id-token: write
+  security-events: write
 
 jobs:
   ci-test:
@@ -20,9 +21,14 @@ jobs:
     outputs:
       app-version: ${{ steps.extract-version.outputs.app-version }}
 
+    concurrency:
+      group: ci-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout src code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -35,9 +41,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2-
+
+      - name: Cache Embedded Mongo (flapdoodle)
+        uses: actions/cache@v4
+        with:
+          path: ~/.embedmongo
+          key: ${{ runner.os }}-flapdoodle-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-flapdoodle-
 
       - name: Extract version (strip leading v of tag)
         id: extract-version
@@ -49,7 +63,15 @@ jobs:
           echo "app-version=${APP_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Build and Verify
-        run: mvn -B verify --file pom.xml -Pci
+        run: mvn -B -P ci -DskipTests=false clean verify
+
+      - name: Publish Test Summary
+        if: always()
+        uses: test-summary/action@v2
+        with:
+          paths: |
+            target/surefire-reports/*.xml
+            target/failsafe-reports/*.xml
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
@@ -98,18 +120,21 @@ jobs:
           SOPS_VERSION=$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r .tag_name)
           echo "SOPS_VERSION=$SOPS_VERSION" >> $GITHUB_ENV
 
-      - name: Build Docker image
-        run: |
-          docker build --build-arg SOPS_VERSION=$SOPS_VERSION -t ghcr.io/$REPO:$IMAGE_TAG .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/$REPO:$IMAGE_TAG
-
-      - name: Mark image as latest
-        run: |
-          docker tag ghcr.io/$REPO:$IMAGE_TAG ghcr.io/$REPO:latest
-          docker push ghcr.io/$REPO:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          build-args: |
+            SOPS_VERSION=${{ env.SOPS_VERSION }}
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO }}:${{ env.IMAGE_TAG }}
+            ghcr.io/${{ env.REPO }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: docker
