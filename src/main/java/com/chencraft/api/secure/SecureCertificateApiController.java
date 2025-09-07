@@ -4,8 +4,10 @@ import com.chencraft.common.component.AuthorizationTokenStorage;
 import com.chencraft.common.service.cert.CertificateService;
 import com.chencraft.model.CertificateRenewal;
 import com.chencraft.model.OnboardingToken;
+import com.chencraft.utils.CertificateUtils;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +25,28 @@ public class SecureCertificateApiController implements SecureCertificateApi {
 
     private final AuthorizationTokenStorage tokenStorage;
     private final CertificateService certificateService;
+    private final HttpServletRequest request;
+
 
     /**
      * Constructs SecureCertificateApiController.
      *
-     * @param tokenStorage storage for onboarding tokens
+     * @param tokenStorage       storage for onboarding tokens
      * @param certificateService certificate issuance/renewal service
      */
     @Autowired
     public SecureCertificateApiController(AuthorizationTokenStorage tokenStorage,
-                                          CertificateService certificateService) {
+                                          CertificateService certificateService,
+                                          HttpServletRequest request) {
         this.tokenStorage = tokenStorage;
         this.certificateService = certificateService;
+        this.request = request;
     }
 
     /**
      * Issues a one-time onboarding token used by devices to authorize certificate issuance.
      *
-     * @return HTTP 200 with generated token
+     * @return HTTP 200 with a generated token
      */
     @Override
     public ResponseEntity<OnboardingToken> authorize() {
@@ -48,14 +54,18 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     }
 
     /**
-     * Renews a device certificate using provided device ID. Returns PEM bundle when requested.
+     * Renews a device certificate using provided device ID. Returns a PEM bundle when requested.
      *
      * @param renewal payload containing deviceId and pemFormat flag
      * @return reactive ResponseEntity from CertificateService
      */
     @Override
     public Mono<ResponseEntity<?>> renew(CertificateRenewal renewal) {
-        // TODO: Think I can get the device ID from the mTLS certificate directly, deviceId in request should be an override instead
+        if (renewal.getDeviceId() == null) {
+            String clientCert = request.getHeader("X-Client-Cert");
+            String requester = CertificateUtils.extractCNSubject(clientCert);
+            renewal.setDeviceId(requester);
+        }
         return certificateService.issueCertificate(renewal.getDeviceId(), renewal.isPemFormat());
     }
 }

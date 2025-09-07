@@ -1,7 +1,6 @@
 package com.chencraft.common.service.cert;
 
 import com.chencraft.api.ApiException;
-import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.mongo.CertificateRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,8 @@ import java.util.Base64;
 @Component
 public class MockCertificateService extends AbstractCertificateService {
     @Autowired
-    public MockCertificateService(CertificateRepository mongoRepository) {
-        super(mongoRepository);
+    public MockCertificateService(MTlsService mtlsService) {
+        super(mtlsService);
     }
 
     @Override

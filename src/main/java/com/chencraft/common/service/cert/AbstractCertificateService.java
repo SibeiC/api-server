@@ -1,6 +1,5 @@
 package com.chencraft.common.service.cert;
 
-import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.mongo.CertificateRecord;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import static com.chencraft.utils.PublisherUtils.fireAndForget;
 
 @RequiredArgsConstructor
 public abstract class AbstractCertificateService implements CertificateService {
-    protected final CertificateRepository mongoRepository;
+    protected final MTlsService mtlsService;
 
     @Override
     public Mono<ResponseEntity<?>> issueCertificate(String deviceId, boolean pemFormat) {
@@ -42,17 +41,7 @@ public abstract class AbstractCertificateService implements CertificateService {
             if (responseEntity == null || !responseEntity.getStatusCode().is2xxSuccessful()) {
                 return;
             }
-            fireAndForget(mongoRepository.save(record)
-                                         .flatMap(savedRecord ->
-                                                          mongoRepository.findByMachineIdAndIsDeletedFalse(savedRecord.getMachineId())
-                                                                         .filter(old -> !old.getFingerprintSha256().equals(savedRecord.getFingerprintSha256()))
-                                                                         .flatMap(old -> {
-                                                                             // Revoke old cert
-                                                                             old.setRevokedAt(record.getIssuedAt());
-                                                                             old.setRevokeReason("Superseded by new certificate");
-                                                                             return mongoRepository.save(old);
-                                                                         })
-                                                                         .then(Mono.just(savedRecord))));
+            fireAndForget(mtlsService.insertNewRecord(record));
         };
     }
 

@@ -3,7 +3,6 @@ package com.chencraft.common.service.cert;
 import com.chencraft.api.ApiException;
 import com.chencraft.common.component.AlertMessenger;
 import com.chencraft.common.component.AppConfig;
-import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.common.service.executor.TaskExecutor;
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.mongo.CertificateRecord;
@@ -63,11 +62,11 @@ public class BouncyCastleCertificateService extends AbstractCertificateService {
     public BouncyCastleCertificateService(AlertMessenger messenger,
                                           TaskExecutor taskExecutor,
                                           AppConfig appConfig,
-                                          CertificateRepository mongoRepository,
+                                          MTlsService mtlsService,
                                           @Value("${app.tls.keystore}") String keystorePath,
                                           @Value("${app.tls.keystore-password}") String keystorePassword,
                                           @Value("${app.tls.keystore-alias}") String alias) throws Exception {
-        super(mongoRepository);
+        super(mtlsService);
 
         this.messenger = messenger;
         this.taskExecutor = taskExecutor;

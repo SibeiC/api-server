@@ -1,5 +1,6 @@
 package com.chencraft.api.secure;
 
+import com.chencraft.common.service.cert.CertificateService;
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.OnboardingToken;
 import org.junit.jupiter.api.Assertions;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.Clock;
@@ -27,6 +29,9 @@ class SecureCertificateApiControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoSpyBean
+    private CertificateService certificateService;
 
     @BeforeEach
     public void setup() {
@@ -77,5 +82,16 @@ class SecureCertificateApiControllerTest {
                          Assertions.assertNotNull(pem.getCertificate());
                          Assertions.assertNotNull(pem.getPrivateKey());
                      });
+    }
+
+    @Test
+    public void testExtractDeviceIdFromCert() {
+        webTestClient.post()
+                     .uri("/secure/certificate/renew")
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .header("X-Client-Verify", "SUCCESS")
+                     .header("X-Client-Cert", "test-cert")
+                     .exchange()
+                     .expectStatus().is5xxServerError(); // Until figured out how to mock static methods
     }
 }

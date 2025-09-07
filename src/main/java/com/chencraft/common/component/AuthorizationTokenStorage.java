@@ -2,7 +2,7 @@ package com.chencraft.common.component;
 
 import com.chencraft.model.OnboardingToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.security.SecureRandom;
 import java.time.Clock;
@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+@Repository
 public class AuthorizationTokenStorage implements Cleanable {
     private static final int TOKEN_EXPIRATION_TIME_IN_MINUTES = 5;
 
