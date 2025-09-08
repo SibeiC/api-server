@@ -45,14 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Cache Embedded Mongo (flapdoodle)
-        uses: actions/cache@v4
-        with:
-          path: ~/.embedmongo
-          key: ${{ runner.os }}-flapdoodle-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-flapdoodle-
-
       - name: Extract version (strip leading v of tag)
         id: extract-version
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
