@@ -8,9 +8,7 @@ on:
       - 'releases/*' # The release branches
 
 permissions:
-  contents: write
-  pull-requests: write
-  checks: write
+  contents: read
 
 jobs:
   qodana:
@@ -33,7 +31,6 @@ jobs:
           pr-mode: true
           cache-default-branch-only: true
           args: --fail-threshold,0
-          push-fixes: pull-request
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2097965348 }}
           QODANA_ENDPOINT: 'https://qodana.cloud'
