@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 import static com.chencraft.api.models.ResponseConstants.*;
 import static com.chencraft.api.models.TagConstants.TLS;
 
@@ -73,7 +71,7 @@ public interface SecureCertificateApi {
             @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)
     })
     @RequestMapping(value = "/certificate/revoke",
-            produces = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.TEXT_PLAIN_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
     Mono<ResponseEntity<String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);

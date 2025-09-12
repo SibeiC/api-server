@@ -16,9 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Secure certificate endpoints protected by mTLS. Issues onboarding tokens and processes renewals.
  * Delegates to CertificateService for PKI operations.
@@ -80,8 +77,8 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     @Override
     public Mono<ResponseEntity<String>> revoke(CertificateRevokeRequest revokeRequest) {
         if ((revokeRequest.getMongoId() == null || revokeRequest.getMongoId().isBlank()) &&
-            (revokeRequest.getFingerprintSha256() == null || revokeRequest.getFingerprintSha256().isBlank()) &&
-            (revokeRequest.getDeviceId() == null || revokeRequest.getDeviceId().isBlank())) {
+                (revokeRequest.getFingerprintSha256() == null || revokeRequest.getFingerprintSha256().isBlank()) &&
+                (revokeRequest.getDeviceId() == null || revokeRequest.getDeviceId().isBlank())) {
             // Keep the error format for bad request to help clients debug
             return Mono.just(ResponseEntity.badRequest().body("One of mongoId, deviceId, or fingerprintSha256 is required"));
         }
@@ -90,7 +87,7 @@ public class SecureCertificateApiController implements SecureCertificateApi {
 
         if (revokeRequest.getMongoId() != null && !revokeRequest.getMongoId().isBlank()) {
             return mTlsService.revokeById(revokeRequest.getMongoId(), reason)
-                    .map(found -> ResponseEntity.ok(found ? "1 record affected. " : "0 records affected."));
+                              .map(found -> ResponseEntity.ok(found ? "1 record affected. " : "0 records affected."));
         }
 
         if (revokeRequest.getFingerprintSha256() != null && !revokeRequest.getFingerprintSha256().isBlank()) {
@@ -100,6 +97,6 @@ public class SecureCertificateApiController implements SecureCertificateApi {
 
         // deviceId path: revoke all active certificates for the device
         return mTlsService.revokeByDeviceId(revokeRequest.getDeviceId(), reason)
-                .map(count -> ResponseEntity.ok(count + " records affected. "));
+                          .map(count -> ResponseEntity.ok(count + " records affected. "));
     }
 }
