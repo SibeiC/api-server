@@ -22,19 +22,6 @@ public class CacheConfig {
         );
         cacheManager.setAsyncCacheMode(true);
 
-//        // Register cache metrics with Prometheus (bind Caffeine native cache)
-//        cacheManager.getCacheNames().forEach(name -> {
-//            org.springframework.cache.Cache springCache = cacheManager.getCache(name);
-//            if (springCache instanceof CaffeineCache caffeineCache) {
-//                com.github.benmanes.caffeine.cache.Cache<?, ?> nativeCache = caffeineCache.getNativeCache();
-//                CaffeineCacheMetrics.monitor(
-//                        meterRegistry,
-//                        nativeCache,
-//                        caffeineCache.getName()
-//                );
-//            }
-//        });
-
         return cacheManager;
     }
 }
