@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {CloudflareApiService.class})
-class CloudflareApiServiceTest {
+public class CloudflareApiServiceTest {
     @MockitoBean
     private CloudflareWebClient cloudflareWebClient;
 

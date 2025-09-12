@@ -6,6 +6,7 @@
 package com.chencraft.api.secure;
 
 import com.chencraft.model.CertificateRenewal;
+import com.chencraft.model.CertificateRevokeRequest;
 import com.chencraft.model.OnboardingToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 import static com.chencraft.api.models.ResponseConstants.*;
 import static com.chencraft.api.models.TagConstants.TLS;
@@ -60,5 +63,19 @@ public interface SecureCertificateApi {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
     Mono<ResponseEntity<?>> renew(@Parameter(in = ParameterIn.DEFAULT, description = "Certificate renewal request", schema = @Schema(implementation = CertificateRenewal.class)) @NotNull @Valid @RequestBody CertificateRenewal certificateRenewal);
+
+    @Operation(summary = "Revoke certificate(s)", description = "Revokes certificate record identified by mongoId, deviceId, or fingerprintSha256.", security = {
+            @SecurityRequirement(name = "mTLS")}, tags = {TLS})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Revocation completed"),
+            @ApiResponse(responseCode = "400", ref = INVALID_INPUT_RESPONSE),
+            @ApiResponse(responseCode = "401", ref = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)
+    })
+    @RequestMapping(value = "/certificate/revoke",
+            produces = {MediaType.APPLICATION_JSON_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            method = RequestMethod.POST)
+    Mono<ResponseEntity<String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);
 }
 
