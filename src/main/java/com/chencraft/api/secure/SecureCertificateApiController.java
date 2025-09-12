@@ -2,7 +2,9 @@ package com.chencraft.api.secure;
 
 import com.chencraft.common.component.AuthorizationTokenStorage;
 import com.chencraft.common.service.cert.CertificateService;
+import com.chencraft.common.service.cert.MTlsService;
 import com.chencraft.model.CertificateRenewal;
+import com.chencraft.model.CertificateRevokeRequest;
 import com.chencraft.model.OnboardingToken;
 import com.chencraft.utils.CertificateUtils;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -25,6 +27,7 @@ public class SecureCertificateApiController implements SecureCertificateApi {
 
     private final AuthorizationTokenStorage tokenStorage;
     private final CertificateService certificateService;
+    private final MTlsService mTlsService;
     private final HttpServletRequest request;
 
 
@@ -37,9 +40,11 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     @Autowired
     public SecureCertificateApiController(AuthorizationTokenStorage tokenStorage,
                                           CertificateService certificateService,
+                                          MTlsService mTlsService,
                                           HttpServletRequest request) {
         this.tokenStorage = tokenStorage;
         this.certificateService = certificateService;
+        this.mTlsService = mTlsService;
         this.request = request;
     }
 
@@ -67,5 +72,31 @@ public class SecureCertificateApiController implements SecureCertificateApi {
             renewal.setDeviceId(requester);
         }
         return certificateService.issueCertificate(renewal.getDeviceId(), renewal.isPemFormat());
+    }
+
+    @Override
+    public Mono<ResponseEntity<String>> revoke(CertificateRevokeRequest revokeRequest) {
+        if ((revokeRequest.getMongoId() == null || revokeRequest.getMongoId().isBlank()) &&
+                (revokeRequest.getFingerprintSha256() == null || revokeRequest.getFingerprintSha256().isBlank()) &&
+                (revokeRequest.getDeviceId() == null || revokeRequest.getDeviceId().isBlank())) {
+            // Keep the error format for bad request to help clients debug
+            return Mono.just(ResponseEntity.badRequest().body("One of mongoId, deviceId, or fingerprintSha256 is required"));
+        }
+
+        String reason = revokeRequest.getRevokeReason();
+
+        if (revokeRequest.getMongoId() != null && !revokeRequest.getMongoId().isBlank()) {
+            return mTlsService.revokeById(revokeRequest.getMongoId(), reason)
+                              .map(found -> ResponseEntity.ok(found ? "1 record affected. " : "0 records affected."));
+        }
+
+        if (revokeRequest.getFingerprintSha256() != null && !revokeRequest.getFingerprintSha256().isBlank()) {
+            return mTlsService.revokeByFingerprint(revokeRequest.getFingerprintSha256(), reason)
+                              .map(found -> ResponseEntity.ok(found ? "1 record affected. " : "0 records affected."));
+        }
+
+        // deviceId path: revoke all active certificates for the device
+        return mTlsService.revokeByDeviceId(revokeRequest.getDeviceId(), reason)
+                          .map(count -> ResponseEntity.ok(count + " records affected. "));
     }
 }

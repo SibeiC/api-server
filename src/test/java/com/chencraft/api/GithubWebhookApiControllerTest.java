@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class GithubWebhookApiControllerTest {
+public class GithubWebhookApiControllerTest {
     private static final String TEST_FILE_PATH = "src/test/resources/public/webDownload.pdf";
 
     private static final String REPO_DIR = "src/test/resources/testRepo/";

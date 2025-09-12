@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class SecureCloudflareRelayApiControllerTest {
+public class SecureCloudflareRelayApiControllerTest {
     private MockMvc mockMvc;
 
     private AutoCloseable closeable;

@@ -47,6 +47,54 @@ public class MTlsService implements Cleanable {
                                                 .then(Mono.just(savedRecord)));
     }
 
+    /**
+     * Revoke a certificate by MongoDB id.
+     * @return Mono<Boolean> true if a record was found and revoked; false otherwise.
+     */
+    @CacheEvict(value = "certificatesByFingerprint", allEntries = true)
+    public Mono<Boolean> revokeById(String id, String reason) {
+        Instant now = clock.instant();
+        return certRepo.findById(id)
+                .filter(record -> record != null && !record.isDeleted)
+                .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
+                .defaultIfEmpty(false);
+    }
+
+    /**
+     * Revoke a certificate by SHA-256 fingerprint.
+     * @return Mono<Boolean> true if a record was found and revoked; false otherwise.
+     */
+    @CacheEvict(value = "certificatesByFingerprint", key = "#fingerprint")
+    public Mono<Boolean> revokeByFingerprint(String fingerprint, String reason) {
+        Instant now = clock.instant();
+        return certRepo.findByFingerprintSha256AndIsDeletedFalse(fingerprint)
+                .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
+                .defaultIfEmpty(false);
+    }
+
+    /**
+     * Revoke all active certificates for a device (machineId).
+     * @return Mono<Long> count of revoked records.
+     */
+    @CacheEvict(value = "certificatesByFingerprint", allEntries = true)
+    public Mono<Long> revokeByDeviceId(String deviceId, String reason) {
+        Instant now = clock.instant();
+        return certRepo.findByMachineIdAndIsDeletedFalse(deviceId)
+                .filter(record -> record.getRevokedAt() == null)
+                .flatMap(record -> applyRevocation(record, now, reason))
+                .count();
+    }
+
+    private Mono<CertificateRecord> applyRevocation(CertificateRecord record, Instant now, String reason) {
+        record.setRevokedAt(now);
+        if (reason == null || reason.isBlank()) {
+            record.setRevokeReason("Revoked by request");
+        } else {
+            record.setRevokeReason(reason);
+        }
+        return certRepo.save(record);
+    }
+
     @Override
     public void cleanUp() {
         // Mark certificates 2 months past expiration as deleted and delete them after 1 year
