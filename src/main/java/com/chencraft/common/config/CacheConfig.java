@@ -2,8 +2,6 @@ package com.chencraft.common.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.cache.CaffeineCacheMetrics;
-import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,18 +22,18 @@ public class CacheConfig {
         );
         cacheManager.setAsyncCacheMode(true);
 
-        // Register cache metrics with Prometheus (bind Caffeine native cache)
-        cacheManager.getCacheNames().forEach(name -> {
-            org.springframework.cache.Cache springCache = cacheManager.getCache(name);
-            if (springCache instanceof CaffeineCache caffeineCache) {
-                com.github.benmanes.caffeine.cache.Cache<?, ?> nativeCache = caffeineCache.getNativeCache();
-                CaffeineCacheMetrics.monitor(
-                        meterRegistry,
-                        nativeCache,
-                        caffeineCache.getName()
-                );
-            }
-        });
+//        // Register cache metrics with Prometheus (bind Caffeine native cache)
+//        cacheManager.getCacheNames().forEach(name -> {
+//            org.springframework.cache.Cache springCache = cacheManager.getCache(name);
+//            if (springCache instanceof CaffeineCache caffeineCache) {
+//                com.github.benmanes.caffeine.cache.Cache<?, ?> nativeCache = caffeineCache.getNativeCache();
+//                CaffeineCacheMetrics.monitor(
+//                        meterRegistry,
+//                        nativeCache,
+//                        caffeineCache.getName()
+//                );
+//            }
+//        });
 
         return cacheManager;
     }
