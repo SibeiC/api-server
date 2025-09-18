@@ -74,7 +74,10 @@ public class SwaggerDocumentationConfig {
                        new Tag().name(TLS).description("Handles client TLS certificate issue and renewal"),
                        new Tag().name(CLOUDFLARE).description("Common Cloudflare API bundles")
                                 .externalDocs(new ExternalDocumentation().description("Cloudflare API Docs")
-                                                                         .url("https://developers.cloudflare.com/api/")));
+                                                                         .url("https://developers.cloudflare.com/api/")),
+                       new Tag().name(GITHUB).description("Common GitHub API bundles")
+                                .externalDocs(new ExternalDocumentation().description("GitHub API Docs")
+                                                                         .url("https://docs.github.com/en/rest/")));
     }
 
     private static Components generateComponents() {

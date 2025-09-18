@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
  * Secure controller that relays DDNS update requests to Cloudflare. Requires mTLS authentication.
  * Uses CloudflareApiService for actual DNS updates.
@@ -25,7 +26,7 @@ public class SecureCloudflareRelayApiController implements SecureCloudflareRelay
      * Constructs SecureCloudflareRelayApiController.
      *
      * @param cloudflareApiService service for Cloudflare DNS updates
-     * @param request current HttpServletRequest to infer client IP when not supplied
+     * @param request              current HttpServletRequest to infer client IP when not supplied
      */
     @Autowired
     public SecureCloudflareRelayApiController(CloudflareApiService cloudflareApiService, HttpServletRequest request) {
@@ -34,7 +35,7 @@ public class SecureCloudflareRelayApiController implements SecureCloudflareRelay
     }
 
     /**
-     * Relays dynamic DNS update to Cloudflare. If client IP is omitted, remote address is used.
+     * Relays dynamic DNS update to Cloudflare. If client IP is omitted, the remote address is used.
      *
      * @param ddnsRequest payload containing zone, record details, and optional client IP
      * @return HTTP 200 after the update request is submitted

@@ -5,4 +5,5 @@ public class TagConstants {
     public static final String WEBHOOK = "webhook";
     public static final String TLS = "tls";
     public static final String CLOUDFLARE = "cloudflare";
+    public static final String GITHUB = "github";
 }

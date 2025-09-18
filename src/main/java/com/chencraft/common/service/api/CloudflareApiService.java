@@ -28,15 +28,15 @@ public class CloudflareApiService {
     }
 
     /**
-         * Creates or updates a DNS record in Cloudflare for the given request.
-         * If no record exists, it will be created; otherwise the first match is updated.
-         *
-         * @param request DDNS parameters including hostname, DNS type, content and proxied flag
-         */
-        public void updateDNSRecord(DDNSRequest request) {
+     * Creates or updates a DNS record in Cloudflare for the given request.
+     * If no record exists, it will be created; otherwise the first match is updated.
+     *
+     * @param request DDNS parameters including hostname, DNS type, content and proxied flag
+     */
+    public void updateDNSRecord(DDNSRequest request) {
         List<IRecordResponse> records = this.cloudflareWebClient.listDnsRecords(request.getHostname(), request.getDnsType());
         if (records.isEmpty()) {
-            // Create DNS record
+            // Create the DNS record
             this.cloudflareWebClient.createDnsRecordDetail(request);
         } else {
             // Update DNS record

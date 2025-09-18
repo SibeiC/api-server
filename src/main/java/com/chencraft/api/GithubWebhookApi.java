@@ -29,8 +29,11 @@ import static com.chencraft.api.models.TagConstants.WEBHOOK;
 public interface GithubWebhookApi {
 
     @SuppressWarnings("UastIncorrectHttpHeaderInspection")
-    @Operation(summary = "Update files from release", description = "Pulls files compiled by release", security = {
-            @SecurityRequirement(name = "sha256Auth")}, tags = {WEBHOOK})
+    @Operation(
+            summary = "Update files from release",
+            description = "Pulls files compiled by release",
+            security = {@SecurityRequirement(name = "sha256Auth")},
+            tags = {WEBHOOK})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", ref = OK_RESPONSE),
             @ApiResponse(responseCode = "401", ref = INVALID_INPUT_RESPONSE),
