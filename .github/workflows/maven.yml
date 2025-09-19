@@ -130,6 +130,7 @@ jobs:
           build-args: |
             SOPS_VERSION=${{ env.SOPS_VERSION }}
           push: true
+          platforms: linux/amd64
           tags: |
             ghcr.io/${{ env.REPO }}:${{ env.IMAGE_TAG }}
             ghcr.io/${{ env.REPO }}:latest
