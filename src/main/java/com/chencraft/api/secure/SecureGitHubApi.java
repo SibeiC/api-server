@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public interface SecureGitHubApi {
     @Operation(
             summary = "Fetch a file from a private GitHub repo",
             description = "Fetches the raw file bytes from GitHub using a read-only token. See [GitHub API Docs](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content) for details.",
+            security = {@SecurityRequirement(name = "mTLS")},
             tags = {GITHUB})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "File bytes returned"),
