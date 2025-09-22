@@ -51,4 +51,5 @@ jobs:
           min-versions-to-keep: ${{ steps.vars.outputs.retain_count }}
           delete-only-pre-release-versions: false
           ignore-versions: 'latest'
+          delete-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
