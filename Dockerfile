@@ -9,7 +9,7 @@ RUN apk add --no-cache curl \
     && chmod +x sops
 
 # ---- Stage 2: Runtime ----
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 LABEL org.opencontainers.image.source=https://github.com/SibeiC/api-server/
 LABEL org.opencontainers.image.description="Sibei's API Server image"
