@@ -139,7 +139,7 @@
         - age_private_key | length > 0
 
     - name: Uninstall api-server resources
-      tags: [ "never", "uninstall" ]
+      tags: ["never", "uninstall"]
       block:
         - name: Disable Nginx site symlink
           ansible.builtin.file:
