@@ -91,11 +91,12 @@
         - name: Allow SSH via UFW when active
           ansible.builtin.command: ufw allow 22/tcp
           register: ufw_allow_ssh
+          changed_when:
+            - "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
+            - "'Skipping adding existing rule (v6)' not in ufw_allow_ssh.stdout"
           when:
             - ufw_status.rc == 0
             - "'Status: active' in ufw_status.stdout"
-          changed_when: >
-            "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
 
         - name: Allow SSH via firewalld if running
           ansible.posix.firewalld:
