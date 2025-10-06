@@ -1,0 +1,140 @@
+---
+- name: Provision and configure api-server host
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    app_name: "api-server"
+    working_dir: "/opt/{{ app_name }}"
+
+    # Set to true for local/dev installation (changes host and port, skips deploy user)
+    dev: "{{ install_dev | default(false) | bool }}"
+
+    # Host and ports
+    server_host: "{{ 'dev.chencraft.com' if dev else 'api.chencraft.com' }}"
+    proxy_port: "{{ 8085 if dev else 8080 }}"
+
+    # Nginx and TLS
+    ssl_cert_path: "/etc/nginx/certs/fullchain.cer"
+    ssl_cert_key_path: "/etc/nginx/certs/server.key"
+    ssl_client_cert_path: "/etc/ssl/certs/rootCA.crt"
+
+    # Inputs for PKCS#12 export (keystore)
+    p12_cert_path: "/etc/ssl/certs/server.crt"
+    p12_key_path: "/etc/ssl/private/server.key"
+
+    # Default owner/group for files we manage (override via -e if needed)
+    app_user: "{{ ansible_user | default('root') }}"
+    app_group: "{{ ansible_user | default('root') }}"
+
+  vars_prompt:
+    - name: tls_keystore_password
+      prompt: "Enter TLS keystore password (for server.p12)"
+      private: true
+
+    - name: age_private_key
+      prompt: "Enter your AGE private key (single line; leave blank to skip)"
+      private: true
+      default: ""
+
+    - name: github_actions_public_key
+      prompt: "Paste your GitHub Actions public SSH key for deploy user (leave blank to skip)"
+      private: false
+      default: ""
+
+  pre_tasks:
+    - name: Show selected mode
+      ansible.builtin.debug:
+        msg: "Running in {{ 'DEV' if dev else 'PROD' }} mode for host {{ server_host }} (proxy_port={{ proxy_port }})"
+
+  tasks:
+    - name: Create GitHub Actions deploy user (non-dev only)
+      when: not dev
+      block:
+        - name: Ensure deploy user exists and is in docker group
+          ansible.builtin.user:
+            name: githubdeploy
+            state: present
+            create_home: true
+            groups: docker
+            append: true
+            password_lock: true
+
+        - name: Ensure .ssh directory exists
+          ansible.builtin.file:
+            path: "/home/githubdeploy/.ssh"
+            state: directory
+            owner: githubdeploy
+            group: githubdeploy
+            mode: "0700"
+
+        - name: Install GitHub Actions public key if provided
+          ansible.posix.authorized_key:
+            user: githubdeploy
+            key: "{{ github_actions_public_key }}"
+            state: present
+          when: github_actions_public_key | length > 0
+
+    - name: Ensure working directory exists
+      ansible.builtin.file:
+        path: "{{ working_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0750"
+
+    - name: Deploy Nginx site configuration
+      ansible.builtin.template:
+        src: "templates/api-server.conf.j2"
+        dest: "/etc/nginx/sites-available/{{ app_name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable Nginx site via symlink
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/{{ app_name }}.conf"
+        dest: "/etc/nginx/sites-enabled/{{ app_name }}.conf"
+        state: link
+      notify: Reload nginx
+
+    - name: Generate PKCS#12 keystore
+      community.crypto.openssl_pkcs12:
+        path: "{{ working_dir }}/server.p12"
+        state: present
+        privatekey_path: "{{ p12_key_path }}"
+        certificate_path: "{{ p12_cert_path }}"
+        friendly_name: "{{ app_name }}"
+        passphrase: "{{ tls_keystore_password }}"
+      when: tls_keystore_password | length > 0
+
+    - name: Set keystore ownership and permissions
+      ansible.builtin.file:
+        path: "{{ working_dir }}/server.p12"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0640"
+
+    - name: Check if AGE key exists
+      ansible.builtin.stat:
+        path: "{{ working_dir }}/age_key"
+      register: age_key_stat
+
+    - name: Create AGE private key file when provided and missing
+      ansible.builtin.copy:
+        content: "{{ age_private_key }}\n"
+        dest: "{{ working_dir }}/age_key"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+      when:
+        - not age_key_stat.stat.exists
+        - age_private_key | length > 0
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

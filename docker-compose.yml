@@ -1,3 +1,4 @@
+---
 services:
   api-server:
     image: ghcr.io/sibeic/api-server:latest

@@ -1,3 +1,4 @@
+---
 name: Qodana
 on:
   workflow_dispatch:
@@ -5,7 +6,7 @@ on:
   push:
     branches:
       - master
-      - 'releases/*' # The release branches
+      - "releases/*" # The release branches
 
 permissions:
   contents: read
@@ -23,9 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
-          fetch-depth: 0  # a full history is required for pull request analysis
-      - name: 'Qodana Scan'
+          ref: ${{ github.event.pull_request.head.sha }} # to check out the actual pull request commit, not the merge commit
+          fetch-depth: 0 # a full history is required for pull request analysis
+      - name: "Qodana Scan"
         uses: JetBrains/qodana-action@v2025.2
         with:
           pr-mode: true
@@ -33,4 +34,4 @@ jobs:
           args: --fail-threshold,0
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2097965348 }}
-          QODANA_ENDPOINT: 'https://qodana.cloud'
+          QODANA_ENDPOINT: "https://qodana.cloud"

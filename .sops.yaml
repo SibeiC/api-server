@@ -1,3 +1,4 @@
+---
 # DO NOT MODIFY, UPDATE USING scripts/age_keygen.sh ONLY
 creation_rules:
   - path_regex: ^\.env$

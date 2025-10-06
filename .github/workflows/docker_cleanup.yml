@@ -1,7 +1,8 @@
+---
 name: Clean up old docker image
 on:
   schedule:
-    - cron: '0 0 */14 * *'
+    - cron: "0 0 */14 * *"
   workflow_dispatch:
     inputs:
       retain_count:
@@ -50,5 +51,5 @@ jobs:
           package-type: container
           min-versions-to-keep: ${{ steps.vars.outputs.retain_count }}
           delete-only-pre-release-versions: false
-          ignore-versions: 'latest'
+          ignore-versions: "latest"
           token: ${{ secrets.GITHUB_TOKEN }}

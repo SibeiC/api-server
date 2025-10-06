@@ -42,3 +42,9 @@ if [ -f .env ]; then
     [ "$tmp_decrypted" != "/dev/null" ] && rm -f "$tmp_decrypted"
     rm -f "$norm_env" "$norm_dec"
 fi
+
+echo "[pre-commit] Running ansible-lint --fix (non-blocking)..."
+ansible-lint --fix || {
+  echo "[pre-commit] ansible-lint failed or could not fix all issues, but continuing anyway."
+}
+git add -u
