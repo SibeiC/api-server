@@ -1,5 +1,7 @@
 ---
 name: Ansible Lint
+permissions:
+  contents: read
 
 on:
   push:
