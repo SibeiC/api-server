@@ -76,6 +76,38 @@
             key: "{{ deploy_user_public_key }}"
             state: present
 
+    - name: Ensure SSH (22/tcp) open for remote access (non-dev only)
+      when: not dev
+      block:
+        - name: Gather service facts
+          ansible.builtin.service_facts:
+
+        - name: Check if UFW is active
+          ansible.builtin.command: ufw status
+          register: ufw_status
+          failed_when: false
+          changed_when: false
+
+        - name: Allow SSH via UFW when active
+          ansible.builtin.command: ufw allow 22/tcp
+          register: ufw_allow_ssh
+          when:
+            - ufw_status.rc == 0
+            - "'Status: active' in ufw_status.stdout"
+          changed_when: >
+            "'Skipping adding existing rule' not in ufw_allow_ssh.stdout"
+
+        - name: Allow SSH via firewalld if running
+          ansible.posix.firewalld:
+            service: ssh
+            permanent: true
+            state: enabled
+            immediate: true
+          when:
+            - ansible_facts.services is defined
+            - ansible_facts.services['firewalld'] is defined
+            - ansible_facts.services['firewalld'].state == 'running'
+
     - name: Ensure working directory exists
       ansible.builtin.file:
         path: "{{ working_dir }}"
