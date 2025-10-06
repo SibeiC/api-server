@@ -1,18 +1,16 @@
-#!/usr/bin/sudo bash
+#!/bin/bash
 
-set -euox pipefail
+set -euo pipefail
 
-source ./env.sh
+# Wrapper to run Ansible-based uninstall to mirror install.sh
+# Usage: ./uninstall.sh [extra-ansible-args]
 
-# Stop the server
-systemctl stop nginx
+if ! command -v ansible-playbook >/dev/null 2>&1; then
+  echo "Error: ansible-playbook not found. Please install Ansible first." >&2
+  exit 1
+fi
 
-# Remove created directory
-rm -rf "${WORKING_DIR}"
+ansible-galaxy collection install -r requirements.yml
 
-# Remove nginx configuration
-rm -f "/etc/nginx/sites-enabled/${APP_NAME}.conf"
-rm -f "/etc/nginx/sites-available/${APP_NAME}.conf"
-
-# Restart the server
-systemctl restart nginx
+# Run only the uninstall-tagged tasks
+ansible-playbook -i hosts.ini playbook.yml --tags uninstall "$@"

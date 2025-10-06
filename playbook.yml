@@ -16,6 +16,10 @@
     proxy_port: "{{ 8085 if dev else 8080 }}"
 
     # Nginx and TLS
+    nginx_sites_available_dir: "/etc/nginx/sites-available"
+    nginx_sites_enabled_dir: "/etc/nginx/sites-enabled"
+    nginx_site_available: "{{ nginx_sites_available_dir }}/{{ app_name }}.conf"
+    nginx_site_enabled: "{{ nginx_sites_enabled_dir }}/{{ app_name }}.conf"
     ssl_cert_path: "/etc/nginx/certs/fullchain.cer"
     ssl_cert_key_path: "/etc/nginx/certs/server.key"
     ssl_client_cert_path: "/etc/ssl/certs/rootCA.crt"
@@ -27,6 +31,7 @@
     # Default owner/group for files we manage (override via -e if needed)
     app_user: "{{ ansible_user | default('root') }}"
     app_group: "{{ ansible_user | default('root') }}"
+    deploy_user: "githubdeploy"
 
   vars_prompt:
     - name: tls_keystore_password
@@ -54,7 +59,7 @@
       block:
         - name: Ensure deploy user exists and is in docker group
           ansible.builtin.user:
-            name: githubdeploy
+            name: "{{ deploy_user }}"
             state: present
             create_home: true
             groups: docker
@@ -63,15 +68,15 @@
 
         - name: Ensure .ssh directory exists
           ansible.builtin.file:
-            path: "/home/githubdeploy/.ssh"
+            path: "/home/{{ deploy_user }}/.ssh"
             state: directory
-            owner: githubdeploy
-            group: githubdeploy
+            owner: "{{ deploy_user }}"
+            group: "{{ deploy_user }}"
             mode: "0700"
 
         - name: Install GitHub Actions public key if provided
           ansible.posix.authorized_key:
-            user: githubdeploy
+            user: "{{ deploy_user }}"
             key: "{{ github_actions_public_key }}"
             state: present
           when: github_actions_public_key | length > 0
@@ -87,7 +92,7 @@
     - name: Deploy Nginx site configuration
       ansible.builtin.template:
         src: "templates/api-server.conf.j2"
-        dest: "/etc/nginx/sites-available/{{ app_name }}.conf"
+        dest: "{{ nginx_site_available }}"
         owner: root
         group: root
         mode: "0644"
@@ -95,8 +100,8 @@
 
     - name: Enable Nginx site via symlink
       ansible.builtin.file:
-        src: "/etc/nginx/sites-available/{{ app_name }}.conf"
-        dest: "/etc/nginx/sites-enabled/{{ app_name }}.conf"
+        src: "{{ nginx_site_available }}"
+        dest: "{{ nginx_site_enabled }}"
         state: link
       notify: Reload nginx
 
@@ -132,6 +137,33 @@
       when:
         - not age_key_stat.stat.exists
         - age_private_key | length > 0
+
+    - name: Uninstall api-server resources
+      tags: [ "never", "uninstall" ]
+      block:
+        - name: Disable Nginx site symlink
+          ansible.builtin.file:
+            path: "{{ nginx_site_enabled }}"
+            state: absent
+          notify: Reload nginx
+
+        - name: Remove Nginx site configuration
+          ansible.builtin.file:
+            path: "{{ nginx_site_available }}"
+            state: absent
+          notify: Reload nginx
+
+        - name: Remove working directory
+          ansible.builtin.file:
+            path: "{{ working_dir }}"
+            state: absent
+
+        - name: Remove GitHub Actions deploy user and home (non-dev only)
+          when: not dev
+          ansible.builtin.user:
+            name: "{{ deploy_user }}"
+            state: absent
+            remove: true
 
   handlers:
     - name: Reload nginx
