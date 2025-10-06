@@ -32,6 +32,7 @@
     app_user: "{{ ansible_user | default('root') }}"
     app_group: "{{ ansible_user | default('root') }}"
     deploy_user: "githubdeploy"
+    deploy_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpJneejmAWqksgGHCcjOqyM4vCcp6edAEnJjo3hm2up ubuntu@DESKTOP-7VSUP4J"
 
   vars_prompt:
     - name: tls_keystore_password
@@ -41,11 +42,6 @@
     - name: age_private_key
       prompt: "Enter your AGE private key (single line; leave blank to skip)"
       private: true
-      default: ""
-
-    - name: github_actions_public_key
-      prompt: "Paste your GitHub Actions public SSH key for deploy user (leave blank to skip)"
-      private: false
       default: ""
 
   pre_tasks:
@@ -77,9 +73,8 @@
         - name: Install GitHub Actions public key if provided
           ansible.posix.authorized_key:
             user: "{{ deploy_user }}"
-            key: "{{ github_actions_public_key }}"
+            key: "{{ deploy_user_public_key }}"
             state: present
-          when: github_actions_public_key | length > 0
 
     - name: Ensure working directory exists
       ansible.builtin.file:
