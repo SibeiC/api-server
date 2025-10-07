@@ -13,8 +13,8 @@ if ! command -v sops >/dev/null 2>&1; then
   case "$OS" in
     Linux)
       if [ "$ARCH" = "x86_64" ]; then
-        curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
-        sudo mv sops-v3.10.2.linux.amd64 /usr/local/bin/sops
+        curl -LO https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64
+        sudo mv sops-v3.11.0.linux.amd64 /usr/local/bin/sops
         sudo chmod +x /usr/local/bin/sops
         echo "[INFO] sops installed at /usr/local/bin/sops"
       else

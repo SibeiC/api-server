@@ -35,10 +35,6 @@
     deploy_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpJneejmAWqksgGHCcjOqyM4vCcp6edAEnJjo3hm2up ubuntu@DESKTOP-7VSUP4J"
 
   vars_prompt:
-    - name: tls_keystore_password
-      prompt: "Enter TLS keystore password (for server.p12)"
-      private: true
-
     - name: age_private_key
       prompt: "Enter your AGE private key (single line; leave blank to skip)"
       private: true
@@ -133,6 +129,66 @@
         state: link
       notify: Reload nginx
 
+    - name: Age private key is present
+      when: age_private_key | length > 0
+      block:
+        - name: Ensure age is installed when AGE key is provided
+          ansible.builtin.apt:
+            name: age
+            state: present
+
+        - name: Install sops via community.sops.install role when AGE key is provided
+          ansible.builtin.include_role:
+            name: community.sops.install
+          vars:
+            sops_install_on_localhost: true
+            sops_version: "3.11.0"
+
+        - name: Create AGE private key file when provided and missing
+          ansible.builtin.copy:
+            content: "{{ age_private_key }}\n"
+            dest: "{{ working_dir }}/age_key"
+            owner: "{{ app_user }}"
+            group: "{{ app_group }}"
+            mode: "0600"
+
+        - name: Check if encrypted env file exists
+          ansible.builtin.stat:
+            path: ".env.enc"
+          register: env_enc_stat
+
+        - name: Decrypt .env.enc to .env using sops and AGE key
+          ansible.builtin.command: "sops -d --input-type dotenv --output-type dotenv --output {{ working_dir }}/.env .env.enc"
+          register: decrypt_result
+          environment:
+            SOPS_AGE_KEY_FILE: "{{ working_dir }}/age_key"
+          changed_when: false
+          when:
+            - env_enc_stat.stat.exists
+
+        - name: Read decrypted .env
+          ansible.builtin.slurp:
+            path: "{{ working_dir }}/.env"
+          register: decrypted_env_file
+          when:
+            - env_enc_stat is defined and env_enc_stat.stat.exists
+            - decrypt_result is defined and decrypt_result.rc == 0
+
+        - name: Extract TLS keystore password from decrypted .env
+          ansible.builtin.set_fact:
+            tls_keystore_password: "{{ (decrypted_env_file.content | b64decode | regex_search('(?m)^app\\.tls\\.keystore-password=(.*)$', '\\1') | first | replace('\\\
+              r', '') | trim) }}"
+          when:
+            - decrypted_env_file is defined
+
+        - name: Cleanup decrypted .env to avoid leaks
+          ansible.builtin.file:
+            path: "{{ working_dir }}/.env"
+            state: absent
+          when:
+            - env_enc_stat is defined and env_enc_stat.stat.exists
+          changed_when: false
+
     - name: Generate PKCS#12 keystore
       community.crypto.openssl_pkcs12:
         path: "{{ working_dir }}/server.p12"
@@ -141,30 +197,10 @@
         certificate_path: "{{ p12_cert_path }}"
         friendly_name: "{{ app_name }}"
         passphrase: "{{ tls_keystore_password }}"
-      when: tls_keystore_password | length > 0
-
-    - name: Set keystore ownership and permissions
-      ansible.builtin.file:
-        path: "{{ working_dir }}/server.p12"
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
-        mode: "0640"
-
-    - name: Check if AGE key exists
-      ansible.builtin.stat:
-        path: "{{ working_dir }}/age_key"
-      register: age_key_stat
-
-    - name: Create AGE private key file when provided and missing
-      ansible.builtin.copy:
-        content: "{{ age_private_key }}\n"
-        dest: "{{ working_dir }}/age_key"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
-      when:
-        - not age_key_stat.stat.exists
-        - age_private_key | length > 0
+      when: tls_keystore_password | length > 0
 
     - name: Uninstall api-server resources
       tags: ["never", "uninstall"]

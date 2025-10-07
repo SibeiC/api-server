@@ -1,7 +1,7 @@
 # ---- Stage 1: Download sops ----
 FROM alpine:3.22 AS sops-downloader
 
-ARG SOPS_VERSION=v3.10.2
+ARG SOPS_VERSION=v3.11.0
 WORKDIR /tmp
 
 RUN apk add --no-cache curl \
