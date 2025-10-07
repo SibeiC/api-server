@@ -176,8 +176,7 @@
 
         - name: Extract TLS keystore password from decrypted .env
           ansible.builtin.set_fact:
-            tls_keystore_password: "{{ (decrypted_env_file.content | b64decode | regex_search('(?m)^app\\.tls\\.keystore-password=(.*)$', '\\1') | first | replace('\\\
-              r', '') | trim) }}"
+            tls_keystore_password: "{{ (decrypted_env_file.content | b64decode | regex_search('(?m)^app\\.tls\\.keystore-password=(.*)$', '\\1') | first | replace('\\r', '') | trim) }}"
           when:
             - decrypted_env_file is defined
 
