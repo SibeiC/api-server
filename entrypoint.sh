@@ -9,4 +9,4 @@ if [ -f ".env.enc" ]; then
 fi
 
 # Run Java server
-java -XX:+UseContainerSupport -jar api-server.jar
+java -jar api-server.jar
