@@ -5,11 +5,11 @@ permissions:
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
     tags:
       - "v*.*.*"
   pull_request:
-    branches: ["master"]
+    branches: [ "master" ]
 jobs:
   lint:
     name: Run ansible-lint
@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.yml') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('configs/ansible_requirements.yml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.ansible
-          key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
+          key: ${{ runner.os }}-ansible-${{ hashFiles('configs/ansible_requirements.yml') }}
           restore-keys: |
             ${{ runner.os }}-ansible-
 
@@ -40,4 +40,4 @@ jobs:
         uses: ansible/ansible-lint@v25.9.1
         with:
           args: "-p"
-          requirements_file: requirements.yml
+          requirements_file: configs/ansible_requirements.yml
