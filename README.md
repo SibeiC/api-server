@@ -17,7 +17,7 @@ OpenAPI documentation is served via springdoc-openapi (webmvc-ui).
 
 ## Tech Stack
 
-- Java 25, Spring Boot 3.5.x (MVC + WebFlux client)
+- Java 25, Spring Boot 4 (MVC + WebFlux client)
 - Security: Spring Security
 - JSON: Jackson + JsonNullable (openapitools/jackson-databind-nullable)
 - Persistence: Reactive MongoDB (starter-data-mongodb-reactive)
@@ -69,12 +69,12 @@ API docs (local): https://dev.chencraft.com/
 - For WebClient debugging, enable DEBUG for org.springframework.web.reactive.function.client in dev profile.
 - Actuator endpoints: /actuator/health, /actuator/info
 
-
 ## Provisioning and Nginx setup (Ansible)
 
 The legacy Bash scripts (install.sh and install-dev.sh) have been replaced by an Ansible playbook.
 
 Prerequisites:
+
 - Ansible installed on your machine
 - sudo privileges on the target host (for managing nginx and system paths)
 
@@ -97,6 +97,7 @@ Alternatively, you can invoke Ansible directly and pass extra vars:
 - ansible-playbook -i hosts.ini playbook.yml -e install_dev=true
 
 What this playbook does:
+
 - Optionally creates a deploy user githubdeploy and installs a provided GitHub Actions public key (skipped in dev mode)
 - Ensures working directory at /opt/api-server with correct owner/permissions
 - Templates and enables an Nginx site for api-server (HTTP 80 redirect to HTTPS 443)
@@ -105,15 +106,18 @@ What this playbook does:
 - Optionally stores an age private key in /opt/api-server/age_key (0600) if provided
 
 Prompts during execution:
+
 - TLS keystore password (used to protect server.p12)
 - Optional: AGE private key (single line) to write to /opt/api-server/age_key
 - Optional (non-dev): GitHub Actions public SSH key for the githubdeploy user
 
 Variables you can override with -e:
+
 - app_user, app_group: default to the Ansible remote user (used for file ownership)
 - ssl_cert_path, ssl_cert_key_path: Nginx certificate paths
 - p12_cert_path, p12_key_path: certificate/key used for PKCS#12 export
 - server_host: defaults to api.chencraft.com (prod) or dev.chencraft.com (dev)
 - proxy_port: defaults to 8080 (prod) or 8085 (dev)
 
-CI note: ansible-lint runs in GitHub Actions to validate playbook structure. Ensure requirements.yml is kept in sync with modules used.
+CI note: ansible-lint runs in GitHub Actions to validate playbook structure. Ensure requirements.yml is kept in sync
+with modules used.
