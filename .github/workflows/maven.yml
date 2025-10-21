@@ -3,11 +3,11 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
     tags:
       - "v*.*.*"
   pull_request:
-    branches: ["master"]
+    branches: [ "master" ]
 permissions:
   contents: write
   packages: write
@@ -57,8 +57,6 @@ jobs:
 
       - name: Set up Docker for Testcontainers
         uses: docker/setup-docker-action@v4
-        with:
-          daemon-official: true
 
       - name: Build and Verify
         run: mvn -B -P ci -DskipTests=false clean verify
