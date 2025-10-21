@@ -41,7 +41,7 @@ public class SecureCloudflareRelayApiController implements SecureCloudflareRelay
      * @return HTTP 200 after the update request is submitted
      */
     @Override
-    public ResponseEntity<Void> relayDDNSRequest(DDNSRequest ddnsRequest) {
+    public ResponseEntity<?> relayDDNSRequest(DDNSRequest ddnsRequest) {
         log.warn(ddnsRequest.toString());
         if (ddnsRequest.getMyIp() == null) {
             ddnsRequest.setMyIp(request.getRemoteAddr());

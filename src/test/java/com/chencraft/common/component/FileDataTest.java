@@ -28,5 +28,4 @@ public class FileDataTest {
         FileData data = new FileData(filename, new byte[0]);
         Assertions.assertEquals(expectedMime, data.contentType());
     }
-
 }

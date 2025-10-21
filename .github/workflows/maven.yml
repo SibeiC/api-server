@@ -45,13 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Cache Embedded Mongo (flapdoodle)
-        uses: actions/cache@v4
-        with:
-          path: ~/.embedmongo
-          key: ${{ runner.os }}-flapdoodle-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-flapdoodle-
 
       - name: Extract version (strip leading v of tag)
         id: extract-version
@@ -61,6 +54,11 @@ jobs:
           APP_VERSION=${RAW_VERSION#v}
           mvn -B versions:set -DnewVersion=${APP_VERSION}
           echo "app-version=${APP_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker for Testcontainers
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-official: true
 
       - name: Build and Verify
         run: mvn -B -P ci -DskipTests=false clean verify

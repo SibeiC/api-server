@@ -30,8 +30,7 @@ OpenAPI documentation is served via springdoc-openapi (webmvc-ui).
 
 ## Getting Started (Local)
 
-Requirements: Java 25+, Maven 3.9+, Docker (optional). MongoDB is NOT required for tests (embedded Mongo is used under
-test scope).
+Requirements: Java 25+, Maven 3.9+, Docker (required for Testcontainers). MongoDB is NOT required for tests (Testcontainers starts MongoDB automatically).
 
 Environment:
 
@@ -54,7 +53,7 @@ API docs (local): https://dev.chencraft.com/
 
 - Run all tests: mvn -P ci -DskipTests=false test
 - Run a single test: mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest test
-- Embedded services: Uses flapdoodle embedded Mongo for tests; MockWebServer available for HTTP mocking.
+- Embedded services: Uses Testcontainers MongoDB for tests; MockWebServer available for HTTP mocking (Docker required).
 
 ## Project Layout Highlights
 

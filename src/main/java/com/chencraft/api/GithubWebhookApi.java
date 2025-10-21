@@ -42,7 +42,7 @@ public interface GithubWebhookApi {
     @RequestMapping(value = "/github_webhook/update",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
-    ResponseEntity<Void> githubWebhookUpdate(
+    ResponseEntity<?> githubWebhookUpdate(
             @RequestHeader(value = "X-Hub-Signature-256") String signature,
             @Valid @RequestBody(description = "Visit [GitHub Docs](https://docs.github.com/en/webhooks/webhook-events-and-payloads#release) for full request body", content = @Content(schema = @Schema(implementation = GitHubWebhookRelease.class))) @org.springframework.web.bind.annotation.RequestBody String rawBody
     );
