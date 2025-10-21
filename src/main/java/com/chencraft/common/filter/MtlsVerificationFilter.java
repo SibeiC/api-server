@@ -32,7 +32,7 @@ public class MtlsVerificationFilter extends OncePerRequestFilter {
     public MtlsVerificationFilter(MTlsService mtlsService,
                                   AlertMessenger alertMessenger,
                                   Clock clock,
-                                  @Value("${app.mtls.mongo-check-mandatory}") boolean mongoCheckMandatory) {
+                                  @Value("${app.mtls.mongo-check-mandatory:false}") boolean mongoCheckMandatory) {
         this.mtlsService = mtlsService;
         this.alertMessenger = alertMessenger;
         this.clock = clock;
