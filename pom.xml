@@ -17,7 +17,6 @@
         <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <springdoc-version>3.0.0-M1</springdoc-version>
         <!-- Versions for all other dependencies: -->
         <!-- https://docs.spring.io/spring-boot/appendix/dependency-versions/index.html#appendix.dependency-versions -->
     </properties>
@@ -129,7 +128,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc-version}</version>
+            <version>3.0.0-M1</version>
         </dependency>
         <!-- Bean Validation API support -->
         <dependency>
