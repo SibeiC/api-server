@@ -81,7 +81,7 @@ public class GithubWebhookApiControllerTest {
     }
 
     @Test
-    public void testGithubWebhookUpdate_Prereleased() throws Exception {
+    public void testgithubUpdate_Prereleased() throws Exception {
         // Create the release object
         String releaseNotification = """
                 {\s
@@ -99,7 +99,7 @@ public class GithubWebhookApiControllerTest {
     }
 
     @Test
-    public void testGithubWebhookUpdate_NoAssetsList() throws Exception {
+    public void testgithubUpdate_NoAssetsList() throws Exception {
         // Create the release object
         String releaseNotification = """
                 {\s
@@ -123,7 +123,7 @@ public class GithubWebhookApiControllerTest {
     }
 
     @Test
-    public void testGithubWebhookUpdate_NormalRelease() throws Exception {
+    public void testgithubUpdate_NormalRelease() throws Exception {
         // Create the release object
         String releaseNotification = """
                 {\s
@@ -151,7 +151,7 @@ public class GithubWebhookApiControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testGithubWebhookUpdate_Unauthorized() throws Exception {
+    public void testgithubUpdate_Unauthorized() throws Exception {
         // Create the release object
         String releaseNotification = """
                 {\s
@@ -181,7 +181,7 @@ public class GithubWebhookApiControllerTest {
     }
 
     @Test
-    public void testGithubWebhookUpdate_InvalidSignature() throws Exception {
+    public void testgithubUpdate_InvalidSignature() throws Exception {
         // Create the release object
         String releaseNotification = """
                 {\s
