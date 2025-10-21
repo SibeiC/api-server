@@ -1,5 +1,6 @@
 package com.chencraft.common;
 
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestEntryPoint implements CommandLineRunner {
     @Override
-    public void run(String... args) throws Exception {
+    public void run(@Nullable String... args) throws Exception {
     }
 }

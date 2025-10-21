@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +46,7 @@ public interface SecureCertificateApi {
     @RequestMapping(value = "/authorize",
             produces = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.GET)
-    ResponseEntity<OnboardingToken> authorize();
+    ResponseEntity<@NonNull OnboardingToken> authorize();
 
 
     @Operation(summary = "Renew client certificate", description = "Refresh client certificate before expiry", security = {
@@ -74,6 +75,6 @@ public interface SecureCertificateApi {
             produces = {MediaType.TEXT_PLAIN_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
-    Mono<ResponseEntity<String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);
+    Mono<ResponseEntity<@NonNull String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);
 }
 

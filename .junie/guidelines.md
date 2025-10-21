@@ -12,7 +12,7 @@ Tech stack
 - Security: Spring Security
 - API docs: springdoc-openapi (webmvc-ui)
 - JSON: jackson + openapitools/jackson-databind-nullable (JsonNullable support)
-- Persistence: Reactive MongoDB (spring-boot-starter-data-mongodb-reactive); tests use embedded Mongo via flapdoodle
+- Persistence: Reactive MongoDB (spring-boot-starter-data-mongodb-reactive); tests use MongoDB via Testcontainers
 - Crypto/PKI: BouncyCastle bcpkix (JDK18+)
 - Mail: spring-boot-starter-mail (+ iCloud implementation)
 - Cloud integrations: AWS SDK v2 (S3), Cloudflare (custom WebClient), GitHub API (custom)
@@ -58,7 +58,7 @@ Running tests
 
 Embedded services in tests
 
-- MongoDB: flapdoodle spring30x is used under test scope. No external Mongo is needed for unit/integration tests.
+- MongoDB: Testcontainers (org.testcontainers:mongodb) is used under test scope. No external Mongo is needed for unit/integration tests; Docker must be available.
 - Mocking external HTTP: okhttp MockWebServer is available and used in API service tests.
 
 Adding new tests
