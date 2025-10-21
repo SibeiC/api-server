@@ -58,7 +58,7 @@ public class GithubWebhookApiController implements GithubWebhookApi {
      * @return 200 OK when accepted, 403 if signature invalid, or error if body invalid
      */
     @Override
-    public ResponseEntity<?> githubWebhookUpdate(String signature, String rawBody) {
+    public ResponseEntity<?> githubUpdate(String signature, String rawBody) {
         try {
             gitHubApiService.validateHeaderSignature(signature, rawBody);
 
