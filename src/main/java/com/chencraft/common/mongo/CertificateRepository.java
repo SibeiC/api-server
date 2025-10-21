@@ -11,4 +11,6 @@ public interface CertificateRepository extends ReactiveMongoRepository<Certifica
     Flux<CertificateRecord> findByMachineIdAndIsDeletedFalse(String machineId);
 
     Mono<CertificateRecord> findByFingerprintSha256AndIsDeletedFalse(String fingerprint);
+
+    Flux<CertificateRecord> findByIsDeletedFalseAndRevokedAtIsNull();
 }

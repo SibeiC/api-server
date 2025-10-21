@@ -103,11 +103,12 @@ public class BouncyCastleCertificateService extends AbstractCertificateService {
                 .getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
 
         if (shouldNotify) {
-            LocalDate validity = LocalDate.ofInstant(this.caCert.getNotAfter().toInstant(), ZonedDateTime.now().getZone());
+            LocalDate validity = LocalDate.ofInstant(this.caCert.getNotAfter().toInstant(),
+                                                     ZonedDateTime.now().getZone());
             if (appConfig.isDev()) {
                 throw new RuntimeException("Certificate is expiring on " + validity + ", please renew before continuing.");
             } else {
-                messenger.alertCertificateExpiring(deviceName, validity);
+                messenger.alertCertificateExpiring(deviceName, validity, true);
             }
         }
     }

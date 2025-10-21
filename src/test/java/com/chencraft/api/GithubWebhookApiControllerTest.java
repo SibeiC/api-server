@@ -88,7 +88,7 @@ public class GithubWebhookApiControllerTest {
                     "action": "prereleased"
                 }""";
 
-        mockMvc.perform(post("/github_webhook/update")
+        mockMvc.perform(post("/webhook/github/update")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(releaseNotification)
                                 .header("X-Hub-Signature-256", "sha256=ab45909d1722c1a857b10f41d9e72e3333bdd5af5caf5c1f3680d7613821f1bf"))
@@ -112,7 +112,7 @@ public class GithubWebhookApiControllerTest {
                     }
                 }""";
 
-        mockMvc.perform(post("/github_webhook/update")
+        mockMvc.perform(post("/webhook/github/update")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(releaseNotification)
                                 .header("X-Hub-Signature-256", "sha256=99fb1ec287032923b7794e1d873012f00cf00f0711ce06c5bc1a580d8e9723b2"))
@@ -139,7 +139,7 @@ public class GithubWebhookApiControllerTest {
                     }
                 }""";
 
-        mockMvc.perform(post("/github_webhook/update")
+        mockMvc.perform(post("/webhook/github/update")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(releaseNotification)
                                 .header("X-Hub-Signature-256", "sha256=2e3a2bb6a8d6b1cc5665ef6660865452bfd46d3d0d61cb610bcdaa7f43f8a5e2"))
@@ -169,7 +169,7 @@ public class GithubWebhookApiControllerTest {
 
         when(headersSpec.exchangeToMono(any())).thenThrow(new GitHubUnauthorizedException("Unauthorized"));
 
-        mockMvc.perform(post("/github_webhook/update")
+        mockMvc.perform(post("/webhook/github/update")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(releaseNotification)
                                 .header("X-Hub-Signature-256", "sha256=2e3a2bb6a8d6b1cc5665ef6660865452bfd46d3d0d61cb610bcdaa7f43f8a5e2"))
@@ -197,7 +197,7 @@ public class GithubWebhookApiControllerTest {
                     }
                 }""";
 
-        mockMvc.perform(post("/github_webhook/update")
+        mockMvc.perform(post("/webhook/github/update")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(releaseNotification)
                                 .header("X-Hub-Signature-256", "sha256=you-are-hacked"))

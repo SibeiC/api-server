@@ -6,6 +6,7 @@
 package com.chencraft.api;
 
 import com.chencraft.model.GitHubWebhookRelease;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +33,10 @@ public interface GithubWebhookApi {
     @Operation(
             summary = "Update files from release",
             description = "Pulls files compiled by release",
+            externalDocs = @ExternalDocumentation(
+                    description = "GitHub Webhooks Docs",
+                    url = "https://docs.github.com/en/webhooks"
+            ),
             security = {@SecurityRequirement(name = "sha256Auth")},
             tags = {WEBHOOK})
     @ApiResponses(value = {
@@ -39,7 +44,7 @@ public interface GithubWebhookApi {
             @ApiResponse(responseCode = "401", ref = INVALID_INPUT_RESPONSE),
             @ApiResponse(responseCode = "403", ref = SIGNATURE_INVALID_RESPONSE),
             @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)})
-    @RequestMapping(value = "/github_webhook/update",
+    @RequestMapping(value = "/webhook/github/update",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
     ResponseEntity<Void> githubWebhookUpdate(
