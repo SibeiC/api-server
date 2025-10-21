@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.NonNull;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,7 @@ public interface FileApi {
             @ApiResponse(responseCode = "404", ref = FILE_NOT_FOUND_RESPONSE),
             @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)})
     @RequestMapping(value = "/file/{filename}", method = RequestMethod.GET)
-    ResponseEntity<Resource> file(@Parameter(in = ParameterIn.PATH, description = "Filename to be downloaded", required = true, schema = @Schema(), example = "test_connection") @PathVariable("filename") String filename
+    ResponseEntity<@NonNull Resource> file(@Parameter(in = ParameterIn.PATH, description = "Filename to be downloaded", required = true, schema = @Schema(), example = "test_connection") @PathVariable("filename") String filename
     );
 
 }

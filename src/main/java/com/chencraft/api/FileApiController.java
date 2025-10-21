@@ -2,6 +2,7 @@ package com.chencraft.api;
 
 import com.chencraft.common.service.file.FileService;
 import com.chencraft.model.FileUpload;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class FileApiController implements FileApi {
      * @return HTTP 200 with resource body or appropriate error from FileService
      */
     @Override
-    public ResponseEntity<Resource> file(String filename) {
+    public ResponseEntity<@NonNull Resource> file(String filename) {
         return fileService.downloadFile(FileUpload.Type.PUBLIC, filename);
     }
 }
