@@ -10,13 +10,29 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Sends operational alert emails for notable events in the system (e.g., certificate lifecycle, security signals).
+ * <p>
+ * Responsibilities
+ * - Provides small, purpose-specific helper methods that format and dispatch email notifications via MailService.
+ * - Executes email sending on the TaskExecutor to avoid blocking caller threads.
+ * <p>
+ * Thread-safety
+ * - Stateless Spring singleton; delegates side effects to MailService.
+ * <p>
+ * External I/O
+ * - Sends emails using the configured MailService implementation.
+ * <p>
+ * Configuration
+ * - Uses app.alert.recipient as the default recipient for all alerts.
+ */
 @Slf4j
 @Component
 public class AlertMessenger {
     private final TaskExecutor taskExecutor;
     private final MailService mailService;
 
-    @Value("${app.alert.email}")
+    @Value("${app.alert.recipient}")
     private String defaultRecipient;
 
     @Autowired
@@ -25,15 +41,30 @@ public class AlertMessenger {
         this.mailService = mailService;
     }
 
-    public void alertCertificateExpiring(String hostname, LocalDate validUntil) {
+    /**
+     * Sends an alert email that the certificate for the given host is expiring (or has expired).
+     *
+     * @param hostname                  identifier of the machine or host the certificate was issued to; not null
+     * @param validUntil                certificate validity end date (LocalDate in system/default zone); not null
+     * @param includeInstallSuggestions whether to append issuance/installation guidance links to the message
+     */
+    public void alertCertificateExpiring(String hostname, LocalDate validUntil, boolean includeInstallSuggestions) {
         log.info("Sending alert for certificate expiring soon: {}", hostname);
 
         String subject = "Certificate for " + hostname + " is expiring soon";
-        String body = "Certificate for " + hostname + " will expire on " + validUntil + ".\n\n"
-                + "Certificate issuance script is available at https://github.com/SibeiC/ToyUtils/blob/master/mTLS/intermediate.sh\n\n"
-                + "Installation script is available at https://github.com/SibeiC/ToyUtils/blob/master/mTLS/install_intermediate.sh";
+        String body = "Certificate for " + hostname + " will expire on " + validUntil + ".";
 
-        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, subject, body));
+        if (includeInstallSuggestions) {
+            body += """
+                    
+                    
+                    Certificate issuance script is available at https://github.com/SibeiC/ToyUtils/blob/master/mTLS/intermediate.sh
+                    
+                    Installation script is available at https://github.com/SibeiC/ToyUtils/blob/master/mTLS/install_intermediate.sh""";
+        }
+
+        String finalBody = body;
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, subject, finalBody));
     }
 
     public void alertUnauthorizedGitHubToken(String repoName) {
