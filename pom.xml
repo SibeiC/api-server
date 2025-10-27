@@ -23,6 +23,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- TODO: Use stable release version -->
         <version>4.0.0-RC1</version>
     </parent>
     <build>
@@ -128,6 +129,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <!-- TODO: Use stable version -->
             <version>3.0.0-M1</version>
         </dependency>
         <!-- Bean Validation API support -->
