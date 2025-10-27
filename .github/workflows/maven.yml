@@ -74,7 +74,7 @@ jobs:
             target/failsafe-reports/*.xml
 
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
           name: api-server-jar
