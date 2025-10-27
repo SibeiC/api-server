@@ -66,7 +66,7 @@ public class SecureCertificateApiController implements SecureCertificateApi {
      * @return reactive ResponseEntity from CertificateService
      */
     @Override
-    public Mono<ResponseEntity<?>> renew(CertificateRenewal renewal) {
+    public Mono<@NonNull ResponseEntity<?>> renew(CertificateRenewal renewal) {
         if (renewal.getDeviceId() == null) {
             String clientCert = request.getHeader("X-Client-Cert");
             String requester = CertificateUtils.extractCNSubject(clientCert);
@@ -76,7 +76,7 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     }
 
     @Override
-    public Mono<ResponseEntity<@NonNull String>> revoke(CertificateRevokeRequest revokeRequest) {
+    public Mono<@NonNull ResponseEntity<@NonNull String>> revoke(CertificateRevokeRequest revokeRequest) {
         if ((revokeRequest.getMongoId() == null || revokeRequest.getMongoId().isBlank()) &&
                 (revokeRequest.getFingerprintSha256() == null || revokeRequest.getFingerprintSha256().isBlank()) &&
                 (revokeRequest.getDeviceId() == null || revokeRequest.getDeviceId().isBlank())) {

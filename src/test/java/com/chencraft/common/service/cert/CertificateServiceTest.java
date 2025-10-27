@@ -2,6 +2,7 @@ package com.chencraft.common.service.cert;
 
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.mongo.CertificateRecord;
+import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class CertificateServiceTest {
             }
 
             @Override
-            public Mono<ResponseEntity<?>> issueCertificate(String deviceId, boolean pemFormat) {
+            public Mono<@NonNull ResponseEntity<?>> issueCertificate(String deviceId, boolean pemFormat) {
                 ResponseEntity<?> resp = ResponseEntity.status(500).build();
                 // Use doOnSuccess with our consumer to mimic the base behavior path; since status is 5xx, insertNewRecord must NOT be called
                 return Mono.<ResponseEntity<?>>just(resp)

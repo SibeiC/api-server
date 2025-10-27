@@ -61,7 +61,7 @@ public interface SecureCertificateApi {
             produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
-    Mono<ResponseEntity<?>> renew(@Parameter(in = ParameterIn.DEFAULT, description = "Certificate renewal request", schema = @Schema(implementation = CertificateRenewal.class)) @NotNull @Valid @RequestBody CertificateRenewal certificateRenewal);
+    Mono<@NonNull ResponseEntity<?>> renew(@Parameter(in = ParameterIn.DEFAULT, description = "Certificate renewal request", schema = @Schema(implementation = CertificateRenewal.class)) @NotNull @Valid @RequestBody CertificateRenewal certificateRenewal);
 
     @Operation(summary = "Revoke certificate(s)", description = "Revokes certificate record identified by mongoId, deviceId, or fingerprintSha256.", security = {
             @SecurityRequirement(name = "mTLS")}, tags = {TLS})
@@ -75,6 +75,5 @@ public interface SecureCertificateApi {
             produces = {MediaType.TEXT_PLAIN_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST)
-    Mono<ResponseEntity<@NonNull String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);
+    Mono<@NonNull ResponseEntity<@NonNull String>> revoke(@Parameter(in = ParameterIn.DEFAULT, description = "Revocation request", schema = @Schema(implementation = CertificateRevokeRequest.class)) @NotNull @Valid @RequestBody CertificateRevokeRequest revokeRequest);
 }
-
