@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,9 +38,8 @@ public interface CertificateApi {
     @RequestMapping(value = "/certificate/issue",
             produces = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.GET)
-    Mono<ResponseEntity<?>> certificateIssue(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Onboarding token issued to trusted devices", required = true, schema = @Schema()) @Valid @RequestParam(value = "token") String token,
-                                             @NotNull @Parameter(in = ParameterIn.QUERY, description = "Device name, used for certificate CN", required = true, schema = @Schema()) @Valid @RequestParam(value = "deviceId") String deviceId,
-                                             @Parameter(in = ParameterIn.QUERY, description = "Whether to return certificate in single PEM format") @RequestParam(value = "pemFormat", defaultValue = "false") boolean pemFormat
+    Mono<@NonNull ResponseEntity<?>> certificateIssue(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Onboarding token issued to trusted devices", required = true, schema = @Schema()) @Valid @RequestParam(value = "token") String token,
+                                                      @NotNull @Parameter(in = ParameterIn.QUERY, description = "Device name, used for certificate CN", required = true, schema = @Schema()) @Valid @RequestParam(value = "deviceId") String deviceId,
+                                                      @Parameter(in = ParameterIn.QUERY, description = "Whether to return certificate in single PEM format") @RequestParam(value = "pemFormat", defaultValue = "false") boolean pemFormat
     );
 }
-

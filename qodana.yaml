@@ -11,3 +11,4 @@ include:
   - name: SpringJavaInjectionPointsAutowiringInspection
 exclude:
   - name: LoggingSimilarMessage
+  - name: ConfusingMainMethod

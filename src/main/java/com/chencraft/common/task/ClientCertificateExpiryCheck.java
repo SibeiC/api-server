@@ -5,6 +5,7 @@ import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.common.service.executor.TaskExecutor;
 import com.chencraft.model.mongo.CertificateRecord;
 import jakarta.annotation.PostConstruct;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,8 +85,8 @@ public class ClientCertificateExpiryCheck {
         Instant now = clock.instant();
         log.info("Starting client certificate expiry scan at {}", now);
 
-        Flux<CertificateRecord> expiredNotRevoked = certRepo.findByIsDeletedFalseAndRevokedAtIsNull()
-                .filter(rec -> rec.getExpiresAt() != null && rec.getExpiresAt().isBefore(now));
+        Flux<@NonNull CertificateRecord> expiredNotRevoked = certRepo.findByIsDeletedFalseAndRevokedAtIsNull()
+                                                                     .filter(rec -> rec.getExpiresAt() != null && rec.getExpiresAt().isBefore(now));
 
         fireAndForget(
                 expiredNotRevoked
