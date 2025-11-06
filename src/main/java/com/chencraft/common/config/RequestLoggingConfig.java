@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 @Configuration
 public class RequestLoggingConfig {
     private static final Set<String> SKIP_LOGGING_HEADERS = Stream.of(
-            "x-client-cert", "x-client-dn"
+            "x-client-cert", "x-client-dn", "X-Client-Cert", "X-Client-DN"
     ).collect(Collectors.toSet());
 
     @Bean

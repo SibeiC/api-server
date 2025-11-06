@@ -130,7 +130,7 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <!-- TODO: Use stable version -->
-            <version>3.0.0-M1</version>
+            <version>3.0.0-RC1</version>
         </dependency>
         <!-- Bean Validation API support -->
         <dependency>
