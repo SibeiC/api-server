@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/models/a_record/#(schema)">Source schema</a>
+ * <a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/models/cname_record/#(schema)">Source schema</a>
  */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ARecordResponse implements IRecordResponse {
+public class CNAMERecordResponse implements IRecordResponse {
     private String id;
     private String name;
     private String type;

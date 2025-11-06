@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ARecordResponse.class, name = "A"),
-        @JsonSubTypes.Type(value = AAAARecordResponse.class, name = "AAAA")
+        @JsonSubTypes.Type(value = AAAARecordResponse.class, name = "AAAA"),
+        @JsonSubTypes.Type(value = CNAMERecordResponse.class, name = "CNAME")
 })
 public interface IRecordResponse {
     String getId();
