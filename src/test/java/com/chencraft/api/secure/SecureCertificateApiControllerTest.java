@@ -12,12 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.boot.webtestclient.AutoConfigureWebTestClient;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -197,10 +197,13 @@ public class SecureCertificateApiControllerTest {
         Assertions.assertEquals("2 records affected. ", message);
 
         // verify both a and b revoked
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(a.getId()).block()).getRevokedAt());
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(b.getId()).block()).getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(a.getId()).block())
+                                        .getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(b.getId()).block())
+                                        .getRevokedAt());
         // c remains revoked (unchanged)
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(c.getId()).block()).getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(c.getId()).block())
+                                        .getRevokedAt());
     }
 
     @Test
