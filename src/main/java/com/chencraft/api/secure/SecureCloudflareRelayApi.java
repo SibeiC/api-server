@@ -35,7 +35,7 @@ public interface SecureCloudflareRelayApi {
     @RequestMapping(value = "/cloudflare/ddns",
             produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.PUT)
-    ResponseEntity<Void> relayDDNSRequest(
+    ResponseEntity<?> relayDDNSRequest(
             @Parameter(in = ParameterIn.DEFAULT, description = "DNS update request", schema = @Schema(implementation = DDNSRequest.class))
             @NotNull @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Visit [Cloudflare API docs](https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/update/) for details.") @RequestBody DDNSRequest ddnsRequest
     );

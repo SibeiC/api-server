@@ -1,5 +1,6 @@
 package com.chencraft.api.secure;
 
+import com.chencraft.common.config.MongoConfig;
 import com.chencraft.common.service.api.CloudflareApiService;
 import com.chencraft.model.DDNSRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Import(MongoConfig.class)
 public class SecureCloudflareRelayApiControllerTest {
     private MockMvc mockMvc;
 

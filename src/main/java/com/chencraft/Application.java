@@ -46,11 +46,11 @@ public class Application implements CommandLineRunner {
     }
 
     /**
-         * Launches the Spring Boot application.
-         *
-         * @param args raw command-line arguments.
-         */
-        public static void main(String[] args) {
+     * Launches the Spring Boot application.
+     *
+     * @param args raw command-line arguments.
+     */
+    static void main(String[] args) {
         new SpringApplication(Application.class).run(args);
     }
 
@@ -86,9 +86,9 @@ public class Application implements CommandLineRunner {
     }
 
     /**
-         * Runtime exception used to terminate the app with a deterministic exit code (10) for scripts.
-         */
-        static class ExitException extends RuntimeException implements ExitCodeGenerator {
+     * Runtime exception used to terminate the app with a deterministic exit code (10) for scripts.
+     */
+    static class ExitException extends RuntimeException implements ExitCodeGenerator {
         @Serial
         private static final long serialVersionUID = 1L;
 

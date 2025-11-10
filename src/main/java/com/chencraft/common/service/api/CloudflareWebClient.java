@@ -5,6 +5,7 @@ import com.chencraft.model.cloudflare.CloudflareResponse;
 import com.chencraft.model.cloudflare.DnsRecord;
 import com.chencraft.model.cloudflare.IRecordResponse;
 import jakarta.annotation.Nonnull;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ public class CloudflareWebClient {
     /**
      * Constructs CloudflareWebClient with base URL and default headers.
      *
-     * @param webClient base WebClient to mutate
+     * @param webClient        base WebClient to mutate
      * @param cloudflareApiKey API token for Cloudflare (Bearer)
      */
     @Autowired
@@ -65,7 +66,7 @@ public class CloudflareWebClient {
                                                            .queryParam("type", recordType)
                                                            .build())
                                     .retrieve()
-                                    .bodyToMono(new ParameterizedTypeReference<CloudflareResponse<List<IRecordResponse>>>() {
+                                    .bodyToMono(new ParameterizedTypeReference<@NonNull CloudflareResponse<List<IRecordResponse>>>() {
                                     })
                                     .block(Duration.ofSeconds(DEFAULT_TIMEOUT));
         validateResponse(response);
@@ -82,7 +83,7 @@ public class CloudflareWebClient {
                                     .uri(uriBuilder -> uriBuilder.path(url).build())
                                     .bodyValue(new DnsRecord(request))
                                     .retrieve()
-                                    .bodyToMono(new ParameterizedTypeReference<CloudflareResponse<Map<String, Object>>>() {
+                                    .bodyToMono(new ParameterizedTypeReference<@NonNull CloudflareResponse<Map<String, Object>>>() {
                                     })
                                     .block(Duration.ofSeconds(DEFAULT_TIMEOUT));
         validateResponse(response);
@@ -98,7 +99,7 @@ public class CloudflareWebClient {
                                     .uri(uriBuilder -> uriBuilder.path(url).build())
                                     .bodyValue(new DnsRecord(request))
                                     .retrieve()
-                                    .bodyToMono(new ParameterizedTypeReference<CloudflareResponse<Map<String, Object>>>() {
+                                    .bodyToMono(new ParameterizedTypeReference<@NonNull CloudflareResponse<Map<String, Object>>>() {
                                     })
                                     .block(Duration.ofSeconds(DEFAULT_TIMEOUT));
         validateResponse(response);

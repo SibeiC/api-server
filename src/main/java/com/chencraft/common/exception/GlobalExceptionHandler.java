@@ -3,6 +3,7 @@ package com.chencraft.common.exception;
 import com.chencraft.api.ApiException;
 import com.chencraft.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponse> handleApiException(Exception ex, HandlerMethod handlerMethod, HttpServletRequest request) {
+    public ResponseEntity<@NonNull ErrorResponse> handleApiException(Exception ex, HandlerMethod handlerMethod, HttpServletRequest request) {
         String handlerInfo = handlerMethod != null
                 ? handlerMethod.getBeanType().getSimpleName() + "#" + handlerMethod.getMethod().getName()
                 : "UnknownHandler";

@@ -1,5 +1,6 @@
 package com.chencraft.api.secure;
 
+import com.chencraft.common.config.MongoConfig;
 import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.common.service.cert.CertificateService;
 import com.chencraft.model.CertificatePEM;
@@ -10,8 +11,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@Import(MongoConfig.class)
 public class SecureCertificateApiControllerTest {
     private final Instant now = Instant.now();
 
@@ -124,15 +127,15 @@ public class SecureCertificateApiControllerTest {
         // no reason set to force default
 
         String message = webTestClient.post()
-                .uri("/secure/certificate/revoke")
-                .header("X-Client-Verify", "SUCCESS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(req)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
+                                      .uri("/secure/certificate/revoke")
+                                      .header("X-Client-Verify", "SUCCESS")
+                                      .contentType(MediaType.APPLICATION_JSON)
+                                      .bodyValue(req)
+                                      .exchange()
+                                      .expectStatus().isOk()
+                                      .expectBody(String.class)
+                                      .returnResult()
+                                      .getResponseBody();
 
         Assertions.assertEquals("1 record affected. ", message);
 
@@ -152,15 +155,15 @@ public class SecureCertificateApiControllerTest {
                 "}";
 
         String message = webTestClient.post()
-                .uri("/secure/certificate/revoke")
-                .header("X-Client-Verify", "SUCCESS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(payload)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
+                                      .uri("/secure/certificate/revoke")
+                                      .header("X-Client-Verify", "SUCCESS")
+                                      .contentType(MediaType.APPLICATION_JSON)
+                                      .bodyValue(payload)
+                                      .exchange()
+                                      .expectStatus().isOk()
+                                      .expectBody(String.class)
+                                      .returnResult()
+                                      .getResponseBody();
 
         Assertions.assertEquals("1 record affected. ", message);
 
@@ -181,50 +184,53 @@ public class SecureCertificateApiControllerTest {
         String payload = "{\"deviceId\":\"dev-c\"}";
 
         String message = webTestClient.post()
-                .uri("/secure/certificate/revoke")
-                .header("X-Client-Verify", "SUCCESS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(payload)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
+                                      .uri("/secure/certificate/revoke")
+                                      .header("X-Client-Verify", "SUCCESS")
+                                      .contentType(MediaType.APPLICATION_JSON)
+                                      .bodyValue(payload)
+                                      .exchange()
+                                      .expectStatus().isOk()
+                                      .expectBody(String.class)
+                                      .returnResult()
+                                      .getResponseBody();
 
         Assertions.assertEquals("2 records affected. ", message);
 
         // verify both a and b revoked
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(a.getId()).block()).getRevokedAt());
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(b.getId()).block()).getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(a.getId()).block())
+                                        .getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(b.getId()).block())
+                                        .getRevokedAt());
         // c remains revoked (unchanged)
-        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(c.getId()).block()).getRevokedAt());
+        Assertions.assertNotNull(Objects.requireNonNull(certificateRepository.findById(c.getId()).block())
+                                        .getRevokedAt());
     }
 
     @Test
     void revokeMissingIdentifiers_badRequest() {
         String payload = "{}";
         webTestClient.post()
-                .uri("/secure/certificate/revoke")
-                .header("X-Client-Verify", "SUCCESS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(payload)
-                .exchange()
-                .expectStatus().isBadRequest();
+                     .uri("/secure/certificate/revoke")
+                     .header("X-Client-Verify", "SUCCESS")
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .bodyValue(payload)
+                     .exchange()
+                     .expectStatus().isBadRequest();
     }
 
     @Test
     void revokeNotFound_returnsZero() {
         String payload = "{\"mongoId\":\"64b8c1f1f1f1f1f1f1f1f1f1\"}";
         String message = webTestClient.post()
-                .uri("/secure/certificate/revoke")
-                .header("X-Client-Verify", "SUCCESS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(payload)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
+                                      .uri("/secure/certificate/revoke")
+                                      .header("X-Client-Verify", "SUCCESS")
+                                      .contentType(MediaType.APPLICATION_JSON)
+                                      .bodyValue(payload)
+                                      .exchange()
+                                      .expectStatus().isOk()
+                                      .expectBody(String.class)
+                                      .returnResult()
+                                      .getResponseBody();
 
         Assertions.assertEquals("0 records affected.", message);
     }
