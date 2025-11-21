@@ -12,4 +12,4 @@ fi
 
 ansible-galaxy collection install -r requirements.yml
 
-ansible-playbook -i hosts.ini playbook.yml -e install_dev=true "$@"
+ansible-playbook -i hosts.ini playbook.yml -e install_dev=true --ask-become-pass "$@"

@@ -16,12 +16,13 @@
     proxy_port: "{{ 8085 if dev else 8080 }}"
 
     # Nginx and TLS
-    nginx_sites_available_dir: "/etc/nginx/sites-available"
-    nginx_sites_enabled_dir: "/etc/nginx/sites-enabled"
+    nginx_sites_available_dir: "/opt/homebrew/etc/nginx/sites-available"
+    nginx_sites_enabled_dir: "/opt/homebrew/etc/nginx/sites-enabled"
     nginx_site_available: "{{ nginx_sites_available_dir }}/{{ app_name }}.conf"
     nginx_site_enabled: "{{ nginx_sites_enabled_dir }}/{{ app_name }}.conf"
-    ssl_cert_path: "/etc/nginx/certs/fullchain.cer"
-    ssl_cert_key_path: "/etc/nginx/certs/server.key"
+    ssl_cert_path: "/opt/homebrew/etc/nginx/certs/fullchain.cer"
+    ssl_cert_key_path: "/opt/homebrew/etc/nginx/certs/server.key"
+    # TODO: THe following ssl certificates must be placed at the correct location first
     ssl_client_cert_path: "/etc/ssl/certs/rootCA.crt"
 
     # Inputs for PKCS#12 export (keystore)
@@ -30,7 +31,7 @@
 
     # Default owner/group for files we manage (override via -e if needed)
     app_user: "{{ ansible_user | default('root') }}"
-    app_group: "{{ ansible_user | default('root') }}"
+    app_group: "{{ 'staff' | default('root') }}"
     deploy_user: "githubdeploy"
     deploy_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpJneejmAWqksgGHCcjOqyM4vCcp6edAEnJjo3hm2up ubuntu@DESKTOP-7VSUP4J"
 
@@ -117,8 +118,8 @@
       ansible.builtin.template:
         src: "templates/api-server.conf.j2"
         dest: "{{ nginx_site_available }}"
-        owner: root
-        group: root
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0644"
       notify: Reload nginx
 
@@ -133,16 +134,17 @@
       when: age_private_key | length > 0
       block:
         - name: Ensure age is installed when AGE key is provided
-          ansible.builtin.apt:
+          become: false
+          ansible.builtin.package:
             name: age
             state: present
 
-        - name: Install sops via community.sops.install role when AGE key is provided
-          ansible.builtin.include_role:
-            name: community.sops.install
-          vars:
-            sops_install_on_localhost: true
-            sops_version: "3.11.0"
+#        - name: Install sops via community.sops.install role when AGE key is provided
+#          ansible.builtin.include_role:
+#            name: community.sops.install
+#          vars:
+#            sops_install_on_localhost: true
+#            sops_version: "3.11.0"
 
         - name: Create AGE private key file when provided and missing
           ansible.builtin.copy:
