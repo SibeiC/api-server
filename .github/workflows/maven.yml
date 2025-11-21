@@ -70,7 +70,7 @@ jobs:
             target/failsafe-reports/*.xml
 
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
           name: api-server-jar
@@ -97,7 +97,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Download JAR artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: api-server-jar
           path: app/
@@ -159,7 +159,7 @@ jobs:
           scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.2
+        uses: appleboy/ssh-action@v1.2.3
         env:
           GHCR_PAT_RO: ${{ secrets.GHCR_PAT_RO }}
           GHCR_USER: ${{ github.actor }}

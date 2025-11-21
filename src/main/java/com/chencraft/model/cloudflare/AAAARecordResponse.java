@@ -9,6 +9,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/models/aaaa_record/#(schema)">Source schema</a>
+ */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
