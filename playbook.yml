@@ -16,13 +16,15 @@
     proxy_port: "{{ 8085 if dev else 8080 }}"
 
     # Nginx and TLS
-    nginx_sites_available_dir: "/opt/homebrew/etc/nginx/sites-available"
-    nginx_sites_enabled_dir: "/opt/homebrew/etc/nginx/sites-enabled"
+    # Determine nginx root directory dynamically: Homebrew path on macOS (Darwin), else standard Linux path
+    nginx_root_dir: "{{ '/opt/homebrew/etc/nginx' if ansible_system == 'Darwin' else '/etc/nginx' }}"
+    nginx_sites_available_dir: "{{ nginx_root_dir }}/sites-available"
+    nginx_sites_enabled_dir: "{{ nginx_root_dir }}/sites-enabled"
     nginx_site_available: "{{ nginx_sites_available_dir }}/{{ app_name }}.conf"
     nginx_site_enabled: "{{ nginx_sites_enabled_dir }}/{{ app_name }}.conf"
-    ssl_cert_path: "/opt/homebrew/etc/nginx/certs/fullchain.cer"
-    ssl_cert_key_path: "/opt/homebrew/etc/nginx/certs/server.key"
-    # TODO: THe following ssl certificates must be placed at the correct location first
+    ssl_cert_path: "{{ nginx_root_dir }}/certs/fullchain.cer"
+    ssl_cert_key_path: "{{ nginx_root_dir }}/certs/server.key"
+    # TODO: The following ssl certificates must be placed at the correct location first
     ssl_client_cert_path: "/etc/ssl/certs/rootCA.crt"
 
     # Inputs for PKCS#12 export (keystore)
