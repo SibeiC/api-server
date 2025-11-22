@@ -14,4 +14,4 @@ fi
 ansible-galaxy collection install -r requirements.yml
 
 # Run playbook against local inventory by default; pass through any extra args
-ansible-playbook -i hosts.ini playbook.yml "$@"
+ansible-playbook -i hosts.ini -l local playbook.yml "$@"
