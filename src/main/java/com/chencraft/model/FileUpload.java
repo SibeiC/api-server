@@ -21,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUpload {
     public enum Type {
         PUBLIC,
-        PRIVATE;
+        PRIVATE,
+        SHARE;
 
         @Override
         @JsonValue

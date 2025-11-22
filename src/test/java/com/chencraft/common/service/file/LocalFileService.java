@@ -79,4 +79,10 @@ public class LocalFileService implements FileService {
                              .contentType(MediaType.parseMediaType(contentType))
                              .body(new FileSystemResource(filePath.toFile()));
     }
+
+    @Override
+    public void deleteFile(FileUpload.Type destination, @NotNull String filename) {
+        // TODO: Implement deleteFile
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }
