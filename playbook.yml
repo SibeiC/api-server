@@ -119,8 +119,8 @@
       ansible.builtin.file:
         path: "{{ working_dir }}"
         state: directory
-        owner: "{{ 'root' if is_linux else app_user }}"
-        group: "{{ 'root' if is_linux else app_group }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0750"
 
     - name: Ensure Nginx config directories exist (sites-available/sites-enabled)
@@ -193,8 +193,8 @@
           ansible.builtin.copy:
             content: "{{ age_private_key }}\n"
             dest: "{{ working_dir }}/age_key"
-            owner: "{{ 'root' if is_linux else app_user }}"
-            group: "{{ 'root' if is_linux else app_group }}"
+            owner: "{{ app_user }}"
+            group: "{{ app_group }}"
             mode: "0600"
 
         - name: Check if encrypted env file exists
