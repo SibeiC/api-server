@@ -1,11 +1,13 @@
 package com.chencraft.api.secure;
 
 import com.chencraft.common.component.FileData;
+import com.chencraft.common.config.MongoConfig;
 import com.chencraft.common.exception.GitHubUnauthorizedException;
 import com.chencraft.common.service.api.GitHubApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Import(MongoConfig.class)
 class SecureGitHubApiControllerTest {
     private MockMvc mockMvc;
 

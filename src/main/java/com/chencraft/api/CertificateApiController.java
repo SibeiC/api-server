@@ -2,6 +2,7 @@ package com.chencraft.api;
 
 import com.chencraft.common.component.AuthorizationTokenStorage;
 import com.chencraft.common.service.cert.CertificateService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,13 @@ public class CertificateApiController implements CertificateApi {
     /**
      * Issues a device certificate if the provided onboarding token is valid.
      *
-     * @param token onboarding token to authorize the request
-     * @param deviceId unique device identifier used within the PKI
+     * @param token     onboarding token to authorize the request
+     * @param deviceId  unique device identifier used within the PKI
      * @param pemFormat when true, response will be a PEM bundle; otherwise a structured payload
      * @return Mono emitting 401 Unauthorized on invalid token or the issuance response from CertificateService
      */
     @Override
-    public Mono<ResponseEntity<?>> certificateIssue(String token, String deviceId, boolean pemFormat) {
+    public Mono<@NonNull ResponseEntity<?>> certificateIssue(String token, String deviceId, boolean pemFormat) {
         if (!authTokenStorage.validateToken(token)) {
             return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
         }

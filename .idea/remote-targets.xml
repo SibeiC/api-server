@@ -6,11 +6,12 @@
         <config>
           <option name="distributionMsId" value="Ubuntu" />
         </config>
-        <ContributedStateBase type="JavaLanguageRuntime">
-          <config>
-            <option name="homePath" value="$PROJECT_DIR$/../../.jdks/openjdk-24.0.2" />
-          </config>
-        </ContributedStateBase>
+          <ContributedStateBase type="JavaLanguageRuntime">
+              <config>
+                  <option name="homePath" value="/home/ubuntu/.jdks/jdk-25+36" />
+                  <option name="javaVersionString" value="25" />
+              </config>
+          </ContributedStateBase>
         <ContributedStateBase type="MavenRuntime">
           <config>
             <option name="homePath" value="C:\Program Files\JetBrains\IntelliJ IDEA 2025.2\plugins\maven\lib\maven3" />

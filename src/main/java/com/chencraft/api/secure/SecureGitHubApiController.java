@@ -21,6 +21,7 @@ public class SecureGitHubApiController implements SecureGitHubApi {
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public ResponseEntity<byte[]> fetchGithubFile(String repo, String path, String branch) {
         try {
             FileData file = gitHubApiService.fetchRepoFile(repo, path, branch);

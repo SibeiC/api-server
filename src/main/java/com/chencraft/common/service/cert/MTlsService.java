@@ -3,6 +3,7 @@ package com.chencraft.common.service.cert;
 import com.chencraft.common.component.Cleanable;
 import com.chencraft.common.mongo.CertificateRepository;
 import com.chencraft.model.mongo.CertificateRecord;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,12 +29,12 @@ public class MTlsService implements Cleanable {
     }
 
     @Cacheable(value = "certificatesByFingerprint", key = "#fingerprint")
-    public Mono<CertificateRecord> findByFingerprint(String fingerprint) {
+    public Mono<@NonNull CertificateRecord> findByFingerprint(String fingerprint) {
         return certRepo.findByFingerprintSha256AndIsDeletedFalse(fingerprint);
     }
 
     @CacheEvict(value = "certificatesByFingerprint", allEntries = true)
-    public Mono<CertificateRecord> insertNewRecord(CertificateRecord record) {
+    public Mono<@NonNull CertificateRecord> insertNewRecord(CertificateRecord record) {
         return certRepo.save(record)
                        .flatMap(savedRecord ->
                                         certRepo.findByMachineIdAndIsDeletedFalse(savedRecord.getMachineId())
@@ -49,43 +50,46 @@ public class MTlsService implements Cleanable {
 
     /**
      * Revoke a certificate by MongoDB id.
+     *
      * @return Mono<Boolean> true if a record was found and revoked; false otherwise.
      */
     @CacheEvict(value = "certificatesByFingerprint", allEntries = true)
-    public Mono<Boolean> revokeById(String id, String reason) {
+    public Mono<@NonNull Boolean> revokeById(String id, String reason) {
         Instant now = clock.instant();
         return certRepo.findById(id)
-                .filter(record -> record != null && !record.isDeleted)
-                .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
-                .defaultIfEmpty(false);
+                       .filter(record -> !record.isDeleted)
+                       .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
+                       .defaultIfEmpty(false);
     }
 
     /**
      * Revoke a certificate by SHA-256 fingerprint.
+     *
      * @return Mono<Boolean> true if a record was found and revoked; false otherwise.
      */
     @CacheEvict(value = "certificatesByFingerprint", key = "#fingerprint")
-    public Mono<Boolean> revokeByFingerprint(String fingerprint, String reason) {
+    public Mono<@NonNull Boolean> revokeByFingerprint(String fingerprint, String reason) {
         Instant now = clock.instant();
         return certRepo.findByFingerprintSha256AndIsDeletedFalse(fingerprint)
-                .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
-                .defaultIfEmpty(false);
+                       .flatMap(record -> applyRevocation(record, now, reason).thenReturn(true))
+                       .defaultIfEmpty(false);
     }
 
     /**
      * Revoke all active certificates for a device (machineId).
+     *
      * @return Mono<Long> count of revoked records.
      */
     @CacheEvict(value = "certificatesByFingerprint", allEntries = true)
-    public Mono<Long> revokeByDeviceId(String deviceId, String reason) {
+    public Mono<@NonNull Long> revokeByDeviceId(String deviceId, String reason) {
         Instant now = clock.instant();
         return certRepo.findByMachineIdAndIsDeletedFalse(deviceId)
-                .filter(record -> record.getRevokedAt() == null)
-                .flatMap(record -> applyRevocation(record, now, reason))
-                .count();
+                       .filter(record -> record.getRevokedAt() == null)
+                       .flatMap(record -> applyRevocation(record, now, reason))
+                       .count();
     }
 
-    private Mono<CertificateRecord> applyRevocation(CertificateRecord record, Instant now, String reason) {
+    private Mono<@NonNull CertificateRecord> applyRevocation(CertificateRecord record, Instant now, String reason) {
         record.setRevokedAt(now);
         if (reason == null || reason.isBlank()) {
             record.setRevokeReason("Revoked by request");
@@ -103,22 +107,16 @@ public class MTlsService implements Cleanable {
         Instant hardDeleteThreshold = now.minus(Duration.ofDays(365));
 
         // Soft-delete: mark expired and not yet deleted
-        Flux<CertificateRecord> softDeleteFlow = certRepo.findAll()
-                                                         .filter(rec -> rec != null
-                                                                 && rec.getExpiresAt() != null
-                                                                 && rec.getExpiresAt().isBefore(softDeleteThreshold)
-                                                                 && !rec.isDeleted)
+        Flux<@NonNull CertificateRecord> softDeleteFlow = certRepo.findAll()
+                                                         .filter(rec -> rec.getExpiresAt() != null && rec.getExpiresAt().isBefore(softDeleteThreshold) && !rec.isDeleted)
                                                          .flatMap(rec -> {
                                                              rec.isDeleted = true;
                                                              return certRepo.save(rec);
                                                          });
 
         // Hard-delete: purge records long past expiration and already marked as deleted
-        Mono<Void> hardDeleteFlow = certRepo.findAll()
-                                            .filter(rec -> rec != null
-                                                    && rec.isDeleted
-                                                    && rec.getExpiresAt() != null
-                                                    && rec.getExpiresAt().isBefore(hardDeleteThreshold))
+        Mono<@NonNull Void> hardDeleteFlow = certRepo.findAll()
+                                            .filter(rec -> rec.isDeleted && rec.getExpiresAt() != null && rec.getExpiresAt().isBefore(hardDeleteThreshold))
                                             .flatMap(rec -> certRepo.deleteById(rec.getId()))
                                             .then();
 

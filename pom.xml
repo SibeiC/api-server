@@ -17,14 +17,13 @@
         <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <springdoc-version>2.8.13</springdoc-version>
         <!-- Versions for all other dependencies: -->
-        <!-- https://docs.spring.io/spring-boot/docs/3.3.x/reference/html/dependency-versions.html#appendix.dependency-versions -->
+        <!-- https://docs.spring.io/spring-boot/appendix/dependency-versions/index.html#appendix.dependency-versions -->
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>4.0.0</version>
     </parent>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -129,7 +128,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc-version}</version>
+            <version>3.0.0</version>
         </dependency>
         <!-- Bean Validation API support -->
         <dependency>
@@ -172,6 +171,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -209,9 +209,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
-            <version>4.21.0</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mongodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webtestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-micrometer-tracing-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

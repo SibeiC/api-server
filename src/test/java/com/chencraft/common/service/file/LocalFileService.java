@@ -2,6 +2,7 @@ package com.chencraft.common.service.file;
 
 import com.chencraft.api.ApiException;
 import com.chencraft.model.FileUpload;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,7 @@ public class LocalFileService implements FileService {
     }
 
     @Override
-    public ResponseEntity<Resource> downloadFile(FileUpload.Type destination, @NotNull String filename) {
+    public ResponseEntity<@NonNull Resource> downloadFile(FileUpload.Type destination, @NotNull String filename) {
         Path filePath = this.basePath.resolve(destination.toPrefix()).resolve(filename);
 
         if (!filePath.toFile().exists()) {

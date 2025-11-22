@@ -7,13 +7,12 @@ import com.chencraft.common.service.api.GitHubApiService;
 import com.chencraft.common.service.executor.TaskExecutor;
 import com.chencraft.model.GitHubWebhookRelease;
 import com.chencraft.model.GitHubWebhookReleaseReleaseAssets;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ import java.util.List;
 @Slf4j
 public class GithubWebhookApiController implements GithubWebhookApi {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final GitHubApiService gitHubApiService;
     private final TaskExecutor taskExecutor;
     private final AlertMessenger messenger;
@@ -35,17 +34,17 @@ public class GithubWebhookApiController implements GithubWebhookApi {
     /**
      * Constructs GithubWebhookApiController.
      *
-     * @param objectMapper     Jackson ObjectMapper for parsing webhook bodies
+     * @param jsonMapper       Jackson JsonMapper for parsing webhook bodies
      * @param gitHubApiService service for signature validation and asset fetching
      * @param taskExecutor     async executor to fetch assets without blocking the request thread
      * @param messenger        alerting component for token issues
      */
     @Autowired
-    public GithubWebhookApiController(ObjectMapper objectMapper,
+    public GithubWebhookApiController(JsonMapper jsonMapper,
                                       GitHubApiService gitHubApiService,
                                       TaskExecutor taskExecutor,
                                       AlertMessenger messenger) {
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.gitHubApiService = gitHubApiService;
         this.taskExecutor = taskExecutor;
         this.messenger = messenger;
@@ -59,11 +58,11 @@ public class GithubWebhookApiController implements GithubWebhookApi {
      * @return 200 OK when accepted, 403 if signature invalid, or error if body invalid
      */
     @Override
-    public ResponseEntity<Void> githubUpdate(String signature, String rawBody) {
+    public ResponseEntity<?> githubUpdate(String signature, String rawBody) {
         try {
             gitHubApiService.validateHeaderSignature(signature, rawBody);
 
-            GitHubWebhookRelease body = objectMapper.readValue(rawBody, GitHubWebhookRelease.class);
+            GitHubWebhookRelease body = jsonMapper.readValue(rawBody, GitHubWebhookRelease.class);
             if (body.getAction() == GitHubWebhookRelease.ActionEnum.PRERELEASED) {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
@@ -73,9 +72,6 @@ public class GithubWebhookApiController implements GithubWebhookApi {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidSignatureException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse body: {}", rawBody, e);
-            throw new RuntimeException(e);
         }
     }
 

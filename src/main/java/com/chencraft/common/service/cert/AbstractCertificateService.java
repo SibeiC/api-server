@@ -2,6 +2,7 @@ package com.chencraft.common.service.cert;
 
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.mongo.CertificateRecord;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public abstract class AbstractCertificateService implements CertificateService {
     protected final MTlsService mtlsService;
 
     @Override
-    public Mono<ResponseEntity<?>> issueCertificate(String deviceId, boolean pemFormat) {
+    public Mono<@NonNull ResponseEntity<?>> issueCertificate(String deviceId, boolean pemFormat) {
         CertificatePEM certificatePem = createCertificateAndPrivateKey(deviceId);
         ResponseEntity<?> response;
 

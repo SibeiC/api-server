@@ -5,6 +5,7 @@ import com.chencraft.common.service.file.FileService;
 import com.chencraft.model.FileUpload;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -43,7 +44,7 @@ public class SecureFileApiController implements SecureFileApi {
      * @return resource stream or error from FileService
      */
     @Override
-    public ResponseEntity<Resource> secureFile(String filename) {
+    public ResponseEntity<@NonNull Resource> secureFile(String filename) {
         return fileService.downloadFile(FileUpload.Type.PRIVATE, filename);
     }
 
@@ -55,7 +56,7 @@ public class SecureFileApiController implements SecureFileApi {
      * @throws com.chencraft.api.ApiException if file bytes cannot be read
      */
     @Override
-    public ResponseEntity<Void> uploadFile(FileUpload request) {
+    public ResponseEntity<?> uploadFile(FileUpload request) {
         String filename = request.getFile().getOriginalFilename();
         String contentType = request.getFile().getContentType();
         byte[] content;

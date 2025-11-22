@@ -21,6 +21,7 @@ import static com.chencraft.api.models.TagConstants.GITHUB;
 @Validated
 public interface SecureGitHubApi {
 
+    @SuppressWarnings("NullableProblems")
     @Operation(
             summary = "Fetch a file from a private GitHub repo",
             description = "Fetches the raw file bytes from GitHub using a read-only token. See [GitHub API Docs](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content) for details.",

@@ -6,6 +6,7 @@ import com.chencraft.common.config.S3Config;
 import com.chencraft.model.FileUpload;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,7 @@ public class CloudflareR2FileService implements FileService {
     /**
      * Constructs CloudflareR2FileService using provided S3Config and application configuration.
      *
-     * @param config S3 endpoint and credentials for R2
+     * @param config    S3 endpoint and credentials for R2
      * @param appConfig app configuration for environment-specific behavior
      */
     @Autowired
@@ -80,9 +81,9 @@ public class CloudflareR2FileService implements FileService {
      * Stores a file into Cloudflare R2 under the given destination prefix.
      *
      * @param destination enum indicating PUBLIC or PRIVATE location
-     * @param filename object key name; must be non-empty
+     * @param filename    object key name; must be non-empty
      * @param contentType MIME type, required
-     * @param content file bytes
+     * @param content     file bytes
      * @throws org.springframework.web.reactive.function.UnsupportedMediaTypeException when contentType/filename missing
      */
     @Override
@@ -105,7 +106,7 @@ public class CloudflareR2FileService implements FileService {
     }
 
     @Override
-    public ResponseEntity<Resource> downloadFile(FileUpload.Type destination, @Nonnull String filename) {
+    public ResponseEntity<@NonNull Resource> downloadFile(FileUpload.Type destination, @Nonnull String filename) {
         String fullPath = createPath(destination, filename);
         log.info("Downloading file from S3: {}/{}", this.bucketName, fullPath);
 
@@ -123,7 +124,7 @@ public class CloudflareR2FileService implements FileService {
             throw new NotFoundException(fullPath);
         }
     }
-    
+
     /**
      * Builds and configures the S3 client with R2-specific settings
      */

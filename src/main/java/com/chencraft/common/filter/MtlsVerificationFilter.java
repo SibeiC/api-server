@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,12 +26,17 @@ public class MtlsVerificationFilter extends OncePerRequestFilter {
     private final MTlsService mtlsService;
     private final AlertMessenger alertMessenger;
     private final Clock clock;
+    private final boolean mongoCheckMandatory;
 
     @Autowired
-    public MtlsVerificationFilter(MTlsService mtlsService, AlertMessenger alertMessenger, Clock clock) {
+    public MtlsVerificationFilter(MTlsService mtlsService,
+                                  AlertMessenger alertMessenger,
+                                  Clock clock,
+                                  @Value("${app.mtls.mongo-check-mandatory}") boolean mongoCheckMandatory) {
         this.mtlsService = mtlsService;
         this.alertMessenger = alertMessenger;
         this.clock = clock;
+        this.mongoCheckMandatory = mongoCheckMandatory;
     }
 
     @Override
@@ -52,7 +58,14 @@ public class MtlsVerificationFilter extends OncePerRequestFilter {
         }
 
         String clientCert = request.getHeader("X-Client-Cert");
+
+        if (mongoCheckMandatory && clientCert == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Client certificate missing from nginx proxy");
+            return;
+        }
+
         if (clientCert != null) {
+            // Client cert should always be present when proxied through nginx, it is not available when running tests
             String fingerprint = CertificateUtils.computeSha256Fingerprint(clientCert);
             log.debug("Client certificate fingerprint: {}", fingerprint);
 
@@ -60,14 +73,15 @@ public class MtlsVerificationFilter extends OncePerRequestFilter {
                                                       .blockOptional()
                                                       .orElse(null);
 
-            if (certRecord == null) {
-                // TODO: Once all production records are in mongo, remove this bypass, aiming at 3 months later, today: 2025-09-07
-                log.warn("Certificate not found for {}: {}", request.getRequestURI(), fingerprint);
+            if (certRecord == null && mongoCheckMandatory) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Certificate record not found");
+                return;
             }
 
             // Certificate revocation check
             if (certRecord != null && certRecord.getRevokedAt() != null) {
-                log.warn("Certificate revoked for {} on {}", fingerprint, certRecord.getRevokedAt().atZone(clock.getZone()));
+                log.warn("Certificate revoked for {} on {}", fingerprint, certRecord.getRevokedAt()
+                                                                                    .atZone(clock.getZone()));
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Certificate revoked");
                 alertMessenger.alertRevokedCertificateAccess(certRecord, request.getRequestURI());
                 return;
