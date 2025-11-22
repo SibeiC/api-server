@@ -31,9 +31,11 @@
     p12_cert_path: "/etc/ssl/certs/server.crt"
     p12_key_path: "/etc/ssl/private/server.key"
 
-    # Default owner/group for files we manage (override via -e if needed)
+    # OS-specific defaults
+    # - On macOS: default group is 'staff' and work owned by app user/group
+    # - On Linux: default user/group root; working_dir owned by root:root per requirements
     app_user: "{{ ansible_user | default('root') }}"
-    app_group: "{{ 'staff' | default('root') }}"
+    app_group: "{{ 'staff' if ansible_system == 'Darwin' else 'ansible_user | default('root') }}"
     deploy_user: "githubdeploy"
     deploy_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpJneejmAWqksgGHCcjOqyM4vCcp6edAEnJjo3hm2up ubuntu@DESKTOP-7VSUP4J"
 
@@ -44,6 +46,11 @@
       default: ""
 
   pre_tasks:
+    - name: Detect platform flags
+      ansible.builtin.set_fact:
+        is_macos: "{{ ansible_system == 'Darwin' }}"
+        is_linux: "{{ ansible_system != 'Darwin' }}"
+
     - name: Show selected mode
       ansible.builtin.debug:
         msg: "Running in {{ 'DEV' if dev else 'PROD' }} mode for host {{ server_host }} (proxy_port={{ proxy_port }})"
@@ -109,19 +116,45 @@
             - ansible_facts.services['firewalld'].state == 'running'
 
     - name: Ensure working directory exists
+      become: "{{ is_linux }}"
       ansible.builtin.file:
         path: "{{ working_dir }}"
         state: directory
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
+        owner: "{{ 'root' if is_linux else app_user }}"
+        group: "{{ 'root' if is_linux else app_group }}"
         mode: "0750"
+
+    - name: Ensure Nginx config directories exist (sites-available/sites-enabled)
+      become: "{{ is_linux }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ 'root' if is_linux else app_user }}"
+        group: "{{ 'root' if is_linux else app_group }}"
+        mode: "0755"
+      loop:
+        - "{{ nginx_sites_available_dir }}"
+        - "{{ nginx_sites_enabled_dir }}"
+
+    - name: Ensure SSL directories exist
+      become: "{{ is_linux }}"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ 'root' }}"
+        group: "{{ 'root' if is_linux else 'wheel' }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "{{ nginx_root_dir }}/ssl", mode: "0755" }
+        - { path: "{{ nginx_root_dir }}/ssl/certs", mode: "0755" }
+        - { path: "{{ nginx_root_dir }}/ssl/private", mode: "0700" }
 
     - name: Deploy Nginx site configuration
       ansible.builtin.template:
         src: "templates/api-server.conf.j2"
         dest: "{{ nginx_site_available }}"
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
+        owner: "{{ 'root' if is_linux else app_user }}"
+        group: "{{ 'root' if is_linux else app_group }}"
         mode: "0644"
       notify: Reload nginx
 
@@ -135,25 +168,37 @@
     - name: Age private key is present
       when: age_private_key | length > 0
       block:
-        - name: Ensure age is installed when AGE key is provided
-          become: false
+        - name: Ensure age is installed
+          become: is_linux
           ansible.builtin.package:
             name: age
             state: present
 
-#        - name: Install sops via community.sops.install role when AGE key is provided
-#          ansible.builtin.include_role:
-#            name: community.sops.install
-#          vars:
-#            sops_install_on_localhost: true
-#            sops_version: "3.11.0"
+        - name: Install sops
+          block:
+            - name: Install sops for MacOS
+              when: is_macos
+              become: false
+              ansible.builtin.package:
+                name: sops@3.11.0
+                state: present
+
+            - name: Install sops on Linux via community.sops.install
+              when: is_linux
+              become: true
+              ansible.builtin.include_role:
+                name: community.sops.install
+              vars:
+                sops_install_on_localhost: false
+                sops_version: "3.11.0"
 
         - name: Create AGE private key file when provided and missing
+          become: "{{ is_linux }}"
           ansible.builtin.copy:
             content: "{{ age_private_key }}\n"
             dest: "{{ working_dir }}/age_key"
-            owner: "{{ app_user }}"
-            group: "{{ app_group }}"
+            owner: "{{ 'root' if is_linux else app_user }}"
+            group: "{{ 'root' if is_linux else app_group }}"
             mode: "0600"
 
         - name: Check if encrypted env file exists
