@@ -1,13 +1,17 @@
 package com.chencraft.common.service.file;
 
 import com.chencraft.api.FileApi;
+import com.chencraft.api.NotFoundException;
 import com.chencraft.common.component.Cleanable;
 import com.chencraft.common.mongo.FileTokenRepository;
+import com.chencraft.model.FileUpload;
 import com.chencraft.model.mongo.FileToken;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Flux;
@@ -17,20 +21,24 @@ import java.lang.reflect.Method;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 
 import static com.chencraft.utils.PublisherUtils.fireAndForget;
 
 @Service
 public class FileTokenService implements Cleanable {
     private final FileTokenRepository tokenRepo;
+    private final FileService fileService;
     private final String hostname;
     private final Clock clock;
 
     @Autowired
     public FileTokenService(FileTokenRepository tokenRepo,
+                            FileService fileService,
                             @Value("${app.swagger.server.url}") String hostname,
                             Clock clock) {
         this.tokenRepo = tokenRepo;
+        this.fileService = fileService;
         this.hostname = hostname;
         this.clock = clock;
     }
@@ -40,9 +48,42 @@ public class FileTokenService implements Cleanable {
      */
     public String generateAccessToken(String filename) {
         FileToken token = new FileToken(filename);
-        // TODO: Find all tokens for the same filename and delete them
-        // TODO: Then save the new token in repository
+        // Delete existing tokens for the same filename, then persist the new token
+        Flux<@NonNull FileToken> deleteExisting = tokenRepo.findByFilenameAndIsDeletedFalse(filename)
+                                                           .flatMap(rec -> {
+                                                               rec.setDeleted(true);
+                                                               return tokenRepo.save(rec);
+                                                           });
+
+        Mono<@NonNull Void> saveNew = tokenRepo.save(token).then();
+
+        // Execute asynchronously; the caller receives the URL immediately
+        fireAndForget(deleteExisting.then(saveNew));
         return this.createAccessUrl(token.getToken());
+    }
+
+    public ResponseEntity<@NonNull Resource> accessFile(String token) {
+        // Validate token (must exist, not deleted, and not yet used)
+        FileToken rec = tokenRepo.findByTokenAndIsDeletedFalse(token)
+                                 .filter(t -> t.getUsedAt() == null)
+                                 .sort(Comparator.reverseOrder())
+                                 .blockFirst();
+
+        if (rec == null) {
+            throw new NotFoundException(token);
+        }
+
+        // Attempt to download the file from PUBLIC storage
+        ResponseEntity<@NonNull Resource> response = fileService.downloadFile(FileUpload.Type.SHARE, rec.getFilename());
+
+        // If download succeeded, mark the token as used and delete the file asynchronously
+        if (response.getStatusCode().is2xxSuccessful()) {
+            rec.setUsedAt(clock.instant());
+            fireAndForget(tokenRepo.save(rec)
+                                   .then(Mono.fromRunnable(() -> fileService.deleteFile(FileUpload.Type.SHARE, rec.getFilename()))));
+        }
+
+        return response;
     }
 
     private String createAccessUrl(String uuid) {

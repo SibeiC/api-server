@@ -1,6 +1,7 @@
 package com.chencraft.api;
 
 import com.chencraft.common.service.file.FileService;
+import com.chencraft.common.service.file.FileTokenService;
 import com.chencraft.model.FileUpload;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileApiController implements FileApi {
 
     private final FileService fileService;
+    private final FileTokenService fileTokenService;
 
     /**
      * Constructs FileApiController.
@@ -24,8 +26,9 @@ public class FileApiController implements FileApi {
      * @param fileService file storage service abstraction
      */
     @Autowired
-    public FileApiController(FileService fileService) {
+    public FileApiController(FileService fileService, FileTokenService fileTokenService) {
         this.fileService = fileService;
+        this.fileTokenService = fileTokenService;
     }
 
     /**
@@ -41,7 +44,6 @@ public class FileApiController implements FileApi {
 
     @Override
     public ResponseEntity<@NonNull Resource> share(String token) {
-        // TODO: Implement share endpoint
-        return null;
+        return fileTokenService.accessFile(token);
     }
 }

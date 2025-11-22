@@ -128,6 +128,19 @@ public class CloudflareR2FileService implements FileService {
         }
     }
 
+    @Override
+    public void deleteFile(FileUpload.Type destination, @Nonnull String filename) {
+        String fullPath = createPath(destination, filename);
+        log.info("Deleting file from S3: {}/{}", this.bucketName, fullPath);
+
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                                                                     .bucket(bucketName)
+                                                                     .key(fullPath)
+                                                                     .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
+    }
+
     /**
      * Builds and configures the S3 client with R2-specific settings
      */

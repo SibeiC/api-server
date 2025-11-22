@@ -2,6 +2,7 @@ package com.chencraft.model.mongo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Document("files")
 @Data
 @NoArgsConstructor
-public class FileToken {
+public class FileToken implements Comparable<FileToken> {
     @Id
     private String id;
 
@@ -35,5 +36,10 @@ public class FileToken {
         this.token = UUID.randomUUID().toString();
         this.filename = filename;
         this.issuedAt = Instant.now();
+    }
+
+    @Override
+    public int compareTo(@NonNull FileToken o) {
+        return this.issuedAt.compareTo(o.issuedAt);
     }
 }
