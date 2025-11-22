@@ -12,4 +12,14 @@ fi
 
 ansible-galaxy collection install -r requirements.yml
 
-ansible-playbook -i hosts.ini playbook.yml -e install_dev=true "$@"
+# Determine OS to set become prompt and inventory limit
+if [[ "$(uname)" == "Darwin" ]]; then
+  ASK_BECOME="--ask-become-pass"
+  LIMIT_GROUP="macbook"
+else
+  ASK_BECOME=""
+  LIMIT_GROUP="local"
+fi
+
+# Run playbook with appropriate host limit and become prompting on macOS only
+ansible-playbook -i hosts.ini -l "${LIMIT_GROUP}" playbook.yml -e install_dev=true ${ASK_BECOME:+$ASK_BECOME} "$@"
