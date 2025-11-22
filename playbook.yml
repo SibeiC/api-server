@@ -244,7 +244,9 @@
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
-      when: tls_keystore_password | length > 0
+      when:
+        - tls_keystore_password is defined
+        - tls_keystore_password | length > 0
 
     - name: Uninstall api-server resources
       tags: ["never", "uninstall"]
