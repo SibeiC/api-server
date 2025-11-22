@@ -117,7 +117,10 @@ public class CloudflareR2FileService implements FileService {
         try {
             ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(getObjectRequest);
             return ResponseEntity.ok()
-                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
+                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                                 .header(HttpHeaders.CACHE_CONTROL, "no-store, no-cache, must-revalidate, max-age=0")
+                                 .header("Pragma", "no-cache")
+                                 .header("Expires", "0")
                                  .contentType(MediaType.APPLICATION_OCTET_STREAM)
                                  .body(new InputStreamResource(s3Object));
         } catch (NoSuchKeyException e) {

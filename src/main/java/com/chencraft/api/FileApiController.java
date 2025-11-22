@@ -38,4 +38,10 @@ public class FileApiController implements FileApi {
     public ResponseEntity<@NonNull Resource> file(String filename) {
         return fileService.downloadFile(FileUpload.Type.PUBLIC, filename);
     }
+
+    @Override
+    public ResponseEntity<@NonNull Resource> share(String token) {
+        // TODO: Implement share endpoint
+        return null;
+    }
 }

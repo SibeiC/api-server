@@ -39,6 +39,8 @@ public class FileApiControllerTest {
                .andExpect(status().isOk());
     }
 
+    // TODO: Test new shared endpoint
+
     @AfterAll
     public static void cleanup() {
         FileServiceTestHelper.deleteFile(TEST_FILE_PATH);
