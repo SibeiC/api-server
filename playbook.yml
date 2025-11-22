@@ -34,7 +34,7 @@
     # - On macOS: default group is 'staff' and work owned by app user/group
     # - On Linux: default user/group root; working_dir owned by root:root per requirements
     app_user: "{{ ansible_user | default('root') }}"
-    app_group: "{{ 'staff' if ansible_facts.system == 'Darwin' else 'root' }}"
+    app_group: "{{ 'staff' if ansible_facts.system == 'Darwin' else ansible_user }}"
     deploy_user: "githubdeploy"
     deploy_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpJneejmAWqksgGHCcjOqyM4vCcp6edAEnJjo3hm2up ubuntu@DESKTOP-7VSUP4J"
 
