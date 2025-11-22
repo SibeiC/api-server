@@ -169,7 +169,7 @@
       when: age_private_key | length > 0
       block:
         - name: Ensure age is installed
-          become: is_linux
+          become: "{{ is_linux }}"
           ansible.builtin.package:
             name: age
             state: present
@@ -185,7 +185,6 @@
 
             - name: Install sops on Linux via community.sops.install
               when: is_linux
-              become: true
               ansible.builtin.include_role:
                 name: community.sops.install
               vars:
