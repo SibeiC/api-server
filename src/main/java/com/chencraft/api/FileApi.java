@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.chencraft.api.models.ResponseConstants.*;
 import static com.chencraft.api.models.TagConstants.FILE;
@@ -36,5 +37,26 @@ public interface FileApi {
     ResponseEntity<@NonNull Resource> file(@Parameter(in = ParameterIn.PATH, description = "Filename to be downloaded", required = true, schema = @Schema(), example = "test_connection") @PathVariable("filename") String filename
     );
 
+    @Operation(
+            summary = "Download file using one-time sharing link",
+            description = "Quick access for personal file sharing",
+            tags = {FILE}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", ref = OK_FILE_RESPONSE),
+            @ApiResponse(responseCode = "400", ref = INVALID_INPUT_RESPONSE),
+            @ApiResponse(responseCode = "404", ref = FILE_NOT_FOUND_RESPONSE),
+            @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)
+    })
+    @RequestMapping(value = "/file/share", method = RequestMethod.GET)
+    ResponseEntity<@NonNull Resource> share(
+            @Parameter(
+                    in = ParameterIn.QUERY,
+                    name = "token",
+                    description = "One-time access token",
+                    required = true,
+                    schema = @Schema(example = "d87f1f80-efbd-4b95-b750-8aaac49c7f53")
+            )
+            @RequestParam("token") String token
+    );
 }
-

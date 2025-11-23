@@ -1,6 +1,7 @@
 package com.chencraft.common.service.file;
 
 import com.chencraft.api.ApiException;
+import com.chencraft.api.NotFoundException;
 import com.chencraft.model.FileUpload;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -78,5 +79,18 @@ public class LocalFileService implements FileService {
                              .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filePath.getFileName() + "\"")
                              .contentType(MediaType.parseMediaType(contentType))
                              .body(new FileSystemResource(filePath.toFile()));
+    }
+
+    @Override
+    public void deleteFile(FileUpload.Type destination, @NotNull String filename) {
+        Path filePath = this.basePath.resolve(destination.toPrefix()).resolve(filename);
+
+        if (!filePath.toFile().exists()) {
+            throw new NotFoundException(filename);
+        }
+
+        if (!filePath.toFile().delete()) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not delete file: " + filename);
+        }
     }
 }
