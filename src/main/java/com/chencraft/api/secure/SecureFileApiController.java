@@ -84,4 +84,13 @@ public class SecureFileApiController implements SecureFileApi {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
+
+    @Override
+    public ResponseEntity<?> deleteFile(String filename, FileUpload.Type namespace) {
+        fileService.deleteFile(namespace, filename);
+        if (namespace == FileUpload.Type.SHARE) {
+            fileTokenService.revokeAccessToken(filename);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

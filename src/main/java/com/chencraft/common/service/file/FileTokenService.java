@@ -58,7 +58,7 @@ public class FileTokenService implements Cleanable {
         Mono<@NonNull Void> saveNew = tokenRepo.save(token).then();
 
         // Execute asynchronously; the caller receives the URL immediately
-        fireAndForget(deleteExisting.then(saveNew));
+        deleteExisting.then(saveNew).block();
         return this.createAccessUrl(token.getToken());
     }
 
@@ -84,6 +84,16 @@ public class FileTokenService implements Cleanable {
         }
 
         return response;
+    }
+
+    public void revokeAccessToken(String filename) {
+        Flux<@NonNull FileToken> toBeRevoked = tokenRepo.findByFilenameAndIsDeletedFalse(filename)
+                                                        .flatMap(rec -> {
+                                                            rec.setDeleted(true);
+                                                            return tokenRepo.save(rec);
+                                                        });
+
+        fireAndForget(toBeRevoked);
     }
 
     private String createAccessUrl(String uuid) {

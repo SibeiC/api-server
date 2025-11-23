@@ -18,10 +18,7 @@ import lombok.NonNull;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import static com.chencraft.api.models.ResponseConstants.*;
 import static com.chencraft.api.models.TagConstants.FILE;
@@ -52,5 +49,29 @@ public interface SecureFileApi {
             consumes = {"multipart/form-data"},
             method = RequestMethod.POST)
     ResponseEntity<?> uploadFile(@ModelAttribute @Valid FileUpload request);
-}
 
+    @Operation(summary = "Delete file from storage", description = "Delete file if exists",
+            security = {@SecurityRequirement(name = "mTLS")}, tags = {FILE})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "File being deleted successfully"),
+            @ApiResponse(responseCode = "400", ref = INVALID_INPUT_RESPONSE),
+            @ApiResponse(responseCode = "401", ref = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(ref = INTERNAL_SERVER_ERROR_RESPONSE)})
+    @RequestMapping(value = "/file/{filename}", method = RequestMethod.DELETE)
+    ResponseEntity<?> deleteFile(
+            @Parameter(
+                    in = ParameterIn.PATH,
+                    description = "Filename to be deleted",
+                    required = true,
+                    schema = @Schema()
+            )
+            @PathVariable("filename") String filename,
+            @Parameter(
+                    in = ParameterIn.QUERY,
+                    name = "namespace",
+                    description = "Namespace for the file",
+                    required = true,
+                    schema = @Schema(implementation = FileUpload.Type.class, example = "PRIVATE")
+            )
+            @RequestParam("namespace") FileUpload.Type namespace);
+}

@@ -1,12 +1,14 @@
 package com.chencraft.api;
 
 
+import com.chencraft.common.config.MongoConfig;
 import com.chencraft.utils.FileServiceTestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -16,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Import(MongoConfig.class)
 public class SecureFileApiControllerTest {
     private static final String TEST_FILE_PATH = "src/test/resources/private/SecurefileApiControllerTest.txt";
     private MockMvc mockMvc;
@@ -55,6 +58,8 @@ public class SecureFileApiControllerTest {
                                 .header("X-Client-Verify", "FAILED"))
                .andExpect(status().isUnauthorized());
     }
+
+    // TODO: Test Delete functions
 
     @AfterAll
     public static void cleanup() {
