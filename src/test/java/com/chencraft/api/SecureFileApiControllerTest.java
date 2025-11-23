@@ -109,7 +109,6 @@ public class SecureFileApiControllerTest {
         assertEquals("ShareTest.txt", fileToken.getFilename());
     }
 
-    // TODO: Delete
     @Test
     public void testDeleteFile() throws Exception {
         mockMvc.perform(delete("/secure/file/SecurefileApiControllerTest.txt")
