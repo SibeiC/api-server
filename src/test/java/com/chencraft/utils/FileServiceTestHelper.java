@@ -61,4 +61,8 @@ public class FileServiceTestHelper {
             Assertions.fail(e);
         }
     }
+
+    public static boolean fileExists(String filePath) {
+        return Files.exists(Paths.get(filePath));
+    }
 }

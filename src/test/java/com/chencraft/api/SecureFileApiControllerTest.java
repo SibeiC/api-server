@@ -6,8 +6,7 @@ import com.chencraft.common.mongo.FileTokenRepository;
 import com.chencraft.model.mongo.FileToken;
 import com.chencraft.utils.FileServiceTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -40,13 +38,9 @@ public class SecureFileApiControllerTest {
     @Autowired
     private FileTokenRepository tokenRepository;
 
-    @BeforeAll
-    public static void setupAll() {
-        FileServiceTestHelper.createFile(TEST_FILE_PATH);
-    }
-
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext) {
+        FileServiceTestHelper.createFile(TEST_FILE_PATH);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                                       .apply(springSecurity())
                                       .build();
@@ -116,9 +110,18 @@ public class SecureFileApiControllerTest {
     }
 
     // TODO: Delete
-    
-    @AfterAll
-    public static void cleanup() {
+    @Test
+    public void testDeleteFile() throws Exception {
+        mockMvc.perform(delete("/secure/file/SecurefileApiControllerTest.txt")
+                                .queryParam("namespace", "PRIVATE")
+                                .header("X-Client-Verify", "SUCCESS"))
+               .andExpect(status().isOk());
+
+        assertFalse(FileServiceTestHelper.fileExists(TEST_FILE_PATH), "File was not deleted");
+    }
+
+    @AfterEach
+    public void cleanup() {
         FileServiceTestHelper.deleteFile(TEST_FILE_PATH);
         FileServiceTestHelper.deleteFile(SHARED_FILE_PATH);
     }
