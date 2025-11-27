@@ -148,6 +148,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+            <!--TODO: Revert after issue resolved by spring boot-->
             <exclusions>
                 <exclusion>
                     <groupId>io.netty</groupId>
