@@ -35,7 +35,7 @@ jobs:
             ${{ runner.os }}-ansible-
 
       - name: Ansible Lint
-        uses: ansible/ansible-lint@v25.11.0
+        uses: ansible/ansible-lint@v25.11.1
         with:
           args: "-p"
           requirements_file: requirements.yml
