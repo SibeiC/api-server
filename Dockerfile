@@ -1,5 +1,5 @@
 # ---- Stage 1: Download sops ----
-FROM alpine:3.22 AS sops-downloader
+FROM alpine:3.23 AS sops-downloader
 
 ARG SOPS_VERSION=v3.11.0
 WORKDIR /tmp
