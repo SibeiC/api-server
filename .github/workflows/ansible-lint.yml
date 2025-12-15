@@ -18,7 +18,7 @@ jobs:
 
       # Cache pip (ansible-lint installs Python deps)
       - name: Cache pip
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.yml') }}
@@ -27,7 +27,7 @@ jobs:
 
       # Cache Ansible Galaxy roles/collections
       - name: Cache Ansible Galaxy
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.ansible
           key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
