@@ -1,6 +1,7 @@
 package com.chencraft.common.component;
 
 import com.chencraft.common.service.executor.TaskExecutor;
+import com.chencraft.common.service.mail.MailFlag;
 import com.chencraft.common.service.mail.MailService;
 import com.chencraft.model.mongo.CertificateRecord;
 import lombok.extern.slf4j.Slf4j;
@@ -42,17 +43,22 @@ public class AlertMessenger {
     }
 
     /**
-     * Sends an alert email that the certificate for the given host is expiring (or has expired).
+     * Sends an alert email that the certificate for the given host is expiring or has expired.
      *
      * @param hostname                  identifier of the machine or host the certificate was issued to; not null
      * @param validUntil                certificate validity end date (LocalDate in system/default zone); not null
+     * @param isExpired                 true if the certificate has already expired, false if it is just expiring soon
      * @param includeInstallSuggestions whether to append issuance/installation guidance links to the message
      */
-    public void alertCertificateExpiring(String hostname, LocalDate validUntil, boolean includeInstallSuggestions) {
-        log.info("Sending alert for certificate expiring soon: {}", hostname);
+    public void alertCertificateExpiry(String hostname, LocalDate validUntil, boolean isExpired, boolean includeInstallSuggestions) {
+        log.info("Sending alert for certificate {} {}: {}", isExpired ? "expired" : "expiring soon", hostname, validUntil);
 
-        String subject = "Certificate for " + hostname + " is expiring soon";
-        String body = "Certificate for " + hostname + " will expire on " + validUntil + ".";
+        String statusSubject = isExpired ? "has expired" : "is expiring soon";
+        String statusBody = isExpired ? "expired on " : "will expire on ";
+        MailFlag flag = isExpired ? MailFlag.ERROR : MailFlag.WARNING;
+
+        String subject = "Certificate for " + hostname + " " + statusSubject;
+        String body = "Certificate for " + hostname + " " + statusBody + validUntil + ".";
 
         if (includeInstallSuggestions) {
             body += """
@@ -64,7 +70,7 @@ public class AlertMessenger {
         }
 
         String finalBody = body;
-        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, subject, finalBody));
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, flag, subject, finalBody));
     }
 
     public void alertUnauthorizedGitHubToken(String repoName) {
@@ -73,7 +79,7 @@ public class AlertMessenger {
         String subject = "Unauthorized GitHub token detected";
         String body = "Unauthorized GitHub token detected for repository " + repoName + ".\n\n"
                 + "Please check your GitHub token and/or retrigger the endpoint.";
-        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, subject, body));
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
     }
 
     public void alertRevokedCertificateAccess(CertificateRecord certRecord, String endpoint) {
@@ -82,6 +88,14 @@ public class AlertMessenger {
         String subject = "Revoked certificate detected";
         String body = "Someone attempted to access endpoint " + endpoint + " with a revoked certificate issued for " + certRecord.getMachineId() + ".\n\n"
                 + "Certificate fingerprint: " + certRecord.getFingerprintSha256();
-        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, subject, body));
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
+    }
+
+    public void testAlert() {
+        log.info("Sending test alert");
+
+        String subject = "Test alert";
+        String body = "This is a test alert.";
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
     }
 }
