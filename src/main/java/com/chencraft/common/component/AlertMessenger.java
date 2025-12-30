@@ -96,6 +96,6 @@ public class AlertMessenger {
 
         String subject = "Test alert";
         String body = "This is a test alert.";
-        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
     }
 }
