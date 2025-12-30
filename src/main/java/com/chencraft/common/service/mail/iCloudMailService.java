@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -49,7 +50,7 @@ public class iCloudMailService implements MailService {
             helper.setTo(to);
             helper.setSubject("[%s] %s".formatted(flag, subject));
 
-            String htmlBody = body.replace("\n", "<br>") + "<br><br>" + generateFooterHtml();
+            String htmlBody = HtmlUtils.htmlEscape(body).replace("\n", "<br>") + "<br><br>" + generateFooterHtml();
             helper.setText(htmlBody, true);
 
             mailSender.send(mimeMessage);
