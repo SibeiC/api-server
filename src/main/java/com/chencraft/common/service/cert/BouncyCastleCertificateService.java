@@ -108,7 +108,7 @@ public class BouncyCastleCertificateService extends AbstractCertificateService {
             if (appConfig.isDev()) {
                 throw new RuntimeException("Certificate is expiring on " + validity + ", please renew before continuing.");
             } else {
-                messenger.alertCertificateExpiring(deviceName, validity, true);
+                messenger.alertCertificateExpiry(deviceName, validity, false, true);
             }
         }
     }

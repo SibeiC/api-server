@@ -1,6 +1,7 @@
 package com.chencraft.api;
 
 import com.chencraft.common.exception.GitHubUnauthorizedException;
+import com.chencraft.common.service.mail.MailFlag;
 import com.chencraft.common.service.mail.MailService;
 import com.chencraft.utils.FileServiceTestHelper;
 import okhttp3.mockwebserver.MockResponse;
@@ -177,7 +178,7 @@ public class GithubWebhookApiControllerTest {
 
         // Assert
         verify(webClient, times(1)).get();
-        verify(mailService, times(1)).sendMail(anyString(), anyString(), anyString());
+        verify(mailService, times(1)).sendMail(anyString(), any(MailFlag.class), anyString(), anyString());
     }
 
     @Test

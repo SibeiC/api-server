@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class MockMailService implements MailService {
 
     @Override
-    public void sendMail(String to, String subject, String body) {
-        log.info("MockMailService: to={}, subject={}, body={}", to, subject, body);
+    public void sendMail(String to, MailFlag flag, String subject, String body) {
+        log.info("MockMailService: to={}, flag={}, subject={}, body={}", to, flag, subject, body);
     }
 }

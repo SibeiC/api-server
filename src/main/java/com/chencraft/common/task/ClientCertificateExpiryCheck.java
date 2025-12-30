@@ -15,18 +15,19 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 import static com.chencraft.utils.PublisherUtils.fireAndForget;
 
 /**
- * Periodic background task that scans client mTLS certificate records to detect certificates that have
- * already expired but were not explicitly revoked.
+ * Periodic background task that scans client mTLS certificate records to detect certificates that are
+ * about to expire or have recently expired but were not explicitly revoked.
  * <p>
  * Responsibilities
- * - Queries MongoDB (reactive) for active, non-deleted client certificates and filters those whose
- * expiration time is before the current clock time.
- * - Logs a WARN entry for each affected certificate and sends an alert email via AlertMessenger.
+ * - Queries MongoDB (reactive) for active, non-deleted client certificates.
+ * - Filters for certificates expiring within the next 7 days or those that expired within the last 2 days.
+ * - Logs an entry for each affected certificate and sends an alert email via AlertMessenger.
  * - Runs once at application startup and then on a fixed daily schedule using TaskExecutor.
  * <p>
  * Thread-safety
@@ -85,16 +86,28 @@ public class ClientCertificateExpiryCheck {
         Instant now = clock.instant();
         log.info("Starting client certificate expiry scan at {}", now);
 
-        Flux<@NonNull CertificateRecord> expiredNotRevoked = certRepo.findByIsDeletedFalseAndRevokedAtIsNull()
-                                                                     .filter(rec -> rec.getExpiresAt() != null && rec.getExpiresAt().isBefore(now));
+        Instant sevenDaysLater = now.plus(7, ChronoUnit.DAYS);
+        Instant twoDaysAgo = now.minus(2, ChronoUnit.DAYS);
+
+        Flux<@NonNull CertificateRecord> candidates = certRepo.findByIsDeletedFalseAndRevokedAtIsNull()
+                                                               .filter(rec -> rec.getExpiresAt() != null &&
+                                                                       rec.getExpiresAt().isBefore(sevenDaysLater) &&
+                                                                       rec.getExpiresAt().isAfter(twoDaysAgo));
 
         fireAndForget(
-                expiredNotRevoked
+                candidates
                         .doOnNext(rec -> {
+                            boolean isExpired = rec.getExpiresAt().isBefore(now);
                             LocalDate validUntil = LocalDate.ofInstant(rec.getExpiresAt(), ZoneId.systemDefault());
-                            log.warn("Client certificate expired and not revoked: machineId={}, fingerprint={}, expiredAt={}",
-                                    rec.getMachineId(), rec.getFingerprintSha256(), validUntil);
-                            alertMessenger.alertCertificateExpiring(rec.getMachineId(), validUntil, false);
+
+                            if (isExpired) {
+                                log.warn("Client certificate expired: machineId={}, fingerprint={}, expiredAt={}",
+                                        rec.getMachineId(), rec.getFingerprintSha256(), validUntil);
+                            } else {
+                                log.info("Client certificate expiring soon: machineId={}, fingerprint={}, expiresAt={}",
+                                        rec.getMachineId(), rec.getFingerprintSha256(), validUntil);
+                            }
+                            alertMessenger.alertCertificateExpiry(rec.getMachineId(), validUntil, isExpired, false);
                         })
                         .doOnComplete(() -> log.info("Completed client certificate expiry scan"))
         );
