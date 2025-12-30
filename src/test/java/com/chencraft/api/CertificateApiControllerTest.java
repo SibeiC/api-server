@@ -1,6 +1,7 @@
 package com.chencraft.api;
 
 import com.chencraft.common.component.AuthorizationTokenStorage;
+import com.chencraft.common.config.MongoConfig;
 import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.OnboardingToken;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.Clock;
@@ -18,13 +20,14 @@ import java.time.Instant;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(MongoConfig.class)
 @AutoConfigureWebTestClient
 public class CertificateApiControllerTest {
     private Instant now = Instant.now();
 
     private OnboardingToken token;
 
-    @MockitoBean
+    @MockitoSpyBean
     private Clock clock;
 
     @Autowired

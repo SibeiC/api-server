@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 public class SecureCertificateApiControllerTest {
     private final Instant now = Instant.now();
 
-    @MockitoBean
+    @MockitoSpyBean
     private Clock clock;
 
     @Autowired
