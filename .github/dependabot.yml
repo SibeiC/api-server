@@ -10,18 +10,26 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      "SibeiC"
 
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      "SibeiC"
 
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      "SibeiC"
 
   - package-ecosystem: "docker-compose"
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      "SibeiC"
