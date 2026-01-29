@@ -159,7 +159,7 @@ jobs:
           scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.4
+        uses: appleboy/ssh-action@v1.2.5
         env:
           GHCR_PAT_RO: ${{ secrets.GHCR_PAT_RO }}
           GHCR_USER: ${{ github.actor }}
