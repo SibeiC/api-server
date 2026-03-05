@@ -56,7 +56,7 @@ jobs:
           echo "app-version=${APP_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker for Testcontainers
-        uses: docker/setup-docker-action@v4
+        uses: docker/setup-docker-action@v5
 
       - name: Build and Verify
         run: mvn -B -P ci -DskipTests=false clean verify
