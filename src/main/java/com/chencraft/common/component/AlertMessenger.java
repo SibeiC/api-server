@@ -91,6 +91,21 @@ public class AlertMessenger {
         taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
     }
 
+    /**
+     * Sends an alert email that a file has been uploaded for one-time sharing.
+     *
+     * @param filename  name of the uploaded file
+     * @param accessUrl URL to access the shared file
+     */
+    public void alertFileShare(String filename, String accessUrl) {
+        log.info("Sending alert for file share: {}", filename);
+
+        String subject = "File shared for one-time access";
+        String body = "File " + filename + " has been uploaded for one-time sharing.\n\n"
+                + "Access URL: " + accessUrl;
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
+    }
+
     public void testAlert() {
         log.info("Sending test alert");
 

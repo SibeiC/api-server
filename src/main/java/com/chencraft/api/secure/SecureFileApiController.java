@@ -1,6 +1,7 @@
 package com.chencraft.api.secure;
 
 import com.chencraft.api.ApiException;
+import com.chencraft.common.component.AlertMessenger;
 import com.chencraft.common.service.file.FileService;
 import com.chencraft.common.service.file.FileTokenService;
 import com.chencraft.model.FileUpload;
@@ -30,16 +31,22 @@ public class SecureFileApiController implements SecureFileApi {
 
     private final FileService fileService;
     private final FileTokenService fileTokenService;
+    private final AlertMessenger alertMessenger;
 
     /**
      * Constructs SecureFileApiController.
      *
-     * @param fileService file storage service abstraction
+     * @param fileService      file storage service abstraction
+     * @param fileTokenService service for generating file access tokens
+     * @param alertMessenger   service for sending operational alerts
      */
     @Autowired
-    public SecureFileApiController(FileService fileService, FileTokenService fileTokenService) {
+    public SecureFileApiController(FileService fileService,
+                                   FileTokenService fileTokenService,
+                                   AlertMessenger alertMessenger) {
         this.fileService = fileService;
         this.fileTokenService = fileTokenService;
+        this.alertMessenger = alertMessenger;
     }
 
     /**
@@ -74,6 +81,7 @@ public class SecureFileApiController implements SecureFileApi {
         fileService.uploadFile(request.getDestination(), filename, contentType, content);
         if (request.getDestination() == FileUpload.Type.SHARE) {
             String accessUrl = fileTokenService.generateAccessToken(filename);
+            alertMessenger.alertFileShare(filename, accessUrl);
             return ResponseEntity.ok()
                                  .contentType(MediaType.APPLICATION_JSON)
                                  .body(Map.of(
