@@ -10,5 +10,4 @@ public interface MailService {
      * @param body    email body
      */
     void sendMail(String to, MailFlag flag, String subject, String body);
-
 }
