@@ -86,7 +86,7 @@ public class HealthCheckService {
         AtomicReference<Integer> lastCode = new AtomicReference<>();
         AtomicReference<String> lastError = new AtomicReference<>();
 
-        Mono<Integer> attempt = Mono.defer(() -> {
+        Mono<@NonNull Integer> attempt = Mono.defer(() -> {
                                         lastCode.set(null);
                                         lastError.set(null);
                                         return webClient.get()
