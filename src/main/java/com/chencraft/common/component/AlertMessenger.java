@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 /**
@@ -104,6 +105,24 @@ public class AlertMessenger {
         String body = "File " + filename + " has been uploaded for one-time sharing.\n\n"
                 + "Access URL: " + accessUrl;
         taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
+    }
+
+    /**
+     * Sends an alert email that a monitored health-check endpoint has been unresponsive past its threshold.
+     *
+     * @param name          display name of the target
+     * @param url           URL that was being probed
+     * @param lastSuccessAt most recent successful probe timestamp; may be null when the target has never succeeded
+     * @param lastError     brief description of the latest failure (HTTP status or exception message)
+     */
+    public void alertHealthCheckDown(String name, String url, Instant lastSuccessAt, String lastError) {
+        log.info("Sending alert for unresponsive health-check target: {} ({})", name, url);
+
+        String subject = "Health check failing: " + name;
+        String body = "Health-check target '" + name + "' (" + url + ") has been unresponsive.\n\n"
+                + "Last successful probe: " + (lastSuccessAt == null ? "never" : lastSuccessAt) + "\n"
+                + "Latest failure: " + (lastError == null ? "(no detail)" : lastError);
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
     }
 
     public void testAlert() {
