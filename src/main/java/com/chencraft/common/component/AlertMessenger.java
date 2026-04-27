@@ -4,6 +4,7 @@ import com.chencraft.common.service.executor.TaskExecutor;
 import com.chencraft.common.service.mail.MailFlag;
 import com.chencraft.common.service.mail.MailService;
 import com.chencraft.model.mongo.CertificateRecord;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Sends operational alert emails for notable events in the system (e.g., certificate lifecycle, security signals).
@@ -31,16 +34,32 @@ import java.time.LocalDate;
 @Slf4j
 @Component
 public class AlertMessenger {
+    private static final DateTimeFormatter TIMESTAMP_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+
     private final TaskExecutor taskExecutor;
     private final MailService mailService;
+    private DateTimeFormatter timestampFormatter;
 
     @Value("${app.alert.recipient}")
     private String defaultRecipient;
+
+    @Value("${app.alert.timezone:Asia/Shanghai}")
+    private String alertTimezone;
 
     @Autowired
     public AlertMessenger(TaskExecutor taskExecutor, MailService mailService) {
         this.taskExecutor = taskExecutor;
         this.mailService = mailService;
+    }
+
+    @PostConstruct
+    void initTimestampFormatter() {
+        this.timestampFormatter = TIMESTAMP_FORMAT.withZone(ZoneId.of(alertTimezone));
+    }
+
+    private String formatTimestamp(Instant ts) {
+        return ts == null ? null : timestampFormatter.format(ts);
     }
 
     /**
@@ -120,9 +139,29 @@ public class AlertMessenger {
 
         String subject = "Health check failing: " + name;
         String body = "Health-check target '" + name + "' (" + url + ") has been unresponsive.\n\n"
-                + "Last successful probe: " + (lastSuccessAt == null ? "never" : lastSuccessAt) + "\n"
+                + "Last successful probe: " + (lastSuccessAt == null ? "never" : formatTimestamp(lastSuccessAt)) + "\n"
                 + "Latest failure: " + (lastError == null ? "(no detail)" : lastError);
         taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.ERROR, subject, body));
+    }
+
+    /**
+     * Sends a recovery email after a health-check target that previously triggered a down alert
+     * is responding again. Only intended to be called when an outage alert was actually dispatched —
+     * pairs with {@link #alertHealthCheckDown}.
+     *
+     * @param name          display name of the target
+     * @param url           URL that was being probed
+     * @param downAlertedAt timestamp when the matching down alert was sent
+     * @param recoveredAt   timestamp of the successful probe that ended the outage
+     */
+    public void alertHealthCheckRecovered(String name, String url, Instant downAlertedAt, Instant recoveredAt) {
+        log.info("Sending recovery alert for health-check target: {} ({})", name, url);
+
+        String subject = "Health check recovered: " + name;
+        String body = "Health-check target '" + name + "' (" + url + ") is responding again.\n\n"
+                + "Down alert sent at: " + formatTimestamp(downAlertedAt) + "\n"
+                + "Recovered at: " + formatTimestamp(recoveredAt);
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
     }
 
     public void testAlert() {

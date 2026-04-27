@@ -124,7 +124,6 @@ public class HealthCheckService {
         if (ok) {
             target.setLastStatus(HealthCheckTarget.Status.UP);
             target.setLastSuccessAt(now);
-            target.setAlertedAt(null);
         } else {
             target.setLastStatus(HealthCheckTarget.Status.DOWN);
         }
@@ -132,7 +131,11 @@ public class HealthCheckService {
     }
 
     private Mono<@NonNull HealthCheckTarget> persistAndMaybeAlert(HealthCheckTarget target) {
-        if (target.getLastStatus() == HealthCheckTarget.Status.DOWN && shouldAlert(target)) {
+        if (target.getLastStatus() == HealthCheckTarget.Status.UP && target.getAlertedAt() != null) {
+            alertMessenger.alertHealthCheckRecovered(target.getName(), target.getUrl(),
+                                                    target.getAlertedAt(), target.getLastSuccessAt());
+            target.setAlertedAt(null);
+        } else if (target.getLastStatus() == HealthCheckTarget.Status.DOWN && shouldAlert(target)) {
             alertMessenger.alertHealthCheckDown(target.getName(), target.getUrl(),
                                                 target.getLastSuccessAt(), target.getLastError());
             target.setAlertedAt(clock.instant());

@@ -95,6 +95,8 @@ public class HealthCheckServiceTest {
         Assertions.assertEquals(now, result.getLastCheckedAt());
         Assertions.assertEquals(200, result.getLastResponseCode());
         verify(alertMessenger, never()).alertHealthCheckDown(any(), any(), any(), any());
+        // No prior down alert had been sent — recovery email must not fire.
+        verify(alertMessenger, never()).alertHealthCheckRecovered(any(), any(), any(), any());
     }
 
     @Test
@@ -136,9 +138,10 @@ public class HealthCheckServiceTest {
 
     @Test
     public void recoveryClearsAlertedAtSoNextOutageAlertsAgain() {
+        Instant priorAlertedAt = now.minusSeconds(60);
         HealthCheckTarget t = noRetryTarget("recovering");
         t.setLastSuccessAt(now.minusSeconds(3600));
-        t.setAlertedAt(now.minusSeconds(60));
+        t.setAlertedAt(priorAlertedAt);
         t.setFailureThresholdMinutes(5);
         save(t);
 
@@ -149,6 +152,9 @@ public class HealthCheckServiceTest {
         HealthCheckTarget refreshed = after.getFirst();
         Assertions.assertEquals(HealthCheckTarget.Status.UP, refreshed.getLastStatus());
         Assertions.assertNull(refreshed.getAlertedAt());
+        // Prior down alert was sent, so a paired recovery email should fire exactly once.
+        verify(alertMessenger, times(1))
+                .alertHealthCheckRecovered(eq("recovering"), any(), eq(priorAlertedAt), eq(now));
 
         // Now another outage — should alert again because alertedAt was cleared
         Instant later = now.plusSeconds(3600);
