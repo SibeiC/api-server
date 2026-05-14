@@ -78,4 +78,4 @@ The `/api-chencraft` skill at `.claude/skills/api-chencraft/SKILL.md` is the can
 - `src/main/java/com/chencraft/api/models/TagConstants.java` (OpenAPI tag set)
 - Request/response models under `src/main/java/com/chencraft/model/` that are referenced by an API surface
 
-When refreshing, update the endpoint table, examples, and the mTLS section to match. Client-side mTLS cert/key paths must always be sourced from the `CHENCRAFT_CLIENT_CERT` / `CHENCRAFT_CLIENT_KEY` env vars (shell rc on macOS/Linux, Windows Credential Manager / user env on Windows) — never hard-code a path in the skill or examples.
+When refreshing, update the endpoint table, examples, and the mTLS section to match. The client-side mTLS combined-PEM path must always be sourced from the `MTLS_PEM` env var (shell rc on macOS/Linux, Windows Credential Manager / user env on Windows) — never hard-code a path in the skill or examples.

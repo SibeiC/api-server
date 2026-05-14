@@ -1,6 +1,6 @@
 ---
 name: api-chencraft
-description: Call the api.chencraft.com Spring Boot service. Use this whenever the user asks to hit, curl, probe, upload to, download from, issue/renew/revoke certs against, update DNS via, or otherwise invoke api.chencraft.com or dev.chencraft.com. Loads the client mTLS cert/key path from CHENCRAFT_CLIENT_CERT / CHENCRAFT_CLIENT_KEY (shell rc on macOS/Linux, Credential Manager on Windows) for /secure/** endpoints.
+description: Call the api.chencraft.com Spring Boot service. Use this whenever the user asks to hit, curl, probe, upload to, download from, issue/renew/revoke certs against, update DNS via, or otherwise invoke api.chencraft.com or dev.chencraft.com. Loads the client mTLS combined-PEM path from the MTLS_PEM env var (shell rc on macOS/Linux, Credential Manager on Windows) for /secure/** endpoints.
 user-invocable: true
 allowed-tools:
   - Read
@@ -33,54 +33,53 @@ fetch the live spec instead of guessing.
 
 mTLS is enforced by nginx for `/secure/**`. Public endpoints work without a
 client cert. **Never hard-code, prompt for, or paste a cert path.** Always
-resolve it from the environment as described below — that is the only
-supported source.
+resolve it from the environment — that is the only supported source.
+
+The on-disk artifact is a **combined PEM** containing both the client
+certificate and its private key concatenated. `curl` reads both from the
+single file via `--cert`; no separate `--key` is needed.
 
 ### macOS / Linux
 
-Expect two exported variables, set in the user's shell rc file
+Expect one exported variable, set in the user's shell rc file
 (`~/.zshrc`, `~/.bashrc`, or `~/.bash_profile` depending on shell):
 
 ```sh
-export CHENCRAFT_CLIENT_CERT="$HOME/.chencraft/client.crt.pem"
-export CHENCRAFT_CLIENT_KEY="$HOME/.chencraft/client.key.pem"
+export MTLS_PEM="$HOME/.chencraft/certs/client.pem"
 ```
 
-Read them with `printenv` / `$VAR`. If either is empty, **stop** and tell the
-user to add the exports to their shell rc and re-source it; do not invent a
-path. macOS users may alternatively store the values in the login keychain
-and export them at shell start — same env-var contract from the skill's
+Read it with `printenv MTLS_PEM` / `$MTLS_PEM`. If empty, **stop** and tell
+the user to add the export to their shell rc and re-source it; do not invent
+a path. macOS users may alternatively store the value in the login keychain
+and export it at shell start — same env-var contract from the skill's
 perspective.
 
 ### Windows
 
-Expect the same two variables, but resolved from the user environment (set
-via `setx` or System Properties → Environment Variables), or from Windows
-Credential Manager under generic credentials named `CHENCRAFT_CLIENT_CERT`
-and `CHENCRAFT_CLIENT_KEY`. From PowerShell:
+Expect the same variable, resolved from the user environment (set via `setx`
+or System Properties → Environment Variables), or from Windows Credential
+Manager under a generic credential named `MTLS_PEM`. From PowerShell:
 
 ```powershell
-$cert = $env:CHENCRAFT_CLIENT_CERT
-$key  = $env:CHENCRAFT_CLIENT_KEY
+$pem = $env:MTLS_PEM
 # Fallback to Credential Manager:
-# $cert = (Get-StoredCredential -Target 'CHENCRAFT_CLIENT_CERT').Password
+# $pem = (Get-StoredCredential -Target 'MTLS_PEM').Password
 ```
 
-Same rule: if unset, ask the user to populate them. Do not guess.
+Same rule: if unset, ask the user to populate it. Do not guess.
 
 ### Invocation template
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" \
-     --key  "$CHENCRAFT_CLIENT_KEY" \
-     https://api.chencraft.com/secure/ping
+curl --cert "$MTLS_PEM" https://api.chencraft.com/secure/ping
 ```
 
 Use `--cacert` only if the user has a private CA in play; the prod cert
 chains to a public CA and does not need it.
 
-`curl` accepts a PKCS#12 bundle via `--cert path.p12:password --cert-type P12`
-if that is what the user has on disk.
+`curl` also accepts a PKCS#12 bundle via `--cert path.p12:password
+--cert-type P12` if that is what the user has on disk; the env var name
+stays `MTLS_PEM` for consistency.
 
 ---
 
@@ -89,7 +88,7 @@ if that is what the user has on disk.
 Before debugging anything else, hit the dedicated probe:
 
 ```sh
-curl -i --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl -i --cert "$MTLS_PEM" \
      https://api.chencraft.com/secure/ping
 ```
 
@@ -158,14 +157,14 @@ curl "https://api.chencraft.com/certificate/issue\
 ### Get an onboarding token from an already-trusted device
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl --cert "$MTLS_PEM" \
      https://api.chencraft.com/secure/authorize
 ```
 
 ### Upload a private file
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl --cert "$MTLS_PEM" \
      -F "file=@./report.pdf" \
      -F "destination=PRIVATE" \
      https://api.chencraft.com/secure/file
@@ -174,7 +173,7 @@ curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
 ### Update a DDNS record
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl --cert "$MTLS_PEM" \
      -X PUT https://api.chencraft.com/secure/cloudflare/ddns \
      -H 'Content-Type: application/json' \
      -d '{"hostname":"home.chencraft.com","dnsType":"A","proxied":false}'
@@ -183,7 +182,7 @@ curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
 ### Renew the calling device's certificate
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl --cert "$MTLS_PEM" \
      -X POST https://api.chencraft.com/secure/certificate/renew \
      -H 'Content-Type: application/json' \
      -d '{"pemFormat":true}'
@@ -196,7 +195,7 @@ ignored.
 ### Revoke a certificate by fingerprint
 
 ```sh
-curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+curl --cert "$MTLS_PEM" \
      -X POST https://api.chencraft.com/secure/certificate/revoke \
      -H 'Content-Type: application/json' \
      -d '{"fingerprintSha256":"<64-hex>","revokeReason":"rotated"}'
