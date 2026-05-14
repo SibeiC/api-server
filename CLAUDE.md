@@ -67,3 +67,15 @@ mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest#testValidateHash t
 ## Deployment
 
 Docker image built on tag push via GitHub Actions → pushed to GHCR → deployed via SSH + docker-compose. Ansible playbook handles Nginx and server provisioning.
+
+## Skill maintenance — `api-chencraft`
+
+The `/api-chencraft` skill at `.claude/skills/api-chencraft/SKILL.md` is the canonical client-side reference for hitting `api.chencraft.com`. Before committing, if the staged changes touch any of the following, refresh `SKILL.md` in the same commit so the skill never drifts from the code:
+
+- Anything under `src/main/java/com/chencraft/api/` (controllers or generated `*Api` interfaces — endpoint paths, methods, params, request/response bodies)
+- `src/main/java/com/chencraft/common/config/SecurePathConfig.java` (the `/secure/` prefix rule)
+- `src/main/java/com/chencraft/common/filter/MtlsVerificationFilter.java` or `common/config/SecurityConfig.java` (what counts as protected, headers consumed)
+- `src/main/java/com/chencraft/api/models/TagConstants.java` (OpenAPI tag set)
+- Request/response models under `src/main/java/com/chencraft/model/` that are referenced by an API surface
+
+When refreshing, update the endpoint table, examples, and the mTLS section to match. Client-side mTLS cert/key paths must always be sourced from the `CHENCRAFT_CLIENT_CERT` / `CHENCRAFT_CLIENT_KEY` env vars (shell rc on macOS/Linux, Windows Credential Manager / user env on Windows) — never hard-code a path in the skill or examples.
