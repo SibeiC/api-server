@@ -7,7 +7,6 @@ import com.chencraft.model.CertificatePEM;
 import com.chencraft.model.CertificateRevokeRequest;
 import com.chencraft.model.OnboardingToken;
 import com.chencraft.model.mongo.CertificateRecord;
-import com.chencraft.utils.CertificateUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +25,9 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Objects;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +56,13 @@ public class SecureCertificateApiControllerTest {
         try (InputStream in = SecureCertificateApiControllerTest.class
                 .getResourceAsStream("/certs/test-client.crt.pem")) {
             Assertions.assertNotNull(in, "test-client.crt.pem fixture missing");
-            testClientCertPem = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            // HTTP headers cannot carry raw newlines; nginx folds them to spaces when proxying
+            // $ssl_client_cert. The PEM parser strips whitespace, so a single-line value parses
+            // identically to the multi-line on-disk form.
+            testClientCertPem = new String(in.readAllBytes(), StandardCharsets.UTF_8)
+                    .replace("\r", "")
+                    .replace("\n", " ")
+                    .trim();
         }
     }
 
@@ -106,9 +114,8 @@ public class SecureCertificateApiControllerTest {
                          Assertions.assertNotNull(pem);
                          Assertions.assertNotNull(pem.getCertificate());
                          Assertions.assertNotNull(pem.getPrivateKey());
-                         Assertions.assertEquals(TEST_CLIENT_CN,
-                                 CertificateUtils.extractCNSubject(pem.getCertificate()));
                      });
+        verify(certificateService).issueCertificate(eq(TEST_CLIENT_CN), anyBoolean());
     }
 
     @Test
@@ -151,13 +158,8 @@ public class SecureCertificateApiControllerTest {
                      .exchange()
                      .expectStatus().isOk()
                      .expectBody(CertificatePEM.class)
-                     .consumeWith(response -> {
-                         CertificatePEM pem = response.getResponseBody();
-                         Assertions.assertNotNull(pem);
-                         Assertions.assertEquals(TEST_CLIENT_CN,
-                                 CertificateUtils.extractCNSubject(pem.getCertificate()),
-                                 "issued cert CN must come from the verified client cert, not the body");
-                     });
+                     .consumeWith(response -> Assertions.assertNotNull(response.getResponseBody()));
+        verify(certificateService).issueCertificate(eq(TEST_CLIENT_CN), anyBoolean());
     }
 
     private CertificateRecord newRecord(String deviceId, String fingerprint) {

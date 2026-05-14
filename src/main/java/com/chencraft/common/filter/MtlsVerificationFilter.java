@@ -96,7 +96,15 @@ public class MtlsVerificationFilter extends OncePerRequestFilter {
 
         if (clientCert != null) {
             // Client cert should always be present when proxied through nginx, it is not available when running tests
-            String fingerprint = CertificateUtils.computeSha256Fingerprint(clientCert);
+            String fingerprint;
+            try {
+                fingerprint = CertificateUtils.computeSha256Fingerprint(clientCert);
+            } catch (RuntimeException e) {
+                log.warn("Rejecting {} — X-Client-Cert is not a valid PEM: {}",
+                        request.getRequestURI(), e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid client certificate");
+                return;
+            }
             log.debug("Client certificate fingerprint: {}", fingerprint);
 
             CertificateRecord certRecord = mtlsService.findByFingerprint(fingerprint)
