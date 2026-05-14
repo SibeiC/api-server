@@ -30,6 +30,12 @@
     p12_cert_path: "/etc/ssl/certs/server.crt"
     p12_key_path: "/etc/ssl/private/server.key"
 
+    # Default proxy secret. Overridden by the value extracted from the decrypted .env when present.
+    # Empty here keeps the nginx template renderable in dev installs that skip env decryption;
+    # an empty header is rejected by the Spring filter when APP_MTLS_PROXY_SECRET is set,
+    # and ignored when it isn't (permissive mode).
+    proxy_secret: ""
+
     # OS-specific defaults
     # - On macOS: default group is 'staff' and work owned by app user/group
     # - On Linux: default user/group root; working_dir owned by root:root per requirements
@@ -146,22 +152,6 @@
         - { path: "/etc/ssl/certs", mode: "0755" }
         - { path: "/etc/ssl/private", mode: "0700" }
 
-    - name: Deploy Nginx site configuration
-      ansible.builtin.template:
-        src: "templates/api-server.conf.j2"
-        dest: "{{ nginx_site_available }}"
-        owner: "{{ 'root' if is_linux else app_user }}"
-        group: "{{ 'root' if is_linux else app_group }}"
-        mode: "0644"
-      notify: Reload nginx
-
-    - name: Enable Nginx site via symlink
-      ansible.builtin.file:
-        src: "{{ nginx_site_available }}"
-        dest: "{{ nginx_site_enabled }}"
-        state: link
-      notify: Reload nginx
-
     - name: Age private key is present
       when: age_private_key | length > 0
       block:
@@ -225,6 +215,12 @@
           when:
             - decrypted_env_file is defined
 
+        - name: Extract proxy secret from decrypted .env (nginx -> Spring shared secret)
+          ansible.builtin.set_fact:
+            proxy_secret: "{{ (decrypted_env_file.content | b64decode | regex_search('(?m)^APP_MTLS_PROXY_SECRET=(.*)$', '\\1') | first | replace('\\r', '') | trim) }}"
+          when:
+            - decrypted_env_file is defined
+
         - name: Cleanup decrypted .env to avoid leaks
           ansible.builtin.file:
             path: "{{ working_dir }}/.env"
@@ -232,6 +228,22 @@
           when:
             - env_enc_stat is defined and env_enc_stat.stat.exists
           changed_when: false
+
+    - name: Deploy Nginx site configuration
+      ansible.builtin.template:
+        src: "templates/api-server.conf.j2"
+        dest: "{{ nginx_site_available }}"
+        owner: "{{ 'root' if is_linux else app_user }}"
+        group: "{{ 'root' if is_linux else app_group }}"
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Enable Nginx site via symlink
+      ansible.builtin.file:
+        src: "{{ nginx_site_available }}"
+        dest: "{{ nginx_site_enabled }}"
+        state: link
+      notify: Reload nginx
 
     - name: Generate PKCS#12 keystore
       community.crypto.openssl_pkcs12:

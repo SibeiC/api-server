@@ -34,5 +34,6 @@ server {
         proxy_set_header X-Client-Cert $ssl_client_cert;
         proxy_set_header X-Client-Verify $ssl_client_verify;
         proxy_set_header X-Client-DN $ssl_client_s_dn;
+        proxy_set_header X-Proxy-Secret "{{ proxy_secret }}";
     }
 }

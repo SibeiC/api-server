@@ -26,7 +26,10 @@ public class CertificateRenewal {
      *
      * @return deviceId
      */
-    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Device name, used for certificate CN", defaultValue = "hostname")
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+            description = "Ignored — the server derives the CN from the verified client certificate. "
+                    + "Retained for backward compatibility with older clients.",
+            defaultValue = "")
     @Valid
     public String getDeviceId() {
         return deviceId;

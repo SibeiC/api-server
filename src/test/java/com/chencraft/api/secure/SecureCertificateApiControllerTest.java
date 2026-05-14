@@ -8,6 +8,7 @@ import com.chencraft.model.CertificateRevokeRequest;
 import com.chencraft.model.OnboardingToken;
 import com.chencraft.model.mongo.CertificateRecord;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,24 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Objects;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @Import(MongoConfig.class)
 public class SecureCertificateApiControllerTest {
+    private static final String TEST_CLIENT_CN = "test-device";
+    private static String testClientCertPem;
+
     private final Instant now = Instant.now();
 
     @MockitoSpyBean
@@ -41,6 +50,21 @@ public class SecureCertificateApiControllerTest {
 
     @Autowired
     private CertificateRepository certificateRepository;
+
+    @BeforeAll
+    static void loadTestClientCert() throws Exception {
+        try (InputStream in = SecureCertificateApiControllerTest.class
+                .getResourceAsStream("/certs/test-client.crt.pem")) {
+            Assertions.assertNotNull(in, "test-client.crt.pem fixture missing");
+            // HTTP headers cannot carry raw newlines; nginx folds them to spaces when proxying
+            // $ssl_client_cert. The PEM parser strips whitespace, so a single-line value parses
+            // identically to the multi-line on-disk form.
+            testClientCertPem = new String(in.readAllBytes(), StandardCharsets.UTF_8)
+                    .replace("\r", "")
+                    .replace("\n", " ")
+                    .trim();
+        }
+    }
 
     @BeforeEach
     public void setup() {
@@ -76,15 +100,12 @@ public class SecureCertificateApiControllerTest {
 
     @Test
     public void testRenewSuccess() {
-        String content = """
-                {
-                    "deviceId": "test-device"
-                }""";
         webTestClient.post()
                      .uri("/secure/certificate/renew")
                      .contentType(MediaType.APPLICATION_JSON)
-                     .bodyValue(content)
+                     .bodyValue("{}")
                      .header("X-Client-Verify", "SUCCESS")
+                     .header("X-Client-Cert", testClientCertPem)
                      .exchange()
                      .expectStatus().isOk()
                      .expectBody(CertificatePEM.class)
@@ -94,17 +115,51 @@ public class SecureCertificateApiControllerTest {
                          Assertions.assertNotNull(pem.getCertificate());
                          Assertions.assertNotNull(pem.getPrivateKey());
                      });
+        verify(certificateService).issueCertificate(eq(TEST_CLIENT_CN), anyBoolean());
     }
 
     @Test
-    public void testExtractDeviceIdFromCert() {
+    public void renew_missingCertHeader_returns401() {
         webTestClient.post()
                      .uri("/secure/certificate/renew")
                      .contentType(MediaType.APPLICATION_JSON)
+                     .bodyValue("{}")
                      .header("X-Client-Verify", "SUCCESS")
-                     .header("X-Client-Cert", "test-cert")
                      .exchange()
-                     .expectStatus().is5xxServerError(); // Until figured out how to mock static methods
+                     .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    public void renew_unparseableCertHeader_returns401() {
+        webTestClient.post()
+                     .uri("/secure/certificate/renew")
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .bodyValue("{}")
+                     .header("X-Client-Verify", "SUCCESS")
+                     .header("X-Client-Cert", "not-a-real-cert")
+                     .exchange()
+                     .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    public void renew_spoofedBodyDeviceId_isIgnored() {
+        // Caller presents cert CN=test-device but tries to mint a cert for "victim-device".
+        // Server MUST honour the verified CN and ignore the body.
+        String content = """
+                {
+                    "deviceId": "victim-device"
+                }""";
+        webTestClient.post()
+                     .uri("/secure/certificate/renew")
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .bodyValue(content)
+                     .header("X-Client-Verify", "SUCCESS")
+                     .header("X-Client-Cert", testClientCertPem)
+                     .exchange()
+                     .expectStatus().isOk()
+                     .expectBody(CertificatePEM.class)
+                     .consumeWith(response -> Assertions.assertNotNull(response.getResponseBody()));
+        verify(certificateService).issueCertificate(eq(TEST_CLIENT_CN), anyBoolean());
     }
 
     private CertificateRecord newRecord(String deviceId, String fingerprint) {

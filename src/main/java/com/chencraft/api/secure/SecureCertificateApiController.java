@@ -60,19 +60,26 @@ public class SecureCertificateApiController implements SecureCertificateApi {
     }
 
     /**
-     * Renews a device certificate using provided device ID. Returns a PEM bundle when requested.
+     * Renews the calling device's certificate. The new certificate's CN is always derived from the
+     * verified client cert presented at the nginx mTLS boundary; any deviceId in the request body
+     * is ignored. Returns a PEM bundle when requested.
      *
-     * @param renewal payload containing deviceId and pemFormat flag
-     * @return reactive ResponseEntity from CertificateService
+     * @param renewal payload — only {@code pemFormat} is honoured
+     * @return reactive ResponseEntity from CertificateService, or 401 if no verifiable client cert was presented
      */
     @Override
     public Mono<@NonNull ResponseEntity<?>> renew(CertificateRenewal renewal) {
-        if (renewal.getDeviceId() == null) {
-            String clientCert = request.getHeader("X-Client-Cert");
-            String requester = CertificateUtils.extractCNSubject(clientCert);
-            renewal.setDeviceId(requester);
+        String clientCert = request.getHeader("X-Client-Cert");
+        if (clientCert == null || clientCert.isBlank()) {
+            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
         }
-        return certificateService.issueCertificate(renewal.getDeviceId(), renewal.isPemFormat());
+        String verifiedDeviceId;
+        try {
+            verifiedDeviceId = CertificateUtils.extractCNSubject(clientCert);
+        } catch (Exception e) {
+            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        }
+        return certificateService.issueCertificate(verifiedDeviceId, renewal.isPemFormat());
     }
 
     @Override

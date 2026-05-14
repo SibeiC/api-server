@@ -128,7 +128,7 @@ mTLS; everything else is public (but some have their own auth, noted below).
 |--------|---------------------------------------------|-------------|--------------------------------------------------------------|
 | GET    | `/secure/ping`                              | tls         | —                                                            |
 | GET    | `/secure/authorize`                         | tls         | Returns short-lived `OnboardingToken` for new-device flow.   |
-| POST   | `/secure/certificate/renew`                 | tls         | JSON `CertificateRenewal { deviceId?, pemFormat? }`          |
+| POST   | `/secure/certificate/renew`                 | tls         | JSON `CertificateRenewal { pemFormat? }`. **`deviceId` is server-authoritative** — derived from the verified client cert CN; any value in the body is ignored. |
 | POST   | `/secure/certificate/revoke`                | tls         | JSON `CertificateRevokeRequest { mongoId?, deviceId?, fingerprintSha256?, revokeReason? }` — at least one identifier required |
 | GET    | `/secure/file/{filename}`                   | file        | Private R2 download.                                         |
 | POST   | `/secure/file`                              | file        | `multipart/form-data`: `file` (binary) + `destination` (`PUBLIC`/`PRIVATE`/`SHARE`) |
@@ -179,6 +179,19 @@ curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
      -H 'Content-Type: application/json' \
      -d '{"hostname":"home.chencraft.com","dnsType":"A","proxied":false}'
 ```
+
+### Renew the calling device's certificate
+
+```sh
+curl --cert "$CHENCRAFT_CLIENT_CERT" --key "$CHENCRAFT_CLIENT_KEY" \
+     -X POST https://api.chencraft.com/secure/certificate/renew \
+     -H 'Content-Type: application/json' \
+     -d '{"pemFormat":true}'
+```
+
+The new cert is always issued with the CN of the verified client cert presented during the
+TLS handshake — you cannot specify a different deviceId. Sending one in the body is silently
+ignored.
 
 ### Revoke a certificate by fingerprint
 
