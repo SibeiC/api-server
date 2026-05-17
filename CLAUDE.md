@@ -66,7 +66,7 @@ mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest#testValidateHash t
 
 ## Deployment
 
-Docker image built on tag push via GitHub Actions → pushed to GHCR → deployed via SSH + docker-compose. Ansible playbook handles Nginx and server provisioning.
+Tag push (`v*.*.*`) triggers `.github/workflows/maven.yml`: build & test → push image to GHCR → SCP the ansible payload (`playbook.yml`, `templates/`, `docker-compose.yml`, `.env.enc`, etc.) to the server → SSH as `githubdeploy` and run `ansible-playbook` unattended. The playbook converges nginx + PKCS#12 + deploy user, then (when `docker_deploy=true` is passed from CI) runs `docker compose pull && up -d` against `/opt/api-server/docker-compose.yml`. Manual `workflow_dispatch` re-runs the deploy job without rebuilding the image (useful for nginx-only changes). Laptop bootstrap is still `./install.sh`.
 
 ## Skill maintenance — `api-chencraft`
 

@@ -8,6 +8,7 @@ on:
       - "v*.*.*"
   pull_request:
     branches: ["master"]
+  workflow_dispatch:
 permissions:
   contents: write
   packages: write
@@ -85,6 +86,7 @@ jobs:
     needs: ci-test
     timeout-minutes: 20
     # 🚨 only run if this workflow was triggered by a tag push (release)
+    # workflow_dispatch reruns skip the build and re-converge the box against :latest.
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout files for Docker creation
@@ -134,43 +136,70 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    needs: docker
+    # Runs after a successful image build on tag pushes, AND on manual workflow_dispatch
+    # (which skips `docker` and re-converges the box against whatever image :latest points at).
+    # Explicitly excluded from PR builds and master-branch pushes so we don't deploy on every commit.
+    needs: [docker]
+    if: >-
+      ${{ always()
+          && needs.docker.result != 'failure'
+          && needs.docker.result != 'cancelled'
+          && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # 🚨 only run if this workflow was triggered by a tag push (release)
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Fetch file to be sent to server
+      - name: Checkout ansible payload
         uses: actions/checkout@v6
         with:
+          # Keep this list in sync with what the playbook reads on the server.
           sparse-checkout: |
+            playbook.yml
+            templates
+            hosts.ini
+            requirements.yml
             docker-compose.yml
+            .env.enc
+            .sops.yaml
           sparse-checkout-cone-mode: false
 
-      - name: Set up SCP
-        run: |
-          mkdir -v -m 700 $HOME/.ssh
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} > $HOME/.ssh/known_hosts
-          echo "${{ secrets.SERVER_SSH_KEY }}" > $HOME/.ssh/id_rsa
-          chmod 400 $HOME/.ssh/id_rsa
-
-      - name: Upload to server
-        run: |
-          scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
-
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.5
-        env:
-          GHCR_PAT_RO: ${{ secrets.GHCR_PAT_RO }}
-          GHCR_USER: ${{ github.actor }}
+      - name: Ship ansible payload to server
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: GHCR_PAT_RO,GHCR_USER
+          # Pass `templates` as a directory (not `templates/*`) so subpaths are preserved on the remote.
+          source: "playbook.yml,templates,hosts.ini,requirements.yml,docker-compose.yml,.env.enc,.sops.yaml"
+          target: "/home/${{ secrets.SERVER_USER }}/api-server-deploy"
+          rm: true
+
+      - name: Run ansible + docker compose on server
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          AGE_PRIVATE_KEY: ${{ secrets.AGE_PRIVATE_KEY }}
+          TLS_KEYSTORE_PASSWORD: ${{ secrets.TLS_KEYSTORE_PASSWORD }}
+          GHCR_PAT_RO: ${{ secrets.GHCR_PAT_RO }}
+          # GHCR_USER must match the account that owns GHCR_PAT_RO — use the repo owner (stable)
+          # rather than github.actor (which varies by who triggers workflow_dispatch / tag push).
+          GHCR_USER: ${{ github.repository_owner }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: AGE_PRIVATE_KEY,TLS_KEYSTORE_PASSWORD,GHCR_PAT_RO,GHCR_USER
           script: |
-            echo "${GHCR_PAT_RO}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
-            cd /tmp
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
+            set -euo pipefail
+            cd ~/api-server-deploy
+            ansible-galaxy collection install -r requirements.yml
+            umask 077
+            SECRETS_FILE="$(mktemp /tmp/ansible-secrets.XXXXXX.yml)"
+            trap 'shred -u "$SECRETS_FILE" 2>/dev/null || rm -f "$SECRETS_FILE"' EXIT
+            {
+              printf 'age_private_key: |\n'
+              printf '%s\n' "$AGE_PRIVATE_KEY" | sed 's/^/  /'
+              printf 'tls_keystore_password: "%s"\n' "${TLS_KEYSTORE_PASSWORD//\"/\\\"}"
+              printf 'ghcr_user: "%s"\n' "${GHCR_USER//\"/\\\"}"
+              printf 'ghcr_pat_ro: "%s"\n' "${GHCR_PAT_RO//\"/\\\"}"
+              printf 'docker_deploy: true\n'
+            } > "$SECRETS_FILE"
+            ansible-playbook -i hosts.ini -l local playbook.yml -e "@$SECRETS_FILE"

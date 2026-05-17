@@ -36,6 +36,15 @@
     # and ignored when it isn't (permissive mode).
     proxy_secret: ""
 
+    # Empty default lets CI pass -e tls_keystore_password=... directly (skips sops decrypt path).
+    # When unset, PKCS#12 task self-skips via its own `when:` guard.
+    tls_keystore_password: ""
+
+    # Gate for the container-deploy task block (set true from CI; laptop runs leave false).
+    docker_deploy: false
+    ghcr_user: ""
+    ghcr_pat_ro: ""
+
     # OS-specific defaults
     # - On macOS: default group is 'staff' and work owned by app user/group
     # - On Linux: default user/group root; working_dir owned by root:root per requirements
@@ -86,6 +95,21 @@
             user: "{{ deploy_user }}"
             key: "{{ deploy_user_public_key }}"
             state: present
+
+        - name: Grant passwordless sudo to deploy user (required for CI-driven playbook runs)
+          # Trust model: githubdeploy is already in the `docker` group, which is effectively root
+          # (a docker-group member can `docker run --privileged -v /:/host alpine chroot /host`).
+          # So NOPASSWD: ALL widens nothing material — it just lets ansible's `become: true` work
+          # over the existing SSH key without an interactive password. Anyone with SERVER_SSH_KEY
+          # already has root-equivalent access via docker. If that trust model ever tightens
+          # (githubdeploy removed from docker group), revisit and narrow this to a Cmnd_Alias.
+          ansible.builtin.copy:
+            dest: "/etc/sudoers.d/{{ deploy_user }}"
+            content: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL\n"
+            owner: root
+            group: root
+            mode: "0440"
+            validate: "visudo -cf %s"
 
     - name: Ensure SSH (22/tcp) open for remote access (non-dev only)
       when: not dev
@@ -259,6 +283,51 @@
       when:
         - tls_keystore_password is defined
         - tls_keystore_password | length > 0
+
+    - name: Deploy container (CI-only; laptop runs leave docker_deploy=false)
+      when: docker_deploy | bool
+      tags: ["deploy"]
+      block:
+        - name: Copy docker-compose.yml to working directory
+          ansible.builtin.copy:
+            src: "docker-compose.yml"
+            dest: "{{ working_dir }}/docker-compose.yml"
+            owner: "{{ app_user }}"
+            group: "{{ app_group }}"
+            mode: "0644"
+
+        - name: Log in to GHCR
+          ansible.builtin.command: "docker login ghcr.io -u {{ ghcr_user }} --password-stdin"
+          args:
+            stdin: "{{ ghcr_pat_ro }}"
+          register: ghcr_login
+          changed_when: false
+          no_log: true
+
+        - name: Pull latest image
+          ansible.builtin.command: "docker compose pull"
+          args:
+            chdir: "{{ working_dir }}"
+          register: compose_pull
+          # Compose v2 may print "Pulled" / "Pulling" on either stream depending on version.
+          changed_when: >-
+            'Pulled' in (compose_pull.stdout | default('')) or
+            'Pulled' in (compose_pull.stderr | default(''))
+
+        - name: Bring up containers
+          ansible.builtin.command: "docker compose up -d"
+          args:
+            chdir: "{{ working_dir }}"
+          register: compose_up
+          # Compose v2 reports container lifecycle ("Started" / "Recreated" / "Created")
+          # on either stdout or stderr — check both so the play recap reflects reality.
+          changed_when: >-
+            (compose_up.stdout | default('')) is search('(Started|Recreated|Created)\b') or
+            (compose_up.stderr | default('')) is search('(Started|Recreated|Created)\b')
+
+        - name: Prune dangling images
+          ansible.builtin.command: "docker image prune -f"
+          changed_when: false
 
     - name: Uninstall api-server resources
       tags: ["never", "uninstall"]
