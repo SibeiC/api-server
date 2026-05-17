@@ -97,6 +97,12 @@
             state: present
 
         - name: Grant passwordless sudo to deploy user (required for CI-driven playbook runs)
+          # Trust model: githubdeploy is already in the `docker` group, which is effectively root
+          # (a docker-group member can `docker run --privileged -v /:/host alpine chroot /host`).
+          # So NOPASSWD: ALL widens nothing material — it just lets ansible's `become: true` work
+          # over the existing SSH key without an interactive password. Anyone with SERVER_SSH_KEY
+          # already has root-equivalent access via docker. If that trust model ever tightens
+          # (githubdeploy removed from docker group), revisit and narrow this to a Cmnd_Alias.
           ansible.builtin.copy:
             dest: "/etc/sudoers.d/{{ deploy_user }}"
             content: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL\n"
@@ -303,14 +309,21 @@
           args:
             chdir: "{{ working_dir }}"
           register: compose_pull
-          changed_when: "'Pulled' in compose_pull.stderr or 'Pulled' in compose_pull.stdout"
+          # Compose v2 may print "Pulled" / "Pulling" on either stream depending on version.
+          changed_when: >-
+            'Pulled' in (compose_pull.stdout | default('')) or
+            'Pulled' in (compose_pull.stderr | default(''))
 
         - name: Bring up containers
           ansible.builtin.command: "docker compose up -d"
           args:
             chdir: "{{ working_dir }}"
           register: compose_up
-          changed_when: "'Started' in compose_up.stderr or 'Recreated' in compose_up.stderr or 'Created' in compose_up.stderr"
+          # Compose v2 reports container lifecycle ("Started" / "Recreated" / "Created")
+          # on either stdout or stderr — check both so the play recap reflects reality.
+          changed_when: >-
+            (compose_up.stdout | default('')) is search('(Started|Recreated|Created)\b') or
+            (compose_up.stderr | default('')) is search('(Started|Recreated|Created)\b')
 
         - name: Prune dangling images
           ansible.builtin.command: "docker image prune -f"
