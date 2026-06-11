@@ -1,0 +1,3179 @@
+{
+ "$schema": "https://raw.githubusercontent.com/schemastore/schemastore/master/src/schemas/json/sarif-2.1.0-rtm.5.json",
+ "version": "2.1.0",
+ "runs": [
+  {
+   "tool": {
+    "driver": {
+     "name": "QDJVM"
+    }
+   },
+   "results": [
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 38,
+         "startColumn": 21,
+         "charOffset": 1098,
+         "charLength": 8,
+         "snippet": {
+          "text": "issuedAt"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 36,
+         "startColumn": 1,
+         "charOffset": 1032,
+         "charLength": 137,
+         "snippet": {
+          "text": "     * Timestamps for cert lifecycle.\n     */\n    private Instant issuedAt;\n    private Instant expiresAt;\n    private Instant revokedAt;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "c557eca524afcd4a",
+      "equalIndicator/v1": "0894e0c3806173b1b8b1c82585046c51042be608c687d195f3dccfe57fadadf5"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificateRenewal.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 22,
+         "startColumn": 21,
+         "charOffset": 564,
+         "charLength": 9,
+         "snippet": {
+          "text": "pemFormat"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 20,
+         "startColumn": 1,
+         "charOffset": 512,
+         "charLength": 79,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"pemFormat\")\n    private boolean pemFormat = false;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "44e5c451846b34e3",
+      "equalIndicator/v1": "126646750554d4951b4dadf23dcc3a5526d97eb602e79877edb7b6a701447036"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/cloudflare/DnsRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 17,
+         "startColumn": 26,
+         "charOffset": 339,
+         "charLength": 4,
+         "snippet": {
+          "text": "type"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 15,
+         "startColumn": 1,
+         "charOffset": 295,
+         "charLength": 68,
+         "snippet": {
+          "text": "\n    @JsonProperty\n    private final String type;\n\n    @JsonProperty"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "8ab6759df8ab4ace",
+      "equalIndicator/v1": "16236dba9e988260681dd684792c533fbef3d5cdf107a3ac80883129c24c61ed"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 25,
+         "startColumn": 20,
+         "charOffset": 608,
+         "charLength": 8,
+         "snippet": {
+          "text": "filename"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 23,
+         "startColumn": 1,
+         "charOffset": 573,
+         "charLength": 75,
+         "snippet": {
+          "text": "\n    @Indexed()\n    private String filename;\n\n    private Instant issuedAt;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "1cc1fece164c1e1b",
+      "equalIndicator/v1": "3e064d3fa318270021b5f794388e1ef45ddeba6c1261a0ae8657a6a74c9d8b37"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 22,
+         "startColumn": 20,
+         "charOffset": 566,
+         "charLength": 5,
+         "snippet": {
+          "text": "token"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 20,
+         "startColumn": 1,
+         "charOffset": 518,
+         "charLength": 70,
+         "snippet": {
+          "text": "\n    @Indexed(unique = true)\n    private String token;\n\n    @Indexed()"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "df21cfac6e34d838",
+      "equalIndicator/v1": "3e131dccbca66acda4c7a94eb7b3a5098ee53937566c84c56c656cbd77100682"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/config/S3Config.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 16,
+         "startColumn": 26,
+         "charOffset": 449,
+         "charLength": 9,
+         "snippet": {
+          "text": "accessKey"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 14,
+         "startColumn": 1,
+         "charOffset": 357,
+         "charLength": 173,
+         "snippet": {
+          "text": "     * Configuration class for R2 credentials and endpoint\n     */\n    private final String accessKey;\n    private final String secretKey;\n    private final String endpoint;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "6a52c5f1bfe33210",
+      "equalIndicator/v1": "4608522a9a4ceaadedcb22fc95f32fbfde47590ef22936bc59f21e1bc9c2477a"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/cloudflare/DnsRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 20,
+         "startColumn": 27,
+         "charOffset": 390,
+         "charLength": 7,
+         "snippet": {
+          "text": "proxied"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 18,
+         "startColumn": 1,
+         "charOffset": 345,
+         "charLength": 72,
+         "snippet": {
+          "text": "\n    @JsonProperty\n    private final Boolean proxied;\n\n    @JsonProperty"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "5752989f4c673829",
+      "equalIndicator/v1": "4b389ffbb1879ed800098c6d8f59bfc59ba585d5ac36a00cf3de2382462ade2d"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 28,
+         "startColumn": 20,
+         "charOffset": 593,
+         "charLength": 3,
+         "snippet": {
+          "text": "url"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 26,
+         "startColumn": 1,
+         "charOffset": 548,
+         "charLength": 88,
+         "snippet": {
+          "text": "    private String name;\n\n    private String url;\n\n    private int expectedStatus = 200;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "02d3e2e5ddb764f2",
+      "equalIndicator/v1": "610e9dc505fa76563cc716d13beb17bcefc9ecbf0b050697cc615ea907609b35"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 39,
+         "startColumn": 21,
+         "charOffset": 1128,
+         "charLength": 9,
+         "snippet": {
+          "text": "expiresAt"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 37,
+         "startColumn": 1,
+         "charOffset": 1070,
+         "charLength": 100,
+         "snippet": {
+          "text": "     */\n    private Instant issuedAt;\n    private Instant expiresAt;\n    private Instant revokedAt;\n"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "c9d76d9bd9b480a1",
+      "equalIndicator/v1": "6c3ee0292ac5be03c2675b9c92280ab34f840d31cd177b4e893b9bfacf0dd8a1"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 33,
+         "startColumn": 20,
+         "charOffset": 1012,
+         "charLength": 9,
+         "snippet": {
+          "text": "machineId"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 31,
+         "startColumn": 1,
+         "charOffset": 927,
+         "charLength": 104,
+         "snippet": {
+          "text": "     * Identifier of the machine this cert was issued to.\n     */\n    private String machineId;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "8605b768c03391b1",
+      "equalIndicator/v1": "74d5111cd60f573a606f190ce4e1536b50695154bc49fa82c604834c56e22f6e"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 28,
+         "startColumn": 20,
+         "charOffset": 899,
+         "charLength": 17,
+         "snippet": {
+          "text": "fingerprintSha256"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 26,
+         "startColumn": 1,
+         "charOffset": 844,
+         "charLength": 82,
+         "snippet": {
+          "text": "     */\n    @Indexed(unique = true)\n    private String fingerprintSha256;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "184ef0e338b2e9e5",
+      "equalIndicator/v1": "7b57a1beadefd7d8b3bc7ee3c013ab641dd603207ed2e1f62534c5d27a887cb2"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 26,
+         "startColumn": 20,
+         "charOffset": 567,
+         "charLength": 4,
+         "snippet": {
+          "text": "name"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 24,
+         "startColumn": 1,
+         "charOffset": 534,
+         "charLength": 63,
+         "snippet": {
+          "text": "\n    @Indexed\n    private String name;\n\n    private String url;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "d6089052dee0914e",
+      "equalIndicator/v1": "8f7a66f095a062737590a1ebe1bdbde211869fd93273a9b7c9c7b938ce6066af"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/config/S3Config.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 17,
+         "startColumn": 26,
+         "charOffset": 485,
+         "charLength": 9,
+         "snippet": {
+          "text": "secretKey"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 15,
+         "startColumn": 1,
+         "charOffset": 416,
+         "charLength": 115,
+         "snippet": {
+          "text": "     */\n    private final String accessKey;\n    private final String secretKey;\n    private final String endpoint;\n"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "ab3f215dbaab3b1b",
+      "equalIndicator/v1": "c34aa17f31750f69217f116fe5ffdcb012c11abd4adc9ab01ff630ee71b9a7d7"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/cloudflare/DnsRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 23,
+         "startColumn": 26,
+         "charOffset": 443,
+         "charLength": 7,
+         "snippet": {
+          "text": "content"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 21,
+         "startColumn": 1,
+         "charOffset": 399,
+         "charLength": 97,
+         "snippet": {
+          "text": "\n    @JsonProperty\n    private final String content;\n\n    public DnsRecord(DDNSRequest request) {"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "40ce7044c2d4848c",
+      "equalIndicator/v1": "defeafd4c3060e1c01342dbed8a5c9ec245bd8e5c67bf33fb1b1ae6546369b6a"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/cloudflare/DnsRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 11,
+         "startColumn": 26,
+         "charOffset": 235,
+         "charLength": 4,
+         "snippet": {
+          "text": "name"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 9,
+         "startColumn": 1,
+         "charOffset": 167,
+         "charLength": 96,
+         "snippet": {
+          "text": "public class DnsRecord {\n    @JsonProperty\n    private final String name;\n    \n    @JsonProperty"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "4dc6fd390331c5d7",
+      "equalIndicator/v1": "ef45181338820f7080a84f2e7c2f104e7db5a981ed1064acc845b31ee93f35f6"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldCanBeLocal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field can be converted to a local variable",
+      "markdown": "Field can be converted to a local variable"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/config/S3Config.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 18,
+         "startColumn": 26,
+         "charOffset": 521,
+         "charLength": 8,
+         "snippet": {
+          "text": "endpoint"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 16,
+         "startColumn": 1,
+         "charOffset": 424,
+         "charLength": 122,
+         "snippet": {
+          "text": "    private final String accessKey;\n    private final String secretKey;\n    private final String endpoint;\n\n    @Autowired"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "a3b2430c5d89ebe7",
+      "equalIndicator/v1": "f7a6b3849bde92560f51cf7a7c85fde95acac3e41f8db5983645734b385b2f76"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'destination' may be 'final'",
+      "markdown": "Field `destination` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/FileUpload.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 53,
+         "startColumn": 18,
+         "charOffset": 1357,
+         "charLength": 11,
+         "snippet": {
+          "text": "destination"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 51,
+         "startColumn": 1,
+         "charOffset": 1306,
+         "charLength": 160,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"destination\")\n    private Type destination = null;\n\n    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = \"File to upload\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "7bc2465bf8d7433c",
+      "equalIndicator/v1": "045f220c4b1fdda680aca2d8b518a254df0cac0e649998d787983ea28a99dc12"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'proxied' may be 'final'",
+      "markdown": "Field `proxied` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/DDNSRequest.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 30,
+         "startColumn": 21,
+         "charOffset": 678,
+         "charLength": 7,
+         "snippet": {
+          "text": "proxied"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 28,
+         "startColumn": 1,
+         "charOffset": 639,
+         "charLength": 66,
+         "snippet": {
+          "text": "\n    @JsonProperty\n    private Boolean proxied = null;\n\n    @Valid"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "9fbf589cdf42a346",
+      "equalIndicator/v1": "04974745b1e52adddf1b7bd737d0abc7b6fbdd8440b36270b8b0584c70631700"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'key' may be 'final'",
+      "markdown": "Field `key` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/OnboardingToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 27,
+         "startColumn": 20,
+         "charOffset": 759,
+         "charLength": 3,
+         "snippet": {
+          "text": "key"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 25,
+         "startColumn": 1,
+         "charOffset": 682,
+         "charLength": 114,
+         "snippet": {
+          "text": "public class OnboardingToken {\n    @JsonProperty(\"token\")\n    private String key;\n\n    @JsonProperty(\"validUntil\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "210715541ae2dbe1",
+      "equalIndicator/v1": "0f70cba98b6e30f41dd6a3ea8a3d11e82a82351e0147bcda98d51c43aaf42b7e"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'certificate' may be 'final'",
+      "markdown": "Field `certificate` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificatePEM.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 29,
+         "startColumn": 20,
+         "charOffset": 867,
+         "charLength": 11,
+         "snippet": {
+          "text": "certificate"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 27,
+         "startColumn": 1,
+         "charOffset": 785,
+         "charLength": 127,
+         "snippet": {
+          "text": "public class CertificatePEM {\n    @JsonProperty(\"certificate\")\n    private String certificate;\n\n    @JsonProperty(\"privateKey\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "00fd49ef50e9ab2c",
+      "equalIndicator/v1": "1b012ae2d573c5c2f7c99c9228ef17f357220fa949059cb9128dec0e2cd609ef"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'pemFormat' may be 'final'",
+      "markdown": "Field `pemFormat` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificateRenewal.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 22,
+         "startColumn": 21,
+         "charOffset": 564,
+         "charLength": 9,
+         "snippet": {
+          "text": "pemFormat"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 20,
+         "startColumn": 1,
+         "charOffset": 512,
+         "charLength": 79,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"pemFormat\")\n    private boolean pemFormat = false;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "80327fd000a18021",
+      "equalIndicator/v1": "1bd1d79c02f1daeac4672789a59f09a5947387ff5f5f28fe6d915e7dbee6caa6"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'fingerprintSha256' may be 'final'",
+      "markdown": "Field `fingerprintSha256` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 28,
+         "startColumn": 20,
+         "charOffset": 899,
+         "charLength": 17,
+         "snippet": {
+          "text": "fingerprintSha256"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 26,
+         "startColumn": 1,
+         "charOffset": 844,
+         "charLength": 82,
+         "snippet": {
+          "text": "     */\n    @Indexed(unique = true)\n    private String fingerprintSha256;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "699f3cb0806685d9",
+      "equalIndicator/v1": "277b6be0468df2f291c875e882de4a187dbf73e0edccf274cf66062fbbf58d5e"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'retryDelaySeconds' may be 'final'",
+      "markdown": "Field `retryDelaySeconds` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 38,
+         "startColumn": 18,
+         "charOffset": 778,
+         "charLength": 17,
+         "snippet": {
+          "text": "retryDelaySeconds"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 36,
+         "startColumn": 1,
+         "charOffset": 725,
+         "charLength": 111,
+         "snippet": {
+          "text": "    private int retryAttempts = 2;\n\n    private long retryDelaySeconds = 2;\n\n    private Instant lastCheckedAt;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "19f7285779cb427b",
+      "equalIndicator/v1": "28919c551aa01fbb8f78a61b03f3fbe7d1ef6534511b3c4f66711ad86ebd75a1"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'name' may be 'final'",
+      "markdown": "Field `name` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 26,
+         "startColumn": 20,
+         "charOffset": 567,
+         "charLength": 4,
+         "snippet": {
+          "text": "name"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 24,
+         "startColumn": 1,
+         "charOffset": 534,
+         "charLength": 63,
+         "snippet": {
+          "text": "\n    @Indexed\n    private String name;\n\n    private String url;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "f30266eddc45092a",
+      "equalIndicator/v1": "2dac7137da5c511e0880716f19f8ff14937b1a77797c60af8eec5c1bc0807bdc"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'issuedAt' may be 'final'",
+      "markdown": "Field `issuedAt` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 27,
+         "startColumn": 21,
+         "charOffset": 639,
+         "charLength": 8,
+         "snippet": {
+          "text": "issuedAt"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 25,
+         "startColumn": 1,
+         "charOffset": 589,
+         "charLength": 88,
+         "snippet": {
+          "text": "    private String filename;\n\n    private Instant issuedAt;\n    private Instant usedAt;\n"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "491604e7b09b64ed",
+      "equalIndicator/v1": "31c7fb3b8d418f57e99da6aabf4a637e9ccf7640e04873c92f79e9d316e0255e"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'file' may be 'final'",
+      "markdown": "Field `file` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/FileUpload.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 50,
+         "startColumn": 27,
+         "charOffset": 1293,
+         "charLength": 4,
+         "snippet": {
+          "text": "file"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 48,
+         "startColumn": 1,
+         "charOffset": 1240,
+         "charLength": 99,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"file\")\n    private MultipartFile file = null;\n\n    @JsonProperty(\"destination\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "f78c2923cad5a627",
+      "equalIndicator/v1": "31dc7943ca2266a917c892a059843e015a0b67060ca6bc3388ce60111405d1f8"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'fullName' may be 'final'",
+      "markdown": "Field `fullName` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GithubWebhookReleaseRepository.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 19,
+         "startColumn": 20,
+         "charOffset": 529,
+         "charLength": 8,
+         "snippet": {
+          "text": "fullName"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 17,
+         "startColumn": 1,
+         "charOffset": 433,
+         "charLength": 121,
+         "snippet": {
+          "text": "public class GithubWebhookReleaseRepository {\n    @JsonProperty(\"full_name\")\n    private String fullName = null;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "050e103ad9488aba",
+      "equalIndicator/v1": "3476ac1262820aa2774d10a45d3a59bff0644e281ae42647ad0ed3bbab37a439"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'assets' may be 'final'",
+      "markdown": "Field `assets` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookReleaseRelease.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 28,
+         "startColumn": 53,
+         "charOffset": 834,
+         "charLength": 6,
+         "snippet": {
+          "text": "assets"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 26,
+         "startColumn": 1,
+         "charOffset": 743,
+         "charLength": 127,
+         "snippet": {
+          "text": "    @JsonProperty(\"assets\")\n    @Valid\n    private List<GitHubWebhookReleaseReleaseAssets> assets = new ArrayList<>();\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "d8ae9206b54b6e74",
+      "equalIndicator/v1": "3e10a7d59bb0749c8378e790336098b18c4d5e71a538c29861c14ab4cb474553"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'url' may be 'final'",
+      "markdown": "Field `url` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 28,
+         "startColumn": 20,
+         "charOffset": 593,
+         "charLength": 3,
+         "snippet": {
+          "text": "url"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 26,
+         "startColumn": 1,
+         "charOffset": 548,
+         "charLength": 88,
+         "snippet": {
+          "text": "    private String name;\n\n    private String url;\n\n    private int expectedStatus = 200;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "c87fcc90d41e98a1",
+      "equalIndicator/v1": "4431d6d553f655d160f40e981600d8180d495c0e4e3f4c2f647c54ccc84db999"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'issuedAt' may be 'final'",
+      "markdown": "Field `issuedAt` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 38,
+         "startColumn": 21,
+         "charOffset": 1098,
+         "charLength": 8,
+         "snippet": {
+          "text": "issuedAt"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 36,
+         "startColumn": 1,
+         "charOffset": 1032,
+         "charLength": 137,
+         "snippet": {
+          "text": "     * Timestamps for cert lifecycle.\n     */\n    private Instant issuedAt;\n    private Instant expiresAt;\n    private Instant revokedAt;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "f0c43178579ea4e9",
+      "equalIndicator/v1": "47e4b0197419bb8e178b8b3b1a4d52312f484eb7320301abc5db96a880f4759b"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'release' may be 'final'",
+      "markdown": "Field `release` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookRelease.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 64,
+         "startColumn": 41,
+         "charOffset": 1751,
+         "charLength": 7,
+         "snippet": {
+          "text": "release"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 62,
+         "startColumn": 1,
+         "charOffset": 1681,
+         "charLength": 118,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"release\")\n    private GitHubWebhookReleaseRelease release = null;\n\n    @JsonProperty(\"repository\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "26af1919c56250ab",
+      "equalIndicator/v1": "4dcdb3b005b3bf026ce33a2e69f44461cea0fa7a8ecbee0f82834027145977a7"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'url' may be 'final'",
+      "markdown": "Field `url` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookReleaseReleaseAssets.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 23,
+         "startColumn": 20,
+         "charOffset": 714,
+         "charLength": 3,
+         "snippet": {
+          "text": "url"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 21,
+         "startColumn": 1,
+         "charOffset": 621,
+         "charLength": 131,
+         "snippet": {
+          "text": "public class GitHubWebhookReleaseReleaseAssets {\n    @JsonProperty(\"url\")\n    private String url = null;\n\n    @JsonProperty(\"name\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "6cdefa71b0b1ca23",
+      "equalIndicator/v1": "502e5e91228a73225c4318d3109bf9a7e9e3d57861a6c4759bd4a79613f9bde4"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'repository' may be 'final'",
+      "markdown": "Field `repository` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookRelease.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 67,
+         "startColumn": 44,
+         "charOffset": 1843,
+         "charLength": 10,
+         "snippet": {
+          "text": "repository"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 65,
+         "startColumn": 1,
+         "charOffset": 1767,
+         "charLength": 96,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"repository\")\n    private GithubWebhookReleaseRepository repository = null;\n\n"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "dc095eec4deb7b58",
+      "equalIndicator/v1": "5812be306e0351312aa4eb8c80383eb0b76b5768224c0ed2ad802a9dffe6b293"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'expectedStatus' may be 'final'",
+      "markdown": "Field `expectedStatus` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 30,
+         "startColumn": 17,
+         "charOffset": 615,
+         "charLength": 14,
+         "snippet": {
+          "text": "expectedStatus"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 28,
+         "startColumn": 1,
+         "charOffset": 574,
+         "charLength": 101,
+         "snippet": {
+          "text": "    private String url;\n\n    private int expectedStatus = 200;\n\n    private long timeoutSeconds = 10;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "719519a8c7a30d24",
+      "equalIndicator/v1": "662c34f99f2da49b67e2ecb1cada0619c342613e0ae58968a458cff53fb09e94"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'filename' may be 'final'",
+      "markdown": "Field `filename` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 25,
+         "startColumn": 20,
+         "charOffset": 608,
+         "charLength": 8,
+         "snippet": {
+          "text": "filename"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 23,
+         "startColumn": 1,
+         "charOffset": 573,
+         "charLength": 75,
+         "snippet": {
+          "text": "\n    @Indexed()\n    private String filename;\n\n    private Instant issuedAt;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "ef3babb695d847cd",
+      "equalIndicator/v1": "76e649dc84a0f624bdc06f16d45f315f9509e41631744f8b3a48b4e7dbd072f3"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'validUntil' may be 'final'",
+      "markdown": "Field `validUntil` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/OnboardingToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 30,
+         "startColumn": 21,
+         "charOffset": 817,
+         "charLength": 10,
+         "snippet": {
+          "text": "validUntil"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 28,
+         "startColumn": 1,
+         "charOffset": 764,
+         "charLength": 126,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"validUntil\")\n    private Instant validUntil;\n\n    public OnboardingToken(String key, Instant validUntil) {"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "ae09f0e93651d96d",
+      "equalIndicator/v1": "7f17674f9f9b0cff16110cc1006b12e3ff0f84532c605fec269dc20a5053facd"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'validUntil' may be 'final'",
+      "markdown": "Field `validUntil` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificatePEM.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 35,
+         "startColumn": 21,
+         "charOffset": 997,
+         "charLength": 10,
+         "snippet": {
+          "text": "validUntil"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 33,
+         "startColumn": 1,
+         "charOffset": 944,
+         "charLength": 81,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"validUntil\")\n    private Instant validUntil;\n\n    @JsonIgnore"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "34da2cf03fa5e8d2",
+      "equalIndicator/v1": "8529cd864dd394239402d35dc6c362013bfc06fa08c8c2737eddd1abd70912ae"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'isDeleted' may be 'final'",
+      "markdown": "Field `isDeleted` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 48,
+         "startColumn": 21,
+         "charOffset": 1041,
+         "charLength": 9,
+         "snippet": {
+          "text": "isDeleted"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 46,
+         "startColumn": 1,
+         "charOffset": 990,
+         "charLength": 83,
+         "snippet": {
+          "text": "    private String lastError;\n\n    private boolean isDeleted = false;\n\n    @Version"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "80b360ed7c74176e",
+      "equalIndicator/v1": "8589871c638f32aece6b2ce54358164e699dab451ffe1e30a7eb343e78d71bc6"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'timeoutSeconds' may be 'final'",
+      "markdown": "Field `timeoutSeconds` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 32,
+         "startColumn": 18,
+         "charOffset": 655,
+         "charLength": 14,
+         "snippet": {
+          "text": "timeoutSeconds"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 30,
+         "startColumn": 1,
+         "charOffset": 599,
+         "charLength": 124,
+         "snippet": {
+          "text": "    private int expectedStatus = 200;\n\n    private long timeoutSeconds = 10;\n\n    private long failureThresholdMinutes = 60;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "24aa01858ea759c8",
+      "equalIndicator/v1": "88fcfe36c911af0abf078021dd373461346e0ac57693c7ff95a8f31c0e678f08"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'myIp' may be 'final'",
+      "markdown": "Field `myIp` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/DDNSRequest.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 27,
+         "startColumn": 20,
+         "charOffset": 626,
+         "charLength": 4,
+         "snippet": {
+          "text": "myIp"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 25,
+         "startColumn": 1,
+         "charOffset": 588,
+         "charLength": 69,
+         "snippet": {
+          "text": "\n    @JsonProperty\n    private String myIp = null;\n\n    @JsonProperty"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "9804f1e094488875",
+      "equalIndicator/v1": "9680907a020dcc659b9bbdd0e5a59abd0776b59c48e7261362f5cc85b115b091"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'token' may be 'final'",
+      "markdown": "Field `token` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 22,
+         "startColumn": 20,
+         "charOffset": 566,
+         "charLength": 5,
+         "snippet": {
+          "text": "token"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 20,
+         "startColumn": 1,
+         "charOffset": 518,
+         "charLength": 70,
+         "snippet": {
+          "text": "\n    @Indexed(unique = true)\n    private String token;\n\n    @Indexed()"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "69c1c4e5037dcf02",
+      "equalIndicator/v1": "b592628749ebdd06b1085af5da9ff3f0818c87f4593e0858cbd9e3cc528308fc"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'name' may be 'final'",
+      "markdown": "Field `name` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookReleaseReleaseAssets.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 26,
+         "startColumn": 20,
+         "charOffset": 772,
+         "charLength": 4,
+         "snippet": {
+          "text": "name"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 24,
+         "startColumn": 1,
+         "charOffset": 726,
+         "charLength": 67,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"name\")\n    private String name = null;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "d06a7ffb78454131",
+      "equalIndicator/v1": "b5edf0425991e345a76475e5373f80b87c34bd7364b24a530a75f1a2779099e1"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'failureThresholdMinutes' may be 'final'",
+      "markdown": "Field `failureThresholdMinutes` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 34,
+         "startColumn": 18,
+         "charOffset": 694,
+         "charLength": 23,
+         "snippet": {
+          "text": "failureThresholdMinutes"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 32,
+         "startColumn": 1,
+         "charOffset": 638,
+         "charLength": 121,
+         "snippet": {
+          "text": "    private long timeoutSeconds = 10;\n\n    private long failureThresholdMinutes = 60;\n\n    private int retryAttempts = 2;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "47273ec60c55bea2",
+      "equalIndicator/v1": "b98ebc4c9ef6175a74069f44f36ef0ac79b9962d809a81a9e5c271bd947584ef"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'lastStatus' may be 'final'",
+      "markdown": "Field `lastStatus` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 44,
+         "startColumn": 20,
+         "charOffset": 923,
+         "charLength": 10,
+         "snippet": {
+          "text": "lastStatus"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 42,
+         "startColumn": 1,
+         "charOffset": 872,
+         "charLength": 147,
+         "snippet": {
+          "text": "    private Instant alertedAt;\n\n    private Status lastStatus = Status.UNKNOWN;\n    private Integer lastResponseCode;\n    private String lastError;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "91f9a0612cda71ef",
+      "equalIndicator/v1": "bd8199f64cf2c6ddb1ef82a3249d6e9b6a9dccb809165c7301fe02ff3353bb4c"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'privateKey' may be 'final'",
+      "markdown": "Field `privateKey` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificatePEM.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 32,
+         "startColumn": 20,
+         "charOffset": 932,
+         "charLength": 10,
+         "snippet": {
+          "text": "privateKey"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 30,
+         "startColumn": 1,
+         "charOffset": 880,
+         "charLength": 96,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"privateKey\")\n    private String privateKey;\n\n    @JsonProperty(\"validUntil\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "39a3f260eb89a8be",
+      "equalIndicator/v1": "c37e6ca0d66c80835ad16f068d9fc579b3c649861922382a97d22032a996ddd2"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'action' may be 'final'",
+      "markdown": "Field `action` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/GitHubWebhookRelease.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 61,
+         "startColumn": 24,
+         "charOffset": 1666,
+         "charLength": 6,
+         "snippet": {
+          "text": "action"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 59,
+         "startColumn": 1,
+         "charOffset": 1614,
+         "charLength": 96,
+         "snippet": {
+          "text": "\n    @JsonProperty(\"action\")\n    private ActionEnum action = null;\n\n    @JsonProperty(\"release\")"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "83c3e756ca4254d7",
+      "equalIndicator/v1": "ceb8ad3f423e5d4f0b55f13d243d4fbe1f41f5294b786e20ad72e02f71bfa7a1"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'machineId' may be 'final'",
+      "markdown": "Field `machineId` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 33,
+         "startColumn": 20,
+         "charOffset": 1012,
+         "charLength": 9,
+         "snippet": {
+          "text": "machineId"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 31,
+         "startColumn": 1,
+         "charOffset": 927,
+         "charLength": 104,
+         "snippet": {
+          "text": "     * Identifier of the machine this cert was issued to.\n     */\n    private String machineId;\n\n    /**"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "191c0dd550c53f60",
+      "equalIndicator/v1": "cf20f55a572f285f3b8ed5f094b714c3fbaaa1329dd8b0f5ad41007a1fa26fde"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'expiresAt' may be 'final'",
+      "markdown": "Field `expiresAt` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/CertificateRecord.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 39,
+         "startColumn": 21,
+         "charOffset": 1128,
+         "charLength": 9,
+         "snippet": {
+          "text": "expiresAt"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 37,
+         "startColumn": 1,
+         "charOffset": 1070,
+         "charLength": 100,
+         "snippet": {
+          "text": "     */\n    private Instant issuedAt;\n    private Instant expiresAt;\n    private Instant revokedAt;\n"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "9f129a16cf64d88c",
+      "equalIndicator/v1": "dcc1fe40852f000a9960d07b28658d15757b1e600f91a72cf68b66ff3190bef2"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'isDeleted' may be 'final'",
+      "markdown": "Field `isDeleted` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/FileToken.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 30,
+         "startColumn": 21,
+         "charOffset": 698,
+         "charLength": 9,
+         "snippet": {
+          "text": "isDeleted"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 28,
+         "startColumn": 1,
+         "charOffset": 649,
+         "charLength": 81,
+         "snippet": {
+          "text": "    private Instant usedAt;\n\n    private boolean isDeleted = false;\n\n    @Version"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "6bef6f6454f43319",
+      "equalIndicator/v1": "e58b9a001ab0799073d8ad704fff6b9319cb01d1a4907278ded20719640aff16"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'retryAttempts' may be 'final'",
+      "markdown": "Field `retryAttempts` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/mongo/HealthCheckTarget.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 36,
+         "startColumn": 17,
+         "charOffset": 741,
+         "charLength": 13,
+         "snippet": {
+          "text": "retryAttempts"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 34,
+         "startColumn": 1,
+         "charOffset": 677,
+         "charLength": 123,
+         "snippet": {
+          "text": "    private long failureThresholdMinutes = 60;\n\n    private int retryAttempts = 2;\n\n    private long retryDelaySeconds = 2;"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "5e07fd372b74b25e",
+      "equalIndicator/v1": "eaf0510bcd2864735722907e8396db2e18986fa50e6cb907abb8dddbdbe140a5"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "FieldMayBeFinal",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Field 'record' may be 'final'",
+      "markdown": "Field `record` may be 'final'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/model/CertificatePEM.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 38,
+         "startColumn": 31,
+         "charOffset": 1056,
+         "charLength": 6,
+         "snippet": {
+          "text": "record"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 36,
+         "startColumn": 1,
+         "charOffset": 1009,
+         "charLength": 168,
+         "snippet": {
+          "text": "\n    @JsonIgnore\n    private CertificateRecord record;\n\n    public CertificatePEM(String certificate, String privateKey, Instant validUntil, CertificateRecord record) {"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "1cf19ffc90da1d62",
+      "equalIndicator/v1": "ede4a0f68f25dc6683bda9e417a03386b872e4f552e23107af778d60cdfe62e6"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "hasFixes": true,
+      "hasCleanup": true,
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "JavadocReference",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Cannot resolve symbol 'org.springframework.web.reactive.function.UnsupportedMediaTypeException'",
+      "markdown": "Cannot resolve symbol `org.springframework.web.reactive.function.UnsupportedMediaTypeException`"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/service/file/CloudflareR2FileService.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 87,
+         "startColumn": 58,
+         "charOffset": 3618,
+         "charLength": 29,
+         "snippet": {
+          "text": "UnsupportedMediaTypeException"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 85,
+         "startColumn": 1,
+         "charOffset": 3478,
+         "charLength": 225,
+         "snippet": {
+          "text": "     * @param contentType MIME type, required\n     * @param content     file bytes\n     * @throws org.springframework.web.reactive.function.UnsupportedMediaTypeException when contentType/filename missing\n     */\n    @Override"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "9c19588a815fefc8",
+      "equalIndicator/v1": "e403530d7b87f122cb491558bd5328025dc2ae0c951f65b938a941ac6aa7b21c"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "SuspiciousMethodCalls",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "'Set' may not contain objects of type ''",
+      "markdown": "'Set' may not contain objects of type ''"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/config/RequestLoggingConfig.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 24,
+         "startColumn": 76,
+         "charOffset": 928,
+         "charLength": 6,
+         "snippet": {
+          "text": "header"
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 22,
+         "startColumn": 1,
+         "charOffset": 770,
+         "charLength": 196,
+         "snippet": {
+          "text": "        filter.setIncludeHeaders(true);\n        filter.setMaxPayloadLength(10000);\n        filter.setHeaderPredicate(header -> !SKIP_LOGGING_HEADERS.contains(header));\n        return filter;\n    }"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "ff26eecd8ae19485",
+      "equalIndicator/v1": "391a9c90992ed1906e0a794ea6d9753249a33457e9700eaf58a38ea66aeccfb1"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "tags": [
+       "JAVA"
+      ]
+     }
+    },
+    {
+     "ruleId": "SuspiciousMethodCalls",
+     "kind": "fail",
+     "level": "warning",
+     "message": {
+      "text": "Suspicious call to 'List.contains()'",
+      "markdown": "Suspicious call to 'List.contains()'"
+     },
+     "locations": [
+      {
+       "physicalLocation": {
+        "artifactLocation": {
+         "uri": "src/main/java/com/chencraft/common/component/AppConfig.java",
+         "uriBaseId": "SRCROOT"
+        },
+        "region": {
+         "startLine": 19,
+         "startColumn": 64,
+         "charOffset": 495,
+         "charLength": 5,
+         "snippet": {
+          "text": "\"dev\""
+         },
+         "sourceLanguage": "JAVA"
+        },
+        "contextRegion": {
+         "startLine": 17,
+         "startColumn": 1,
+         "charOffset": 402,
+         "charLength": 108,
+         "snippet": {
+          "text": "\n    public boolean isDev() {\n        return Arrays.asList(env.getActiveProfiles()).contains(\"dev\");\n    }\n}"
+         },
+         "sourceLanguage": "JAVA"
+        }
+       },
+       "logicalLocations": [
+        {
+         "fullyQualifiedName": "api-server",
+         "kind": "module"
+        }
+       ]
+      }
+     ],
+     "partialFingerprints": {
+      "equalIndicator/v2": "ad6b73d520d23cd6",
+      "equalIndicator/v1": "81c32625a4c8a9ad7970a351bd3273ca316d958ab5a32551f9854d02265b956b"
+     },
+     "properties": {
+      "ideaSeverity": "WARNING",
+      "qodanaSeverity": "High",
+      "problemType": "REGULAR",
+      "tags": [
+       "JAVA"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}
