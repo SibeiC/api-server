@@ -18,9 +18,9 @@ public class S3Config {
     private final String endpoint;
 
     @Autowired
-    public S3Config(@Value("${cloudflare.r2.accountId}") String accountId,
-                    @Value("${cloudflare.r2.accessKey}") String accessKey,
-                    @Value("${cloudflare.r2.secretKey}") String secretKey) {
+    public S3Config(@Value("${cloudflare.r2.account-id}") String accountId,
+                    @Value("${cloudflare.r2.access-key}") String accessKey,
+                    @Value("${cloudflare.r2.secret-key}") String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.endpoint = String.format("https://%s.r2.cloudflarestorage.com", accountId);

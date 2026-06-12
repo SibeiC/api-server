@@ -3,6 +3,9 @@ services:
   api-server:
     image: ghcr.io/sibeic/api-server:latest
     container_name: api-server
+    # Supplies DOPPLER_TOKEN (read-only prd service token), written by ansible (mode 0600)
+    env_file:
+      - /opt/api-server/doppler.env
     ports:
       - "127.0.0.1:8080:8080"
       - "127.0.0.1:8957:8957"

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Low-level WebClient wrapper for Cloudflare DNS API.
  * External IO: HTTPS requests to Cloudflare; maps responses to CloudflareResponse and models.
- * Configuration: uses cloudflare.dns.apiKey and cloudflare.dns.zoneId properties.
+ * Configuration: uses cloudflare.dns.api-key and cloudflare.dns.zone-id properties.
  */
 @Lazy
 @Slf4j
@@ -33,7 +33,7 @@ public class CloudflareWebClient {
 
     private final WebClient webClient;
 
-    @Value("${cloudflare.dns.zoneId:}")
+    @Value("${cloudflare.dns.zone-id:}")
     private String zoneId;
 
     /**
@@ -43,7 +43,7 @@ public class CloudflareWebClient {
      * @param cloudflareApiKey API token for Cloudflare (Bearer)
      */
     @Autowired
-    public CloudflareWebClient(WebClient webClient, @Value("${cloudflare.dns.apiKey:}") String cloudflareApiKey) {
+    public CloudflareWebClient(WebClient webClient, @Value("${cloudflare.dns.api-key:}") String cloudflareApiKey) {
         String cloudflareApiBaseUrl = "https://api.cloudflare.com/client/v4";
         this.webClient = webClient.mutate()
                                   .baseUrl(cloudflareApiBaseUrl)

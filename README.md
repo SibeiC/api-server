@@ -36,15 +36,16 @@ Environment:
 
 - Base config: src/main/resources/application.properties
 - Dev overrides: src/main/resources/application-dev.properties (activate with SPRING_PROFILES_ACTIVE=dev)
-- Env vars: see application.properties and env.sh for Cloudflare/GitHub tokens, S3 endpoint/credentials, iCloud mail
-  creds
+- Secrets (Mongo URI, Cloudflare R2/DNS, GitHub tokens, mail creds, TLS keystore) live in
+  Doppler — project `api-server`, configs `dev` and `prd`. One-time setup:
+  `doppler login && doppler setup --no-interactive` (binding committed in `doppler.yaml`).
+  The dev config also sets SPRING_PROFILES_ACTIVE=dev, so `doppler run` is all you need.
 
 Common tasks:
 
-- Build with tests: mvn -P ci clean verify
+- Build with tests: mvn -P ci clean verify (no secrets needed — tests use mocks/Testcontainers)
 - Build only: mvn -P ci -DskipTests=true clean package
-- Run app: mvn spring-boot:run
-- Run with dev profile: SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+- Run app (dev secrets + dev profile from Doppler): doppler run -- mvn spring-boot:run
 - Docker image: docker build -t api-server:local .
 
 API docs (local): https://dev.chencraft.com/
@@ -105,15 +106,13 @@ What this playbook does:
 - Templates and enables an Nginx site for api-server (HTTP 80 redirect to HTTPS 443)
 - Sets upstream proxy port to 8080 (prod) or 8085 (dev)
 - Generates a PKCS#12 keystore at /opt/api-server/server.p12 from existing system cert/key
-- Optionally stores an age private key in /opt/api-server/age_key (0600) if provided
+- Fetches the TLS keystore password and nginx proxy secret from Doppler: with
+  `-e doppler_token=…` (CI path) it calls the Doppler API; without it (laptop runs) it uses
+  your logged-in `doppler` CLI against project `api-server`, config `dev` or `prd`
+- When `-e doppler_token=…` is supplied, writes /opt/api-server/doppler.env (0600) so
+  docker-compose can hand DOPPLER_TOKEN to the container
 - When `-e docker_deploy=true ghcr_user=… ghcr_pat_ro=…` is supplied (CI path), also copies
   docker-compose.yml to /opt/api-server, logs in to GHCR, and runs `docker compose pull && up -d`
-
-Prompts during execution:
-
-- TLS keystore password (used to protect server.p12) — skipped when `-e tls_keystore_password=…` is given
-- Optional: AGE private key (single line) to write to /opt/api-server/age_key — skipped when `-e age_private_key=…` is given
-- Optional (non-dev): GitHub Actions public SSH key for the githubdeploy user
 
 Variables you can override with -e:
 
@@ -122,6 +121,7 @@ Variables you can override with -e:
 - p12_cert_path, p12_key_path: certificate/key used for PKCS#12 export
 - server_host: defaults to api.chencraft.com (prod) or dev.chencraft.com (dev)
 - proxy_port: defaults to 8080 (prod) or 8085 (dev)
+- doppler_token: CI-only; read-only Doppler service token for the prd config
 - docker_deploy, ghcr_user, ghcr_pat_ro: CI-only; gate the container deploy task block
 
 CI note: ansible-lint runs in GitHub Actions to validate playbook structure. Ensure requirements.yml is kept in sync
@@ -134,7 +134,7 @@ On a fresh host, run this once (SSH in as a user with sudo, e.g. `ubuntu`):
 1. `sudo apt-get update && sudo apt-get install -y ansible-core git`
 2. `git clone <repo> ~/api-server && cd ~/api-server`
 3. `./install.sh` — installs collections, creates `githubdeploy` with passwordless sudo and the
-   GitHub Actions public key, templates nginx, generates the PKCS#12 keystore, places `/opt/api-server/age_key`.
+   GitHub Actions public key, templates nginx, generates the PKCS#12 keystore.
 
 After bootstrap, the GitHub Actions workflow handles every release automatically: it SCPs the
 playbook payload to `~/api-server-deploy/` on the host and runs `ansible-playbook` as `githubdeploy`.
@@ -143,8 +143,8 @@ playbook payload to `~/api-server-deploy/` on the host and runs `ansible-playboo
 
 - `SERVER_HOST`, `SERVER_USER` (= `githubdeploy`), `SERVER_SSH_KEY` — SSH transport
 - `GHCR_PAT_RO` — read-only PAT for `docker login ghcr.io`
-- `AGE_PRIVATE_KEY` — multi-line; lets ansible decrypt `.env.enc` to extract the proxy secret
-- `TLS_KEYSTORE_PASSWORD` — protects the generated `server.p12`
+- `DOPPLER_TOKEN` — read-only Doppler service token for `api-server/prd`; ansible uses it to
+  fetch the keystore password + proxy secret and hands it to the container for runtime secrets
 
 ### Manual re-deploy (no code change)
 

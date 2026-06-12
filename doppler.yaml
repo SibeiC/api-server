@@ -1,0 +1,5 @@
+---
+setup:
+  - project: api-server
+    config: dev
+    path: ./
