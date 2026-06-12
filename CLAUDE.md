@@ -13,8 +13,8 @@ mvn -P ci clean verify
 # Build without tests
 mvn -P ci -DskipTests=true clean package
 
-# Run locally with dev profile
-SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+# Run locally (Doppler injects dev secrets + SPRING_PROFILES_ACTIVE=dev)
+doppler run -- mvn spring-boot:run
 
 # Run a single test class
 mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest test
@@ -56,7 +56,7 @@ mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest#testValidateHash t
 ### Configuration
 - `application.properties` — prod config (port 8080, Prometheus metrics on 8957)
 - `application-dev.properties` — dev overrides (port 8085, debug logging)
-- Environment variables loaded from `.env` file (encrypted as `.env.enc` in Docker, decrypted via sops + age key)
+- Secrets arrive as env vars from Doppler (project `api-server`, configs `dev`/`prd` — per-env Mongo URI/database, Cloudflare R2 bucket/keys, mTLS proxy secret). Local binding via committed `doppler.yaml`; prod container runs `doppler run` with a service token from `/opt/api-server/doppler.env`. Tests need no secrets.
 
 ### Test Infrastructure (`src/test/`)
 - Mock/local service implementations: `LocalFileService`, `MockMailService`, `MockCertificateService`, `ImmediateTaskExecutor`
@@ -66,7 +66,7 @@ mvn -P ci -Dtest=com.chencraft.common.service.HashServiceTest#testValidateHash t
 
 ## Deployment
 
-Tag push (`v*.*.*`) triggers `.github/workflows/maven.yml`: build & test → push image to GHCR → SCP the ansible payload (`playbook.yml`, `templates/`, `docker-compose.yml`, `.env.enc`, etc.) to the server → SSH as `githubdeploy` and run `ansible-playbook` unattended. The playbook converges nginx + PKCS#12 + deploy user, then (when `docker_deploy=true` is passed from CI) runs `docker compose pull && up -d` against `/opt/api-server/docker-compose.yml`. Manual `workflow_dispatch` re-runs the deploy job without rebuilding the image (useful for nginx-only changes). Laptop bootstrap is still `./install.sh`.
+Tag push (`v*.*.*`) triggers `.github/workflows/maven.yml`: build & test → push image to GHCR → SCP the ansible payload (`playbook.yml`, `templates/`, `docker-compose.yml`, etc.) to the server → SSH as `githubdeploy` and run `ansible-playbook` unattended with `doppler_token` (the `DOPPLER_TOKEN` repo secret, a read-only `api-server/prd` service token). The playbook fetches the keystore password + nginx proxy secret from Doppler, converges nginx + PKCS#12 + deploy user, writes `/opt/api-server/doppler.env`, then (when `docker_deploy=true` is passed from CI) runs `docker compose pull && up -d` against `/opt/api-server/docker-compose.yml`. Manual `workflow_dispatch` re-runs the deploy job without rebuilding the image (useful for nginx-only changes). Laptop bootstrap is still `./install.sh`.
 
 ## Skill maintenance — `api-chencraft`
 

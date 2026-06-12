@@ -1,48 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-if [ -f .env ]; then
-    echo "Checking if .env has changed since last encryption..."
-
-    tmp_decrypted=$(mktemp)
-    if [ -f .env.enc ]; then
-        # Decrypt the existing .env.enc for comparison
-        if ! sops --decrypt --input-type dotenv --output-type dotenv .env.enc > "$tmp_decrypted"; then
-            echo "Warning: Failed to decrypt existing .env.enc, re-encrypting..."
-            tmp_decrypted="/dev/null"
-        fi
-    else
-        # No .env.enc exists yet
-        tmp_decrypted="/dev/null"
-    fi
-
-    # Normalize both files (strip CRLF, trailing spaces, and blank line differences) before comparing
-    norm_env=$(mktemp)
-    norm_dec=$(mktemp)
-
-    # Create normalized versions
-    awk 'NF{print $0}' .env | sed 's/\r$//' | sed 's/[[:space:]]*$//' | sort > "$norm_env"
-    if [ "$tmp_decrypted" != "/dev/null" ]; then
-        awk 'NF{print $0}' "$tmp_decrypted" | sed 's/\r$//' | sed 's/[[:space:]]*$//' | sort > "$norm_dec"
-    else
-        # force re-encrypt when there is no existing enc file
-        : > "$norm_dec"
-    fi
-
-    # Compare normalized content
-    if ! cmp -s "$norm_dec" "$norm_env"; then
-        echo "Encrypting updated .env before commit..."
-        sops --encrypt --input-type dotenv --output-type dotenv .env > .env.enc
-        git add .env.enc
-    else
-        echo ".env unchanged, skipping encryption."
-    fi
-
-    # Clean up temp files
-    [ "$tmp_decrypted" != "/dev/null" ] && rm -f "$tmp_decrypted"
-    rm -f "$norm_env" "$norm_dec"
-fi
-
 echo "[pre-commit] Running ansible-lint --fix (non-blocking)..."
 ansible-lint --fix || {
   echo "[pre-commit] ansible-lint failed or could not fix all issues, but continuing anyway."
