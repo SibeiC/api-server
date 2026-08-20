@@ -1,6 +1,5 @@
 # api-server
 
-[![Qodana](https://github.com/SibeiC/api-server/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/SibeiC/api-server/actions/workflows/qodana_code_quality.yml)
 [![Java CI with Maven](https://github.com/SibeiC/api-server/actions/workflows/maven.yml/badge.svg)](https://github.com/SibeiC/api-server/actions/workflows/maven.yml)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
