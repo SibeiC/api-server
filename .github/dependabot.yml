@@ -8,28 +8,32 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "master"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     assignees:
       - "SibeiC"
 
   - package-ecosystem: "maven"
     directory: "/"
+    target-branch: "master"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     assignees:
       - "SibeiC"
 
   - package-ecosystem: "docker"
     directory: "/"
+    target-branch: "master"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     assignees:
       - "SibeiC"
 
   - package-ecosystem: "docker-compose"
     directory: "/"
+    target-branch: "master"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     assignees:
       - "SibeiC"
