@@ -153,41 +153,72 @@ jobs:
             docker-compose.yml
           sparse-checkout-cone-mode: false
 
+      # Plain OpenSSH from the runner image rather than appleboy/scp-action + ssh-action: those
+      # download a drone-scp/drone-ssh binary from github.com/releases on every run, and that CDN
+      # path 504'd for the v1.11.0 deploy while the rest of GitHub was up.
+      - name: Configure SSH
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          umask 077
+          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/deploy_key
+          # No host key pinned (same as the appleboy actions, which had no fingerprint set).
+          cat > ~/.ssh/config <<'EOF'
+          Host deploy-target
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking accept-new
+            ConnectTimeout 30
+            ServerAliveInterval 30
+          EOF
+
       - name: Ship ansible payload to server
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          # Pass `templates` as a directory (not `templates/*`) so subpaths are preserved on the remote.
-          source: "playbook.yml,templates,hosts.ini,requirements.yml,docker-compose.yml"
-          target: "/home/${{ secrets.SERVER_USER }}/api-server-deploy"
-          rm: true
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          set -euo pipefail
+          ssh -o HostName="$SERVER_HOST" -l "$SERVER_USER" deploy-target \
+            'rm -rf ~/api-server-deploy && mkdir -p ~/api-server-deploy'
+          # `templates` is a directory; -r preserves its subpaths on the remote.
+          scp -r -o HostName="$SERVER_HOST" -o User="$SERVER_USER" \
+            playbook.yml templates hosts.ini requirements.yml docker-compose.yml \
+            deploy-target:api-server-deploy/
 
       - name: Run ansible + docker compose on server
-        uses: appleboy/ssh-action@v1.2.5
         env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
           GHCR_PAT_RO: ${{ secrets.GHCR_PAT_RO }}
           # GHCR_USER must match the account that owns GHCR_PAT_RO — use the repo owner (stable)
           # rather than github.actor (which varies by who triggers workflow_dispatch / tag push).
           GHCR_USER: ${{ github.repository_owner }}
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: DOPPLER_TOKEN,GHCR_PAT_RO,GHCR_USER
-          script: |
+        run: |
+          set -euo pipefail
+          SSH=(ssh -o HostName="$SERVER_HOST" -l "$SERVER_USER" deploy-target)
+          # Secrets travel over ssh stdin only — never in argv on either side.
+          {
+            printf 'doppler_token: "%s"\n' "${DOPPLER_TOKEN//\"/\\\"}"
+            printf 'ghcr_user: "%s"\n' "${GHCR_USER//\"/\\\"}"
+            printf 'ghcr_pat_ro: "%s"\n' "${GHCR_PAT_RO//\"/\\\"}"
+            printf 'docker_deploy: true\n'
+          } | "${SSH[@]}" 'umask 077 && cat > ~/api-server-deploy/.ansible-secrets.yml'
+          # The brace group is parsed whole before it runs, and its stdin is /dev/null, so nothing
+          # inside (ansible-galaxy, ansible-playbook) can swallow the rest of the piped script.
+          "${SSH[@]}" 'bash -s' <<'REMOTE'
+          {
             set -euo pipefail
             cd ~/api-server-deploy
-            ansible-galaxy collection install -r requirements.yml
-            umask 077
-            SECRETS_FILE="$(mktemp /tmp/ansible-secrets.XXXXXX.yml)"
+            SECRETS_FILE="$PWD/.ansible-secrets.yml"
             trap 'shred -u "$SECRETS_FILE" 2>/dev/null || rm -f "$SECRETS_FILE"' EXIT
-            {
-              printf 'doppler_token: "%s"\n' "${DOPPLER_TOKEN//\"/\\\"}"
-              printf 'ghcr_user: "%s"\n' "${GHCR_USER//\"/\\\"}"
-              printf 'ghcr_pat_ro: "%s"\n' "${GHCR_PAT_RO//\"/\\\"}"
-              printf 'docker_deploy: true\n'
-            } > "$SECRETS_FILE"
+            ansible-galaxy collection install -r requirements.yml
             ansible-playbook -i hosts.ini -l local playbook.yml -e "@$SECRETS_FILE"
+          } </dev/null
+          REMOTE
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
