@@ -137,6 +137,7 @@ mTLS; everything else is public (but some have their own auth, noted below).
 | GET    | `/secure/healthcheck/targets`               | healthcheck | Lists registered probe targets with latest outcome.          |
 | POST   | `/secure/healthcheck/targets`               | healthcheck | JSON `HealthCheckTargetRequest { name, url, expectedStatus?, timeoutSeconds?, failureThresholdMinutes?, retryAttempts?, retryDelaySeconds? }` |
 | DELETE | `/secure/healthcheck/targets/{id}`          | healthcheck | Soft-deletes a probe target.                                 |
+| POST   | `/secure/notify`                            | notification | JSON `NotificationRequest { subject, body, level? }` — `level` ∈ `INFO`/`WARNING`/`ERROR` (default `INFO`). Emails the fixed alert recipient (`app.alert.recipient`) via iCloud SMTP; caller cannot choose the recipient. Subject is prefixed with the caller cert CN. Returns 202 `queued` (async delivery). Limits: subject ≤200, body ≤20000 chars. |
 
 The `/secure/` prefix is wired by
 `src/main/java/com/chencraft/common/config/SecurePathConfig.java` — every
@@ -191,6 +192,18 @@ curl --cert "$MTLS_PEM" \
 The new cert is always issued with the CN of the verified client cert presented during the
 TLS handshake — you cannot specify a different deviceId. Sending one in the body is silently
 ignored.
+
+### Send a notification email
+
+```sh
+curl --cert "$MTLS_PEM" \
+     -X POST https://api.chencraft.com/secure/notify \
+     -H 'Content-Type: application/json' \
+     -d '{"subject":"Backup finished","body":"Nightly backup completed in 42s.","level":"INFO"}'
+```
+
+Arrives as `[INFO] [<device CN>] Backup finished`, with `Sent by device: <CN>` appended to the
+body. 202 means queued, not delivered — SMTP failures are only logged server-side.
 
 ### Revoke a certificate by fingerprint
 

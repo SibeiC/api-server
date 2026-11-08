@@ -7,4 +7,5 @@ public class TagConstants {
     public static final String CLOUDFLARE = "cloudflare";
     public static final String GITHUB = "github";
     public static final String HEALTHCHECK = "healthcheck";
+    public static final String NOTIFICATION = "notification";
 }

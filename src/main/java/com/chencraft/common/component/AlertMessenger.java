@@ -164,6 +164,24 @@ public class AlertMessenger {
         taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, MailFlag.INFO, subject, body));
     }
 
+    /**
+     * Relays a notification submitted by an mTLS-authenticated service to the default alert recipient.
+     * The sender device is stamped into both subject and body so the origin is always visible.
+     *
+     * @param senderDevice CN of the verified client certificate (or a placeholder when unavailable)
+     * @param flag         severity flag
+     * @param subject      caller-provided subject; CR/LF are collapsed to spaces
+     * @param body         caller-provided plain-text body
+     */
+    public void relayNotification(String senderDevice, MailFlag flag, String subject, String body) {
+        String safeSubject = subject.replaceAll("[\\r\\n]+", " ").trim();
+        log.info("Relaying notification from {} [{}]: {}", senderDevice, flag, safeSubject);
+
+        String finalSubject = "[" + senderDevice + "] " + safeSubject;
+        String finalBody = body + "\n\nSent by device: " + senderDevice;
+        taskExecutor.execute(() -> mailService.sendMail(defaultRecipient, flag, finalSubject, finalBody));
+    }
+
     public void testAlert() {
         log.info("Sending test alert");
 
